@@ -1,0 +1,187 @@
+/* Enter your custom styles here */
+.clProduct{
+    margin-left:70px !important;
+}
+
+.VBoxWidth{
+    margin-left:200px !important;
+}
+
+.sapUiSizeCompact .sapUxAPObjectPageLayout .sapUxAPObjectPageFooter .sapUxAPObjectPageFloatingFooter{
+    margin-top:230px !important;
+    /* margin-bottom: 30%!important; */
+}
+
+.footer{
+    position:fixed !important;
+    bottom: 0 !important;
+    width: 100vw !important;  
+}
+
+.primtab{
+    margin-top: 5px !important;
+    height: 77vh !important;
+}
+
+
+
+.sectab{
+    height: 71vh !important;
+}
+
+.split{
+    margin-top: -106px !important;
+}
+.PPChar{
+    /* width: 100vw !important; */
+    margin-top: -35px !important;
+    /* margin-left: -45px !important;
+    margin-right: -105px !important; */
+ 
+}
+
+.sapUxAPObjectPageFooter.sapMFooter-CTX.sapContrast.sapContrastPlus{
+    position:fixed !important;
+    bottom: 0 !important;
+    width: 99vw !important;
+    padding-right: -70px !important;
+}
+
+#prodSlctListCPS-cancel{
+    position:sticky !important;
+    
+}
+
+#prodSlctListIC-cancel{
+    position:sticky !important;
+    
+   
+}
+
+#prodSlctListAP-cancel{
+    position:sticky !important;
+    
+}
+
+.sapMBtnBase.sapMBtn.sapMBtnInverted{
+    margin-left:-25px !important;
+    /* margin-bottom: 60px!important; */
+}
+
+.sapMFlexBox.sapMHBox.sapMFlexBoxJustifyStart.sapMFlexBoxAlignItemsStretch.sapMFlexBoxWrapNoWrap.sapMFlexBoxAlignContentStretch.sapMFlexBoxBGTransparent.sapMFlexItem{
+    width: 300px !important;
+}
+
+#idSaveBtn{
+    position:absolute !important;
+    border-top-left-radius: 0rem !important;
+    /* display: flex !important; */
+    margin-top: 10%!important;
+}
+.go{
+    margin-left:-100px !important;
+    padding:0px 15px 2px !important;
+    margin:0px !important;
+    
+}
+
+.sapMFlexBox.sapMHBox.sapMFlexBoxJustifyStart.sapMFlexBoxAlignItemsStretch.sapMFlexBoxWrapNoWrap.sapMFlexBoxAlignContentStretch.sapMFlexBoxBGTransparent.sapMFlexItem {
+    width: 130px !important;
+}
+div[class*="sapUiRespGridSpan"] {
+    float: left;
+    padding: -10% !important;
+    min-height: 1px;
+}
+.sapUiRespGrid.sapUiRespGridHSpace1 {
+    padding: 0 0.20rem !important;
+}
+.sapMIBar.sapMTBInactive.sapMTB.sapMTBNewFlex.sapMTBStandard.sapMTB-Auto-CTX.sapMOTB.footer.sapMIBar-CTX.sapMFooter-CTX.sapContrast.sapContrastPlus{
+    padding-left: -50%!important;
+    /* margin-bottom: 3%!important; */
+}
+.div[class="sapUiRespGridSpanXL4.sapUiRespGridSpanL4.sapUiRespGridSpanM6.sapUiRespGridSpanS12"]{
+     width : "20px"!important;
+     padding-inline-start: 0% !important;
+}
+.div[class="sapMFlexItemAlignAuto.sapMFlexBoxBGTransparent.sapMFlexItem"]{
+    margin-inline-start: 0%!important;
+}
+.div[class="sapUiRespGrid.sapUiRespGridHSpace1.sapUiRespGridVSpace1.sapUiRespGridMedia-Std-Tablet"]{
+   position: absolute!important;
+   margin-right: 30px!important;
+}
+.div[class="ui-helper-clearfix.sapUxAPObjectPageHeaderDetails.sapUxAPObjectPageHeaderDetailsDesign-Light.sapContrastPlus"]
+{
+    margin-left: 10px!important;
+}
+/* .VBoxWidth{
+    margin-left: 10px!important;
+} */
+
+.class2{
+    width :"200px"!important;
+}
+.div[class="sapMFlexBoxFit.sapMFlexBox.sapMHBox.sapMFlexBoxJustifyStart.sapMFlexBoxAlignItemsStretch.sapMFlexBoxWrapNoWrap.sapMFlexBoxAlignContentStretch.sapMFlexBoxBGTransparent"]{
+    margin-left: auto!important;
+}
+.sapMBtnInner.sapMBtnHoverable.sapMFocusable.sapMBtnText.sapMBtnEmphasized{
+    margin-bottom: 100px!important;
+    /* margin-left: 60px!important; */
+    /* margin-right: 60px!important; */
+    display: flex!important;
+}
+/* .sapMBtnContent{
+    margin-top: 40px!important;
+} */
+
+div#__section0 {
+    /* top: initial; */
+    margin-top: -64px;
+}
+div#container-vcpapp\.vcpcharacteristicsapps---Home--classSearch {
+    margin-right: 30px;
+}
+
+.reset2{
+    padding-left: 45px !important;
+}
+.downExcel{
+    padding-right: 30px !important;
+}
+
+.configLabel {
+    margin-top: 0.3rem;
+    margin-left: 0.5rem;
+    width: 10rem;
+    /* font-size: medium; */
+}
+
+.configInput {
+    width: 340px;
+}
+
+.container {
+    background-color: #ffffff;
+    /* padding: 20px; */
+    border-radius: 8px;
+
+    margin-top: 3%;
+    margin-left: 12%;
+    /* width: 25%;
+    color: #556b82; */
+    font-size: .875rem;
+    font-family: "72", "72full", Arial, Helvetica, sans-serif;
+    font-weight: normal;
+
+}
+
+.stickyToolbar {
+    position: sticky; /* Make the toolbar sticky */
+    top: 0;           /* Stick to the top of the view */
+    z-index: 10;      /* Ensure it stays above other content */
+    background-color: white; /* Optional: Background to avoid overlap issues */
+    box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.2); /* Optional: Shadow for visibility */
+}
+
+

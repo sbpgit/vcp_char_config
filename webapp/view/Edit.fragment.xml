@@ -1,0 +1,24 @@
+<core:FragmentDefinition xmlns="sap.m"
+    xmlns:core="sap.ui.core">
+    <Dialog contentWidth="30%" title="Create Group Name">
+        <VBox class="container">
+            <HBox>
+                <Label text="Group Name :" class="configLabel" />
+                <Input id="oEdit" width="140px" required="true" />
+            </HBox>
+            <HBox>
+                <Label text="Weightage :" class="configLabel" />
+                <Input id="owedit" width="140px" required="true" type="Number" />
+            </HBox>
+            <OverflowToolbar style="Clear">
+                <ToolbarSpacer ></ToolbarSpacer>
+                <Button text="Cancel" type="Default" press="onGCancel" />
+                <ToolbarSeparator visible="false"></ToolbarSeparator>
+                <Button text="Create" type="Default" press="onGroupEdit" />
+            </OverflowToolbar>
+            <!-- <HBox justifyContent="Center">
+           
+            </HBox> -->
+        </VBox>
+    </Dialog>
+</core:FragmentDefinition>

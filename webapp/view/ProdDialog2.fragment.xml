@@ -1,0 +1,7 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core">
+	<SelectDialog id="prodSlctListAP" title="Products" rememberSelections="false" search="handleSearch3" liveChange="handleSearch3"
+		confirm="handleSelection3" cancel="handleClose3"  contentWidth="320px" items="{path: '/aResults3', sorter: { path: 'PRODUCT_ID' }}" 
+        selectionChange="handleProdChange" growing="true" >		
+		<StandardListItem title="{PRODUCT_ID}" description="{PROD_DESC}" type="Active"/>
+	</SelectDialog>
+</core:FragmentDefinition>

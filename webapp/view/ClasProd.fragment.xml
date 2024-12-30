@@ -1,0 +1,6 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core">
+	<SelectDialog id="idClasProd" title="Products"  liveChange="handleSearchforClasProd"  confirm="handleSelectionForProdClas" initialFocus="List" cancel="handleClose"  contentWidth="250px" items="{/aItems}" 
+        growing="true">
+		<StandardListItem title="{PRODUCT_ID}" description="{PROD_DESC}" type="Active"/>
+	</SelectDialog>
+</core:FragmentDefinition>
