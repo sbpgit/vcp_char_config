@@ -562,6 +562,7 @@ sap.ui.define([
 
             oGroupView: function () {
                 that.oGroupNames = [];
+                var UidFilModel = new sap.ui.model.json.JSONModel();
                 UidFilModel.setData({
                     groupresults: that.oGroupNames
                 });
