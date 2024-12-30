@@ -121,6 +121,7 @@ sap.ui.define([
                 this.oProdList = this._oCore.byId(
                     this._valueHelpDialogProd.getId() + "-list"
                 );
+                that.oGModel.setProperty("/refresh", "");
                 that.oGroupView()
                 //   sap.ui.core.BusyIndicator.show();
                 // this.getModel("BModel").read("/getProdPredCheck", {
@@ -171,7 +172,7 @@ sap.ui.define([
                             that.loadIbpClassCharacteristics()
 
                             // PartialProductCharacteristics value help data
-     // commented  26-12-24         //     that.oPartialProdChar();
+                           that.oPartialProdChar();
                             //  sap.ui.core.BusyIndicator.hide();
 
                         },
@@ -359,14 +360,14 @@ sap.ui.define([
 
                 //Loading Characteristic Prioritization data
                 else if (sKey === "CharacteristicPriority") {
+                    // if(that.oGModel.getProperty("/refresh") === "X"){
+                    //     that.oGroupView();
+                    // }
                     that.sKey = sKey;
                     that.byId("idReset").setVisible(false);
                     if (cProd !== "") {
                         that.onGetData();
-                        setTimeout(function(){
-                            // that.onPrimarySearch();
-                        },1000)
-                        
+                       
                     }
 
                 }
@@ -436,7 +437,8 @@ sap.ui.define([
                             customerGroupData: customerGroupData
                         },
                         success: function (oData) {
-                            sap.m.MessageToast.show("Succesfully Updated")
+                            sap.m.MessageToast.show("Succesfully Updated");
+                            that.oGModel.setProperty("/refresh", "X");
                           //  that.onAfterRendering();
                             that.oGroupView()
                             that.onGCancel();
@@ -478,7 +480,8 @@ sap.ui.define([
                             customerGroupData: customerGroupData
                         },
                         success: function (oData) {
-                            sap.m.MessageToast.show("Succesfully created")
+                            sap.m.MessageToast.show("Succesfully created");
+                            that.oGModel.setProperty("/refresh", "X");
                             that.oGroupView()
                            // that.onAfterRendering();
                             that.onGCancel();
@@ -511,7 +514,8 @@ sap.ui.define([
                                     customerGroupData: customerGroupData
                                 },
                                 success: function (oData) {
-                                    sap.m.MessageToast.show("Group Deleted Succesfully.")
+                                    sap.m.MessageToast.show("Group Deleted Succesfully.");
+                                    that.oGModel.setProperty("/refresh", "X");
                                     that.oGroupView();
                                  //   that.onAfterRendering();
                                 },
@@ -557,6 +561,13 @@ sap.ui.define([
             },
 
             oGroupView: function () {
+                that.oGroupNames = [];
+                UidFilModel.setData({
+                    groupresults: that.oGroupNames
+                });
+
+                that.byId("SelectOption").setModel(UidFilModel);
+                
                 that.getOwnerComponent().getModel("BModel").read("/getCharacteristicGroups", {
                     success: function (oData) {
                         // oData.results.forEach((x, index) => {
@@ -681,6 +692,7 @@ sap.ui.define([
                                 results: that.finalpriData,
                             });
                             that.PrimarylistModel.setSizeLimit(5000);
+                            that.oPList.setModel(null);
                             that.oPList.setModel(that.PrimarylistModel);
                             // var obj = {
                             //     GROUP_NAME : "",
@@ -711,7 +723,7 @@ sap.ui.define([
                                 }
 
                             }
-                            that.onPrimarySearch();
+               
                         },
                         error: function (oData, error) {
                             sap.ui.core.BusyIndicator.hide();
@@ -736,6 +748,7 @@ sap.ui.define([
                 that.PrimarylistModel.setData({
                     results: temp,
                 });
+                that.oPList.setModel(null);
                 that.oPList.setModel(that.PrimarylistModel);
 
                 if (oSelection) {
