@@ -14,26 +14,29 @@
     xmlns:core="sap.ui.core"
     xmlns:m="sap.m" displayBlock="true">
     <Page id="page">
-        <headerContent>
-            <Bar>
+        <headerContent >
+    
+            <Bar >
                 <contentLeft>
-                    <HBox>
-                        <!-- <Label text="Configurable Product :" required="true" class="sapUiSmallMarginEnd"/> -->
-                        <Input id="idCommon" width="250px" placeholder="Configurable Product" class="sapUiMediumMarginBeginEnd" showValueHelp="true" valueHelpOnly="true" valueHelpRequest="ValueHelpForProdClas" />
+                    <HBox  >
+                        <Label text="Configurable Product :" required="true" class="sapUiTinyMarginEnd"/>
+                        <Input id="idCommon" width="250px" placeholder="Configurable Product" showValueHelp="true" valueHelpOnly="true" valueHelpRequest="ValueHelpForProdClas" />
                     </HBox>
-                    <HBox>
-                        <Button id="idData" text="Go" type="Emphasized" press="onGo"  class="sapUiMediumMarginBeginEnd" />
+                    <HBox  >
+                        <Button id="idData" text="Go" type="Emphasized" press="onGo"   />
                         <Button id="idReset" text="Reset" type="Emphasized" press="onResetPress" class="sapUiTinyMarginBeginEnd" />
                     </HBox>
+                    <Text class="sapUiLargeMarginBottom"></Text>
                 </contentLeft>
             </Bar>
+     
         </headerContent>
         <content>
             <IconTabBar id="idIconTabBarFiori2" stretchContentHeight="true" class="sapUiResponsiveContentPadding" select="onTabSelect">
                 <items>
 
                     <!-- <Class IBP Characteristics> -->
-                    <IconTabFilter text="SCM Relavent Class" key="ClassIBP">
+                    <IconTabFilter text="SCM Relevant Class" key="ClassIBP">
                         <content>
                             <Page showHeader="false" showFooter="true">
                                 <content>
@@ -41,12 +44,12 @@
                                         <headerToolbar>
                                             <Toolbar>
                                                 <content>
-                                                    <SearchField id="classSearch" liveChange="handleSearch2" width="250px" placeholder="Class Name/ Class Desc" />
+                                                    <SearchField id="classSearch" liveChange="handleSearch2"  placeholder="Class Name/ Class Desc" />
                                                     <!-- <Input id="idProdClas" width="250px" placeholder="Product" showValueHelp="true" valueHelpOnly="true" valueHelpRequest="ValueHelpForProdClas"/> -->
                                                     <!-- <Button id="idClr" type="Emphasized" class="reset2" text="Reset" press="onClearReset"></Button> -->
                                                     <ToolbarSpacer />
                                                     <Button text="{i18n>downloadTemp}" class="downExcel" press="oDownloadClassesData" type="Ghost"></Button>
-                                                    <u:FileUploader id="FileUploaderId" sameFilenameAllowed="true" buttonText="Browse" iconOnly="false" buttonOnly="true" visible="true" icon="sap-icon://upload" iconFirst="true" style="Emphasized" change="uploadData" />
+                                                    <u:FileUploader id="FileUploaderId" sameFilenameAllowed="true" buttonText="Upload" iconOnly="false" buttonOnly="true" visible="true" icon="sap-icon://upload" iconFirst="true" style="Emphasized" change="uploadData" />
                                                 </content>
                                             </Toolbar>
                                         </headerToolbar>
@@ -98,7 +101,7 @@
                                 <Button text="Group Maintenance" class="right-button" type="Default" press="onGroupMaintenance" />
                             </HBox> -->
                             <Toolbar>
-                                <SearchField liveChange="onGroupSearch" placeholder="Group Name" width="70%" id="groupSearch" />
+                                <SearchField liveChange="onGroupSearch"  placeholder="Group Name" id="groupSearch" />
                                 <ToolbarSpacer ></ToolbarSpacer>
                                 <Button text="Group Maintenance" icon = "sap-icon://add-equipment" class="right-button" type="Default" press="onGroupMaintenance" />
                             </Toolbar>
@@ -140,7 +143,7 @@
                         <Page showHeader="false">
                             <content>
                                 <Toolbar class="stickyToolbar">
-                                    <SearchField liveChange="onPrimarySearch" placeholder="Characteristics Name" width="70%" id="idPrimarySearch" />
+                                    <SearchField liveChange="onPrimarySearch" placeholder="Characteristics Name"  id="idPrimarySearch" />
                                     <ToolbarSpacer ></ToolbarSpacer>
                                     <Button id="idReset2" icon="sap-icon://synchronize" type="Emphasized" press="onReset1" />
                                 </Toolbar>
@@ -190,7 +193,6 @@
                                                     </HBox>
                                                 </HBox>
 
-
                                                 <Text text="{CHAR_TYPE}" visible="false"/>
                                             </cells>
                                         </ColumnListItem>
@@ -201,8 +203,8 @@
                                 <OverflowToolbar >
                                     <Text id="idText" text="Please click on update button to update the Primary Characteristics" visible="false" />
                                     <ToolbarSpacer />
-                                    <Button id="idSave" text="Save" type="Emphasized" press="oAllSave" class="sapUiLargeMarginEnd" />
-                                    <Button id="idUpdate2" icon="sap-icon://cancel-maintenance"  text="Update Primary Char." type="Emphasized" press="onPressUpdate" />
+                                    <Button id="idSave" text="Save" type="Emphasized" press="oAllSave"  />
+                                    <Button id="idUpdate2" icon="sap-icon://cancel-maintenance" enabled="true" text="Update Primary Char." type="Emphasized" press="onPressUpdate" />
 
                                 </OverflowToolbar>
                             </footer>
@@ -237,7 +239,7 @@
                                             <headerToolbar>
                                                 <Toolbar class="stickyToolbar">
                                                     <content>
-                                                        <SearchField id="idSearch" width="70%" liveChange="onSearch" placeholder="Characteristic Name" />
+                                                        <SearchField id="idSearch"  liveChange="onSearch" placeholder="Characteristic Name" />
                                                         <ToolbarSpacer />
                                                         <Button id="idShowSelected" text="Show Selected" press="handleShowSelect" />
                                                     </content>
@@ -293,7 +295,7 @@
                                     </layoutData>
                                     <content>
                                         <Toolbar>
-                                            <SearchField liveChange="onPrimarySearch2" placeholder="Characteristics Name" width="100%" id="idPrimarySearch2" />
+                                            <SearchField liveChange="onPrimarySearch2" placeholder="Characteristics Name" id="idPrimarySearch2" />
                                         </Toolbar>
                                         <Table id="Primarytable2" mode="SingleSelectMaster" items="{ path: '/results2'}">
                                             <columns>

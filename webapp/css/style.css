@@ -62,11 +62,20 @@
     position:sticky !important;
     
 }
-
-.sapMBtnBase.sapMBtn.sapMBtnInverted{
-    margin-left:-25px !important;
-    /* margin-bottom: 60px!important; */
+.sapUiTinyMarginEnd{
+    margin-left:25px !important
 }
+.sapUiResponsiveContentPadding{
+    margin-top: 5px !important;
+}
+/* .sapUiLargeMarginEnd{
+    margin-left:50px !important
+} */
+
+/* .sapMBtnBase.sapMBtn.sapMBtnInverted{
+    margin-left:-25px !important; 
+    margin-bottom: 60px!important;
+} */
 
 .sapMFlexBox.sapMHBox.sapMFlexBoxJustifyStart.sapMFlexBoxAlignItemsStretch.sapMFlexBoxWrapNoWrap.sapMFlexBoxAlignContentStretch.sapMFlexBoxBGTransparent.sapMFlexItem{
     width: 300px !important;
