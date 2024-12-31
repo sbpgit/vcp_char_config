@@ -49,6 +49,7 @@
           "icon": "sap-icon://developer-settings",
           "action": "display",
           "title": "{{flpTitle}}",
+          "subTitle": "{{flpSubtitle}}",
           "signature": {
             "parameters": {},
             "additionalParameters": "allowed"

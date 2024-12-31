@@ -816,7 +816,7 @@ sap.ui.define([
                     Data.push(oCheckbox);
 
                     that.oSeq = Data;
-                    that.oPosition = oCheckbox.SEQUENCE 
+                    that.oPosition = oCheckbox.SEQUENCE - 1
 
                 }
               
@@ -852,9 +852,17 @@ sap.ui.define([
                         }
 
                     }
-                    if (that.oPosition !== undefined) {
-                        that.byId("Primarytable").setSelectedItem(that.byId("Primarytable").getItems()[that.oPosition], true);
+                    // if (that.oPosition !== undefined) {
+                    //     that.byId("Primarytable").setSelectedItem(that.byId("Primarytable").getItems()[that.oPosition], true);
+                    // }
+                }
+
+                for (var i=0; i<items.length; i++){
+                    if( items[i].getCells()[i].CHAR_NUM === oCheckbox.CHAR_NUM){
+                     //   items[i].setSelectedItem(true)
+                        that.byId("Primarytable").setSelected(that.byId("Primarytable").getItems()[i], true);
                     }
+
                 }
 
 

@@ -201,8 +201,8 @@
                                 <OverflowToolbar >
                                     <Text id="idText" text="Please click on update button to update the Primary Characteristics" visible="false" />
                                     <ToolbarSpacer />
-                                    <Button id="idSave" text="Save" type="Emphasized" press="oAllSave" />
-                                    <Button id="idUpdate2" icon="sap-icon://cancel-maintenance" enabled="false" text="Update Primary Char." type="Emphasized" press="onPressUpdate" />
+                                    <Button id="idSave" text="Save" type="Emphasized" press="oAllSave" class="sapUiLargeMarginEnd" />
+                                    <Button id="idUpdate2" icon="sap-icon://cancel-maintenance"  text="Update Primary Char." type="Emphasized" press="onPressUpdate" />
 
                                 </OverflowToolbar>
                             </footer>
