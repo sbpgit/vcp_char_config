@@ -15,7 +15,6 @@
     xmlns:m="sap.m" displayBlock="true">
     <Page id="page">
         <headerContent >
-    
             <Bar >
                 <contentLeft>
                     <HBox  >
@@ -23,13 +22,13 @@
                         <Input id="idCommon" width="250px" placeholder="Configurable Product" showValueHelp="true" valueHelpOnly="true" valueHelpRequest="ValueHelpForProdClas" />
                     </HBox>
                     <HBox  >
-                        <Button id="idData" text="Go" type="Emphasized" press="onGo"   />
+                        <Button id="idData" text="Go" type="Emphasized" press="onGo" />
                         <Button id="idReset" text="Reset" type="Emphasized" press="onResetPress" class="sapUiTinyMarginBeginEnd" />
                     </HBox>
                     <Text class="sapUiLargeMarginBottom"></Text>
                 </contentLeft>
             </Bar>
-     
+
         </headerContent>
         <content>
             <IconTabBar id="idIconTabBarFiori2" stretchContentHeight="true" class="sapUiResponsiveContentPadding" select="onTabSelect">
@@ -44,7 +43,7 @@
                                         <headerToolbar>
                                             <Toolbar>
                                                 <content>
-                                                    <SearchField id="classSearch" liveChange="handleSearch2"  placeholder="Class Name/ Class Desc" />
+                                                    <SearchField id="classSearch" liveChange="handleSearch2" placeholder="Class Name/ Class Desc" />
                                                     <!-- <Input id="idProdClas" width="250px" placeholder="Product" showValueHelp="true" valueHelpOnly="true" valueHelpRequest="ValueHelpForProdClas"/> -->
                                                     <!-- <Button id="idClr" type="Emphasized" class="reset2" text="Reset" press="onClearReset"></Button> -->
                                                     <ToolbarSpacer />
@@ -78,7 +77,7 @@
                                                     <Text text="{CLASS_NAME}" />
                                                     <Text text="{CLASS_DESC}" />
                                                     <Text text="{CLASS_TYPE}" />
-                                                    <CheckBox selected="{IBPCHAR_CHK}"  select="onClsSelect"/>
+                                                    <CheckBox selected="{IBPCHAR_CHK}" select="onClsSelect"/>
                                                 </cells>
                                             </ColumnListItem>
                                         </items>
@@ -100,11 +99,20 @@
                             <!-- <HBox justifyContent="End">
                                 <Button text="Group Maintenance" class="right-button" type="Default" press="onGroupMaintenance" />
                             </HBox> -->
-                            <Toolbar>
-                                <SearchField liveChange="onGroupSearch"  placeholder="Group Name" id="groupSearch" />
+                            <Toolbar class="stickyToolbar">
+                                <SearchField liveChange="onGroupSearch" placeholder="Group Name" id="groupSearch" />
                                 <ToolbarSpacer ></ToolbarSpacer>
+                                <Button text="{i18n>downloadTemp}" class="downExcel" press="oGroupDownload" type="Ghost"></Button>
+                                <u:FileUploader id="oGroupPrior" sameFilenameAllowed="true" buttonText="Upload" iconOnly="false" buttonOnly="true" 
+                                visible="true" icon="sap-icon://upload" iconFirst="true" style="Emphasized" change="oGroupUpload" />
+
                                 <Button text="Group Maintenance" icon = "sap-icon://add-equipment" class="right-button" type="Default" press="onGroupMaintenance" />
                             </Toolbar>
+                            <!-- <Toolbar>
+                                <SearchField liveChange="onGroupSearch" placeholder="Group Name" id="groupSearch" />
+                                <ToolbarSpacer ></ToolbarSpacer>
+                                <Button text="Group Maintenance" icon = "sap-icon://add-equipment" class="right-button" type="Default" press="onGroupMaintenance" />
+                            </Toolbar> -->
                             <Table id="Group" mode="SingleSelectMaster" items="{ path: '/results',sorter:{path:'WEIGHTAGE'}}">
                                 <columns>
                                     <Column>
@@ -127,9 +135,9 @@
                                             <Text text="{GROUP_NAME}" />
                                             <!-- <Text text="{WEIGHTAGE}" /> -->
                                             <Text text = "{WEIGHTAGE}" />
-                                            <HBox justifyContent="Center" >
-                                                <Button icon="sap-icon://edit" class="sapUiSmallMarginEnd" type="Default" press="onGroupEdit"  ></Button>
-                                                <Button icon="sap-icon://delete" class="right-button" type="Default" press="onGroupDelete" ></Button>
+                                            <HBox justifyContent="Center">
+                                                <Button icon="sap-icon://edit" class="sapUiSmallMarginEnd" type="Default" press="onGroupEdit"></Button>
+                                                <Button icon="sap-icon://delete" class="right-button" type="Default" press="onGroupDelete"></Button>
                                             </HBox>
                                         </cells>
                                     </ColumnListItem>
@@ -143,9 +151,12 @@
                         <Page showHeader="false">
                             <content>
                                 <Toolbar class="stickyToolbar">
-                                    <SearchField liveChange="onPrimarySearch" placeholder="Characteristics Name"  id="idPrimarySearch" />
+                                    <SearchField liveChange="onPrimarySearch" placeholder="Characteristics Name" id="idPrimarySearch" />
                                     <ToolbarSpacer ></ToolbarSpacer>
-                                    <Button id="idReset2" icon="sap-icon://synchronize" type="Emphasized" press="onReset1" />
+                                    <Button text="{i18n>downloadTemp}" class="downExcel" press="oCharPrioritizDownload" type="Ghost"></Button>
+                                    <u:FileUploader id="idoCharPrioritiz" sameFilenameAllowed="true" buttonText="Upload" iconOnly="false" buttonOnly="true" visible="true" icon="sap-icon://upload" iconFirst="true" style="Emphasized" change="oCharPrioritiz" />
+                                    <!-- <Button id="idReset2" icon="sap-icon://synchronize" type="Emphasized" press="onReset1" /> -->
+                                    <Button id="idReset2" icon="sap-icon://reset" iconFirst="true" text="Reset" tooltip="It will Reload All Characteristics" type="Emphasized" press="onReset1" />
                                 </Toolbar>
                                 <!-- Added a container to control table scrolling -->
                                 <!-- <VBox height="100%" fitContainer="true"> -->
@@ -180,15 +191,13 @@
                                                 <Text text="{CHAR_NAME}" />
                                                 <Text text="{CHAR_DESC}" />
 
-                                                <HBox width="70%">
+                                                <HBox>
                                                     <CheckBox selected="{= ${CHAR_TYPE} === 'P' ? true : false }" select="onSectoPrim" />
                                                     <!-- <CheckBox selected="{CHAR_TYPE}" select="onSectoPrim" /> -->
                                                     <HBox visible = "{= ${CHAR_TYPE} === 'P' ? true : false }">
-                                                        <Select change="oItemChange"  forceSelection="false" id="SelectOption" items="{ path: '/groupresults', sorter:{path:'WEIGHTAGE', descending:true},templateShareable: true}">
-                                                            <!-- <core:Item key="{GROUP_NAME}"
-                                                                        text="{= ${GROUP_NAME} + ' - ' + ${WEIGHTAGE} }"/> -->
-                                                                         <core:Item key="{GROUP_NAME}"
-                                                                        text="{= ${GROUP_NAME} === '' ?  ${WEIGHTAGE} : ${GROUP_NAME} + ' - ' + ${WEIGHTAGE}  }"/>
+                                                        <Select change ="oItemChange" forceSelection="false" id="SelectOption" items="{ path: '/groupresults', sorter:{path:'WEIGHTAGE', descending:true},templateShareable: true}">
+                                                            <!-- <core:Item key="{GROUP_NAME}" text="{= ${GROUP_NAME} + ' - ' + ${WEIGHTAGE} }"/> -->
+                                                            <core:Item key="{GROUP_NAME}" text="{= ${GROUP_NAME} === '' ?  ${WEIGHTAGE} : ${GROUP_NAME} + ' - ' + ${WEIGHTAGE}  }"/>
                                                         </Select>
                                                     </HBox>
                                                 </HBox>
@@ -203,8 +212,8 @@
                                 <OverflowToolbar >
                                     <Text id="idText" text="Please click on update button to update the Primary Characteristics" visible="false" />
                                     <ToolbarSpacer />
-                                    <Button id="idSave" text="Save" type="Emphasized" press="oAllSave"  />
-                                    <Button id="idUpdate2" icon="sap-icon://cancel-maintenance" enabled="true" text="Update Primary Char." type="Emphasized" press="onPressUpdate" />
+                                    <!-- <Button id="idSave" text="oAllSave" type="Emphasized" press="oAllSave" /> -->
+                                    <Button id="idUpdate2" icon="sap-icon://cancel-maintenance" enabled="true" text="Update" type="Emphasized" press="oAllSave" />
 
                                 </OverflowToolbar>
                             </footer>
@@ -214,78 +223,251 @@
                     <!-- <Partial Products Characteristics> -->
                     <IconTabFilter text="Partial Products Characteristics" key="PartialProducts">
                         <content>
-                            <f2:DynamicPage>
-                                <!-- <f2:header>
-                                    <f2:DynamicPageHeader>
-                                        <filterbar:FilterBar showClearOnFB="true" clear="onResetPress" search="onGetData3" showFilterConfiguration="false" useToolbar="false">
-                                            <filterbar:filterGroupItems>
-                                                <filterbar:FilterGroupItem groupName="group1" name="search" visibleInFilterBar="true">
-                                                    <filterbar:control>
-                                                        <SearchField id="idSearch" width="300px" liveChange="onSearch" placeholder="Characteristic Name" />
-                                                    </filterbar:control>
-                                                </filterbar:FilterGroupItem> -->
-                                <!-- <filterbar:FilterGroupItem groupName="group1" name="cp" visibleInFilterBar="true" label="Configurable Produc">
-                                                    <filterbar:control>
-                                                        <Input id="prodInput4" width="330px" placeholder="Configurable Product" valueHelpRequest="handleValueHelp3" valueHelpOnly="true" showValueHelp="true"/>
-                                                    </filterbar:control>
-                                                </filterbar:FilterGroupItem> -->
-                                <!-- </filterbar:filterGroupItems>
-                                        </filterbar:FilterBar>
-                                    </f2:DynamicPageHeader>
-                                </f2:header> -->
-                                <f2:content>
-                                    <Page showFooter="true" showHeader="false">
-                                        <Table id="prodList" width="100%" items="{path: '/results'}" sticky="ColumnHeaders" mode="MultiSelect" selectionChange="onTableItemsSelect" growingScrollToLoad="true" growing="true" growingThreshold="100" updateFinished="onTableScroll">
-                                            <headerToolbar>
-                                                <Toolbar class="stickyToolbar">
-                                                    <content>
-                                                        <SearchField id="idSearch"  liveChange="onSearch" placeholder="Characteristic Name" />
-                                                        <ToolbarSpacer />
-                                                        <Button id="idShowSelected" text="Show Selected" press="handleShowSelect" />
-                                                    </content>
-                                                </Toolbar>
-                                            </headerToolbar>
-                                            <columns>
-                                                <Column hAlign="Left" vAlign="Middle">
-                                                    <Text text="Characteristic Name" />
-                                                </Column>
-                                                <Column hAlign="Left" vAlign="Middle" visible="false">
-                                                    <Text text="Characteristic Value" />
-                                                </Column>
-                                                <Column hAlign="Left" vAlign="Middle" visible="false">
-                                                    <Text text="Characteristic Number" />
-                                                </Column>
-                                                <Column hAlign="Left" vAlign="Middle">
-                                                    <Text text="Class Name" />
-                                                </Column>
-                                            </columns>
-                                            <items>
-                                                <ColumnListItem id="_IDGenColumnListItem1">
-                                                    <cells>
-                                                        <ObjectIdentifier title="{CHAR_DESC}" text="{CHAR_NAME}" />
-                                                        <ObjectIdentifier title="{CHAR_VALUE}" text="{CHARVAL_DESC}" />
-                                                        <ObjectIdentifier title="{CHAR_NUM}" text="{CHARVAL_NUM}" />
-                                                        <ObjectIdentifier title="{CLASS_DESC}" text="{CLASS_NAME}" />
-                                                        <Text text="{CLASS_NUM}" />
-                                                    </cells>
-                                                </ColumnListItem>
-                                            </items>
-                                        </Table>
-                                        <footer>
-                                            <OverflowToolbar>
+                            <!-- <f2:DynamicPage>
+                              
+                                <f2:content> -->
+                            <Page showFooter="true" showHeader="false">
+                                <Table id="prodList" items="{path: '/results'}" sticky="ColumnHeaders" mode="MultiSelect" selectionChange="onTableItemsSelect" growingScrollToLoad="true" growing="true" growingThreshold="100" updateFinished="onTableScroll">
+                                    <headerToolbar>
+                                        <Toolbar class="stickyToolbar">
+                                            <content>
+                                                <SearchField id="idSearch" liveChange="onSearch" placeholder="Characteristic Name" />
                                                 <ToolbarSpacer />
-                                                <Button id="idSaveBtn" text="Save" type="Emphasized" press="onSaveChar" enabled="true" />
-                                            </OverflowToolbar>
-                                        </footer>
-                                    </Page>
-                                </f2:content>
-                            </f2:DynamicPage>
+                                                <Button id="idShowSelected" text="Show Selected" press="handleShowSelect" />
+                                            </content>
+                                        </Toolbar>
+                                    </headerToolbar>
+                                    <columns>
+                                        <Column hAlign="Left" vAlign="Middle">
+                                            <Text text="Characteristic Name" />
+                                        </Column>
+                                        <Column hAlign="Left" vAlign="Middle" visible="false">
+                                            <Text text="Characteristic Value" />
+                                        </Column>
+                                        <Column hAlign="Left" vAlign="Middle" visible="false">
+                                            <Text text="Characteristic Number" />
+                                        </Column>
+                                        <Column hAlign="Left" vAlign="Middle">
+                                            <Text text="Class Name" />
+                                        </Column>
+                                    </columns>
+                                    <items>
+                                        <ColumnListItem id="_IDGenColumnListItem1">
+                                            <cells>
+                                                <ObjectIdentifier title="{CHAR_DESC}" text="{CHAR_NAME}" />
+                                                <ObjectIdentifier title="{CHAR_VALUE}" text="{CHARVAL_DESC}" />
+                                                <ObjectIdentifier title="{CHAR_NUM}" text="{CHARVAL_NUM}" />
+                                                <ObjectIdentifier title="{CLASS_DESC}" text="{CLASS_NAME}" />
+                                                <Text text="{CLASS_NUM}" />
+                                            </cells>
+                                        </ColumnListItem>
+                                    </items>
+                                </Table>
+                                <footer>
+                                    <OverflowToolbar>
+                                        <ToolbarSpacer />
+                                        <Button id="idSaveBtn" text="Save" type="Emphasized" press="onSaveChar" enabled="true" />
+                                    </OverflowToolbar>
+                                </footer>
+                            </Page>
+                            <!-- </f2:content>
+                            </f2:DynamicPage> -->
                         </content>
                     </IconTabFilter>
 
                     <!-- <IBP Attributes> -->
                     <IconTabFilter text="IBP Attributes" key="IBPAttributes">
-                        <!-- <ScrollContainer horizontal="false" vertical="false" height="100%" width="100%"> -->
+
+                        <content>
+                            <Page showFooter="true" showHeader="false">
+                                <Toolbar>
+                                    <SearchField liveChange="onPrimarySearch2" placeholder="Characteristics Name" id="idPrimarySearch2" />
+                                </Toolbar>
+                                <Table id="Primarytable2" mode="SingleSelectMaster" items="{ path: '/results2'}">
+                                    <columns>
+                                        <Column visible="false">
+                                            <Text text="{i18n>charno2}" />
+                                        </Column>
+                                        <Column >
+                                            <Text text="{i18n>charname2}" />
+                                        </Column>
+                                        <Column >
+                                            <Text text="{i18n>chardesc2}" />
+                                        </Column>
+                                        <Column>
+                                            <Text text="IBP Relevant / All Characteristics" />
+                                        </Column>
+                                    </columns>
+                                    <dragDropConfig>
+                                        <dnd:DragInfo groupName="selected2available" sourceAggregation="items" />
+                                        <dnd:DropInfo groupName="available2selected" targetAggregation="items" dropPosition="Between" drop="onDropSelectedProductsTable" />
+                                        <dnd:DragDropInfo sourceAggregation="items" targetAggregation="items" dropPosition="Between" drop="onDropSelectedProductsTable" />
+                                    </dragDropConfig>
+                                    <items>
+                                        <ColumnListItem>
+                                            <cells>
+                                                <Text text="{CHAR_NUM}" />
+                                                <Text text="{CHAR_NAME}" />
+                                                <Text text="{CHAR_DESC}" />
+                                                <CheckBox selected="{= ${CHAR_TYPE} === 'P' ? true : false }" select="onIBPatbs_Checkbox"/>
+                                            </cells>
+                                        </ColumnListItem>
+                                    </items>
+                                </Table>
+                                <footer>
+                                    <OverflowToolbar class="footer">
+                                        <ToolbarSpacer />
+                                        <Button id="idUpdate3" visible="false" icon="sap-icon://cancel-maintenance" text="Update Char." type="Emphasized" press="onPressUpdate" />
+                                        <Button id="idReset3" icon="sap-icon://repost" text="Reload Char." type="Emphasized" press="onReset" />
+                                    </OverflowToolbar>
+                                </footer>
+
+                            </Page>
+                            <!-- <Page title="{i18n>sCharTitle2}" titleAlignment="Center" showFooter="true">
+                                <layoutData>
+                                    <l:SplitterLayoutData resizable="false" size="50%" />
+                                </layoutData>
+                                <Toolbar>
+                                    <SearchField id="searchField2" width="100%" placeholder="Characteristics Name" enableSuggestions="true" liveChange="onCharSearch2" suggestionItems="{ path: '/results2'}">
+                                        <SuggestionItem text="{Char}" key="{Char}" />
+                                    </SearchField>
+                                </Toolbar>
+                                <Table id="Secondarytable2" mode="SingleSelectMaster" items="{ path: '/results2'}" itemPress="handleSelection">
+                                    <columns>
+                                        <Column hAlign="Center" visible="false">
+                                            <Text text="{i18n>charno2}" />
+                                        </Column>
+                                        <Column hAlign="Center">
+                                            <Text text="{i18n>charname2}" />
+                                        </Column>
+                                        <Column hAlign="Center" visible="false">
+                                            <Text text="{i18n>seq2}" />
+                                        </Column>
+                                        <Column hAlign="Center">
+                                            <Text text="{i18n>chardesc2}" />
+                                        </Column>
+                                    </columns>
+                                    <dragDropConfig>
+                                        <dnd:DragInfo groupName="selected2available" sourceAggregation="items" />
+                                        <dnd:DropInfo groupName="available2selected" targetAggregation="items" dropPosition="Between" drop="onDropSelectedProductsTable" />
+                                        <dnd:DragDropInfo sourceAggregation="items" targetAggregation="items" dropPosition="Between" drop="onDropSelectedProductsTable" />
+                                    </dragDropConfig>
+                                    <items>
+                                        <ColumnListItem type="Active">
+                                            <cells>
+                                                <Text text="{CHAR_NUM}" />
+                                                <Text text="{CHAR_NAME}" />
+                                                <Text text="{SEQUENCE}" />
+                                                <Text text="{CHAR_DESC}" />
+                                            </cells>
+                                        </ColumnListItem>
+                                    </items>
+                                </Table>
+                                <footer>
+                                    <OverflowToolbar class="footer">
+                                        <ToolbarSpacer />
+                                        <Button id="idUpdate3" visible="false" icon="sap-icon://cancel-maintenance" text="Update Char." type="Emphasized" press="onPressUpdate" />
+                                        <Button id="idReset3" icon="sap-icon://repost" text="Reload Char." type="Emphasized" press="onReset" />
+                                    </OverflowToolbar>
+                                </footer>
+                            </Page> -->
+
+
+                            <!-- <l:Splitter id="homeScrSplitter2" orientation="Horizontal" height="500px" width="100%">
+                                <Page title="{i18n>pcharTitle2}" titleAlignment="Center">
+                                    <layoutData>
+                                        <l:SplitterLayoutData resizable="false" size="50%" />
+                                    </layoutData>
+                                    <content>
+                                        <Toolbar>
+                                            <SearchField liveChange="onPrimarySearch2" placeholder="Characteristics Name" id="idPrimarySearch2" />
+                                        </Toolbar>
+                                        <Table id="Primarytable2" mode="SingleSelectMaster" items="{ path: '/results2'}">
+                                            <columns>
+                                                <Column hAlign="Center" visible="false">
+                                                    <Text text="{i18n>charno2}" />
+                                                </Column>
+                                                <Column hAlign="Center">
+                                                    <Text text="{i18n>charname2}" />
+                                                </Column>
+                                                <Column hAlign="Center">
+                                                    <Text text="{i18n>chardesc2}" />
+                                                </Column>
+                                            </columns>
+                                            <dragDropConfig>
+                                                <dnd:DragInfo groupName="selected2available" sourceAggregation="items" />
+                                                <dnd:DropInfo groupName="available2selected" targetAggregation="items" dropPosition="Between" drop="onDropSelectedProductsTable" />
+                                                <dnd:DragDropInfo sourceAggregation="items" targetAggregation="items" dropPosition="Between" drop="onDropSelectedProductsTable" />
+                                            </dragDropConfig>
+                                            <items>
+                                                <ColumnListItem>
+                                                    <cells>
+                                                        <Text text="{CHAR_NUM}" />
+                                                        <Text text="{CHAR_NAME}" />
+                                                        <Text text="{CHAR_DESC}" />
+                                                    </cells>
+                                                </ColumnListItem>
+                                            </items>
+                                        </Table>
+                                    </content>
+                                </Page>
+                                <Page title="{i18n>sCharTitle2}" titleAlignment="Center" showFooter="true">
+                                    <layoutData>
+                                        <l:SplitterLayoutData resizable="false" size="50%" />
+                                    </layoutData>
+                                    <Toolbar>
+                                        <SearchField id="searchField2" width="100%" placeholder="Characteristics Name" enableSuggestions="true" liveChange="onCharSearch2" suggestionItems="{ path: '/results2'}">
+                                            <SuggestionItem text="{Char}" key="{Char}" />
+                                        </SearchField>
+                                    </Toolbar>
+                                    <Table id="Secondarytable2" mode="SingleSelectMaster" items="{ path: '/results2'}" itemPress="handleSelection">
+                                        <columns>
+                                            <Column hAlign="Center" visible="false">
+                                                <Text text="{i18n>charno2}" />
+                                            </Column>
+                                            <Column hAlign="Center">
+                                                <Text text="{i18n>charname2}" />
+                                            </Column>
+                                            <Column hAlign="Center" visible="false">
+                                                <Text text="{i18n>seq2}" />
+                                            </Column>
+                                            <Column hAlign="Center">
+                                                <Text text="{i18n>chardesc2}" />
+                                            </Column>
+                                        </columns>
+                                        <dragDropConfig>
+                                            <dnd:DragInfo groupName="selected2available" sourceAggregation="items" />
+                                            <dnd:DropInfo groupName="available2selected" targetAggregation="items" dropPosition="Between" drop="onDropSelectedProductsTable" />
+                                            <dnd:DragDropInfo sourceAggregation="items" targetAggregation="items" dropPosition="Between" drop="onDropSelectedProductsTable" />
+                                        </dragDropConfig>
+                                        <items>
+                                            <ColumnListItem type="Active">
+                                                <cells>
+                                                    <Text text="{CHAR_NUM}" />
+                                                    <Text text="{CHAR_NAME}" />
+                                                    <Text text="{SEQUENCE}" />
+                                                    <Text text="{CHAR_DESC}" />
+                                                </cells>
+                                            </ColumnListItem>
+                                        </items>
+                                    </Table>
+                                    <footer>
+                                        <OverflowToolbar class="footer">
+                                            <ToolbarSpacer />
+                                            <Button id="idUpdate3" visible="false" icon="sap-icon://cancel-maintenance" text="Update Char." type="Emphasized" press="onPressUpdate" />
+                                            <Button id="idReset3" icon="sap-icon://repost" text="Reload Char." type="Emphasized" press="onReset" />
+                                        </OverflowToolbar>
+                                    </footer>
+                                </Page>
+                            </l:Splitter> -->
+                        </content>
+
+                    </IconTabFilter>
+
+
+                    <!-- <IBP Attributes> -->
+                    <!-- <IconTabFilter text="IBP Attributes" key="IBPAttributes">
+                        
                         <content>
 
                             <l:Splitter id="homeScrSplitter2" orientation="Horizontal" height="500px" width="100%">
@@ -376,9 +558,7 @@
                                 </Page>
                             </l:Splitter>
                         </content>
-
-                        <!-- </ScrollContainer> -->
-                    </IconTabFilter>
+                    </IconTabFilter> -->
                 </items>
             </IconTabBar>
         </content>
