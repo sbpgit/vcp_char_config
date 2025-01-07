@@ -2,6 +2,10 @@
     xmlns:core="sap.ui.core">
     <Dialog contentWidth="30%" id = "oDlg" title="Create Group Name">
         <VBox class="container">
+          <HBox>
+                <Label text="Product :" class="configLabel" />
+                <Input id="oProduct" width="140px" required="true" editable="false" />
+            </HBox>
             <HBox>
                 <Label text="Group Name :" class="configLabel" />
                 <Input id="oGroupName" width="140px" required="true" />
