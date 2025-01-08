@@ -97,7 +97,8 @@
                                         </MenuButton>
 
                                         <ToolbarSpacer/>
-                                        <Button id="idupdate" type='Ghost' text="Update" press="onClassUpdate" />
+                                        <Button id="idupdate" type='Emphasized' icon="sap-icon://cancel-maintenance" text="Update" press="onClassUpdate" />
+                                       
 
                                     </OverflowToolbar>
                                 </footer>

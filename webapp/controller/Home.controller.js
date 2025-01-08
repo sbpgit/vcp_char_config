@@ -1924,7 +1924,6 @@ sap.ui.define([
                 sap.ui.core.BusyIndicator.show({
                     text: "Processing data, please wait..."
                 });
-                //  this.getModel("BModel").read("/getPriSecChar", {
                 this.getModel("BModel").callFunction("/getSecondaryChar", {
                     method: "GET",
                     urlParameters: {
@@ -1942,23 +1941,19 @@ sap.ui.define([
                           //  accumulatedData = oData.results
                             var liLoc = [];
                             // Check if all requests are complete
-                            if (accumulatedData.length != sProd.length) {
+                            if (accumulatedData.length == sProd.length) {
 
                                 for (let i = 0; i < accumulatedData.length; i++) {
                                     for (let n = 0; n < accumulatedData[i].results.length; n++) {
                                         liLoc = liLoc.concat(accumulatedData[i].results[n]);
                                     }
                                 }
-                                // sap.ui.core.BusyIndicator.show(0, {
-                                //     text: `Processing ${liLoc} products...`
-                                // });
-
+                            
                                 that.oApData = liLoc
                                 sap.ui.core.BusyIndicator.hide();
 
                                 var exportToExcel = function () {
                                     var aCols = [
-                                        //  { label: 'DEMAND_LOC', property: 'DEMAND_DESC', width: 30 },
                                         { label: 'PRODUCT_ID', property: 'PRODUCT_ID', width: 30 },
                                         { label: 'CHAR_NAME', property: 'CHAR_NAME', width: 30 },
                                         { label: 'CHAR_DESC', property: 'CHAR_DESC', width: 30 },
