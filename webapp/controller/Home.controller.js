@@ -1734,9 +1734,10 @@ sap.ui.define([
             // Download functionality for Characteristic Prioritization tab
             oCharPrioritizDownload: function () {
                 var topCount = that.oGModel.getProperty("/MaxCount");
-                if (that.byId("idCommon").getValue() === "") {
+                that.oLocList = sap.ui.getCore().byId("LocSlctListCPS");
+
+                if (!that.oLocList.getModel()) {
                     that._valueHelpDialogLoc.open();
-                    that.oLocList = sap.ui.getCore().byId("LocSlctListCPS");
                     that.oLocList.setNoDataText("...Loading");
                     that.oLocList.setBusy(true);
                     this.getModel("BModel").read("/getfactorylocdesc", {
@@ -1768,7 +1769,7 @@ sap.ui.define([
                     });
                 } else {
                     that._valueHelpDialogLoc.open();
-                    that.oLocList.setModel(new JSONModel([]));
+                    // that.oLocList.setModel(new JSONModel([]));
                 }
             },
 
@@ -1787,7 +1788,6 @@ sap.ui.define([
                         that.oLop = that.oLop.filter(item1 =>
                             !that.oUniq.some(item2 => item2.PRODUCT_ID === item1.PRODUCT_ID)
                         );
-                        debugger;
                         if (that.oLop.length !== 0) {
                             that.onGetDataExcelDown()
                         } else {
@@ -1941,7 +1941,7 @@ sap.ui.define([
                           //  accumulatedData = oData.results
                             var liLoc = [];
                             // Check if all requests are complete
-                            if (accumulatedData.length == sProd.length) {
+                            if (accumulatedData.length != sProd.length) {
 
                                 for (let i = 0; i < accumulatedData.length; i++) {
                                     for (let n = 0; n < accumulatedData[i].results.length; n++) {
