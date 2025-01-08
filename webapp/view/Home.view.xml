@@ -97,7 +97,7 @@
                                         </MenuButton>
 
                                         <ToolbarSpacer/>
-                                        <Button id="idupdate" type='Ghost' text="Update IBP Char" press="onClassUpdate" />
+                                        <Button id="idupdate" type='Ghost' text="Update" press="onClassUpdate" />
 
                                     </OverflowToolbar>
                                 </footer>

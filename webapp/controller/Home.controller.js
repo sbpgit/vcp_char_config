@@ -1878,6 +1878,11 @@ sap.ui.define([
             // },
 
             oGroupDownload: function () {
+                var oGProduct = that.byId("idCommon").getValue();
+                if(!oGProduct){
+                    MessageToast.show("Select product for downlaod")
+                    return false
+                }
                 var exportToExcel = function () {
                     var aCols = [
                         { label: 'PRODUCT_ID', property: 'PRODUCT_ID', width: 30 },
@@ -1927,15 +1932,17 @@ sap.ui.define([
                         PRODUCT_ID: oProds
                     },
                     success: function (oData) {
+                        sap.ui.core.BusyIndicator.hide();
                         if (oData.results.length === 0) {
                             sap.m.MessageToast.show("All Products for the selected Location have Unique ID's")
                             sap.ui.core.BusyIndicator.hide();
                         } else {
                             // Concatenate the new data into accumulatedData
                             accumulatedData.push(oData);
+                          //  accumulatedData = oData.results
                             var liLoc = [];
                             // Check if all requests are complete
-                            if (accumulatedData.length == sProd.length) {
+                            if (accumulatedData.length != sProd.length) {
 
                                 for (let i = 0; i < accumulatedData.length; i++) {
                                     for (let n = 0; n < accumulatedData[i].results.length; n++) {
@@ -5064,9 +5071,6 @@ sap.ui.define([
                     },
                 });
             },
-
-
-
 
 
 
