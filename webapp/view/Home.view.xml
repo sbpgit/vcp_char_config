@@ -68,7 +68,7 @@
                                                 <Text text="Class Type" />
                                             </Column>
                                             <Column hAlign="Left" vAlign="Middle">
-                                                <Text text="IBP Char." />
+                                                <Text text="SCM Char." />
                                             </Column>
                                         </columns>
                                         <items>
