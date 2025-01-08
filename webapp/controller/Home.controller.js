@@ -1993,6 +1993,81 @@ sap.ui.define([
 
             },
 
+            // onGetDataExcelDown: function () {
+            //     const sProd = that.oLop.map(product => product.PRODUCT_ID); // Collect all PRODUCT_IDs
+            //     const oProds = sProd.length === 1 ? sProd[0] : JSON.stringify(sProd); // Handle single or multiple products
+            //     let accumulatedData = []; // Array to store fetched data
+            //     let liLoc = []; // Array to store combined results
+            
+            //     if (sProd.length > 0) {
+            //         sap.ui.core.BusyIndicator.show({
+            //             text: "Processing data, please wait..."
+            //         });
+            
+            //         this.getModel("BModel").callFunction("/getSecondaryChar", {
+            //             method: "GET",
+            //             urlParameters: {
+            //                 FLAG: "D",
+            //                 PRODUCT_ID: oProds
+            //             },
+            //             success: function (oData) {
+            //                 sap.ui.core.BusyIndicator.hide();
+            
+            //                 if (!oData.results || oData.results.length === 0) {
+            //                     sap.m.MessageToast.show("All Products for the selected Location have Unique IDs");
+            //                     return;
+            //                 }
+            
+            //                 // Accumulate the fetched data
+            //                 accumulatedData = oData.results;
+            
+            //                 // Combine all results into liLoc
+            //                 accumulatedData.forEach(item => {
+            //                     liLoc = liLoc.concat(item);
+            //                 });
+            
+            //                 // Assign the combined data to that.oApData
+            //                 that.oApData = liLoc;
+            
+            //                 // Export the data to Excel
+            //                 var exportToExcel = function () {
+            //                     const aCols = [
+            //                         { label: 'PRODUCT_ID', property: 'PRODUCT_ID', width: 30 },
+            //                         { label: 'CHAR_NAME', property: 'CHAR_NAME', width: 30 },
+            //                         { label: 'CHAR_DESC', property: 'CHAR_DESC', width: 30 },
+            //                         { label: 'CHAR_NUM', property: 'CHAR_NUM', width: 30 },
+            //                         { label: 'CHAR_TYPE', property: 'CHAR_TYPE', width: 30 },
+            //                         { label: 'SEQUENCE', property: 'SEQUENCE', width: 30 }
+            //                     ];
+            
+            //                     const oSettings = {
+            //                         workbook: {
+            //                             columns: aCols,
+            //                         },
+            //                         dataSource: that.oApData,
+            //                         fileName: that.oSelect + ' Characteristic Prioritization.xlsx',
+            //                         worker: true
+            //                     };
+            
+            //                     const oSheet = new sap.ui.export.Spreadsheet(oSettings);
+            //                     oSheet.build()
+            //                         .then(() => sap.m.MessageToast.show('Successfully Downloaded'))
+            //                         .finally(() => oSheet.destroy());
+            //                 };
+            
+            //                 exportToExcel();
+            //             },
+            //             error: function () {
+            //                 sap.ui.core.BusyIndicator.hide();
+            //                 sap.m.MessageToast.show("Error occurred while fetching data.");
+            //             }
+            //         });
+            //     } else {
+            //         sap.m.MessageToast.show("Please select a Product");
+            //     }
+            // },
+            
+
 
             oCharPrioritizDownload1: function () {
                 // var oPrimarytable = that.byId("Primarytable").getModel().getData().results,
@@ -2742,7 +2817,30 @@ sap.ui.define([
                             success: function (oData) {
                                 sap.m.MessageToast.show(oData.addJobCreation.jobId + ": Job Created");
                                 sap.ui.core.BusyIndicator.hide();
-                                that.onGetData()
+                                // that.onGetData()
+                                // setTimeout(function () {
+                                    // that.onGetData();
+            
+                                    that.CharPrior = [];
+                                    that.prev="";
+                                    that.getModel("BModel").read("/getCharGroupWeightage", {
+            
+                                        filters: [
+                                            new Filter("PRODUCT_ID", FilterOperator.EQ, that.byId("idCommon").getValue())
+                                        ],
+                                        sorters: [new sap.ui.model.Sorter("WEIGHTAGE", true)],
+            
+                                        success: function (oData) {
+                                            that.CharPrior = [];
+                                            that.CharPrior = oData.results;
+                                            that.onGetData();
+                                        },
+                                        error: function (oData, error) {
+                                            sap.ui.core.BusyIndicator.hide();
+                                            MessageToast.show("error");
+                                        }
+                                    })
+                                // }, 10)
                             },
                             error: function (_error) {
                                 sap.ui.core.BusyIndicator.hide();
