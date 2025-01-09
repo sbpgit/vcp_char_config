@@ -17,8 +17,8 @@
             <OverflowToolbar style="Clear">
                 <ToolbarSpacer ></ToolbarSpacer>
 
-                <Button text="Create" id="gCreate" type="Default" press="onGroupCreate" />
-                <Button text="Update" id="gEdit" visible="false" type ="Default" press="onEdit" />
+                <Button text="Create" id="gCreate" type="Emphasized" press="onGroupCreate" />
+                <Button text="Update" id="gEdit" visible="false" type ="Emphasized" press="onEdit" />
                 <ToolbarSeparator visible="false"></ToolbarSeparator>
                 <Button text="Cancel" type="Default" press="onGCancel" />
 

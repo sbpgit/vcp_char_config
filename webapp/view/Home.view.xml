@@ -39,16 +39,16 @@
                         <content>
                             <Page showHeader="false" showFooter="true">
                                 <content>
-                                 <Toolbar class="stickyToolbar">
-                                                <content>
-                                                    <SearchField id="classSearch" liveChange="handleSearch2" placeholder="Class Name/ Class Desc" />
-                                                    <!-- <Input id="idProdClas" width="250px" placeholder="Product" showValueHelp="true" valueHelpOnly="true" valueHelpRequest="ValueHelpForProdClas"/> -->
-                                                    <!-- <Button id="idClr" type="Emphasized" class="reset2" text="Reset" press="onClearReset"></Button> -->
-                                                    <!-- <ToolbarSpacer />
+                                    <Toolbar class="stickyToolbar">
+                                        <content>
+                                            <SearchField id="classSearch" liveChange="handleSearch2" placeholder="Class Name/ Class Desc" />
+                                            <!-- <Input id="idProdClas" width="250px" placeholder="Product" showValueHelp="true" valueHelpOnly="true" valueHelpRequest="ValueHelpForProdClas"/> -->
+                                            <!-- <Button id="idClr" type="Emphasized" class="reset2" text="Reset" press="onClearReset"></Button> -->
+                                            <!-- <ToolbarSpacer />
                                                     <Button text="{i18n>downloadTemp}" class="downExcel" press="oDownloadClassesData"></Button>
                                                     <u:FileUploader id="FileUploaderId" sameFilenameAllowed="true" buttonText="Upload" iconOnly="false" buttonOnly="true" visible="true" icon="sap-icon://upload" iconFirst="true" style="Emphasized" change="uploadData" /> -->
-                                                </content>
-                                            </Toolbar>
+                                        </content>
+                                    </Toolbar>
                                     <Table id="classList" items="{path: '/results'}" growingScrollToLoad="true" mode="SingleSelectMaster" sticky="ColumnHeaders" rememberSelections="false">
                                         <!-- <headerToolbar>
                                            
@@ -87,8 +87,10 @@
                                 <footer>
 
                                     <OverflowToolbar class="footer">
-                                        <u:FileUploader class="classBrowseButton" id="FileUploaderId" sameFilenameAllowed="true" iconOnly="true" buttonOnly="true" visible="true" change="uploadData" />
-                                        <MenuButton id="idMenuSCM" type="Neutral" buttonMode="Split" useDefaultActionOnly="true" class="classOverlay" defaultAction="onPressBrowse" text="Upload" icon="sap-icon://upload">
+                                        <u:FileUploader class="classBrowseButton" id="oSCMRelevent" sameFilenameAllowed="true" iconOnly="true" 
+                                        buttonOnly="true" visible="true" change="uploadData" />
+                                        <MenuButton id="idMenuSCM" type="Neutral" buttonMode="Split" useDefaultActionOnly="true" 
+                                        class="classOverlay" defaultAction="onPressBrowse" text="Upload" icon="sap-icon://upload">
                                             <menu>
                                                 <Menu>
                                                     <MenuItem text="{i18n>downloadTemp}" press="oDownloadClassesData"/>
@@ -98,7 +100,7 @@
 
                                         <ToolbarSpacer/>
                                         <Button id="idupdate" type='Emphasized' icon="sap-icon://cancel-maintenance" text="Update" press="onClassUpdate" />
-                                       
+
 
                                     </OverflowToolbar>
                                 </footer>
@@ -111,7 +113,6 @@
                         <content>
                             <Page showHeader="false" showFooter="true">
                                 <content>
-
                                     <Toolbar class="stickyToolbar">
                                         <SearchField liveChange="onGroupSearch" placeholder="Group Name" id="groupSearch" />
                                         <ToolbarSpacer ></ToolbarSpacer>
@@ -143,7 +144,7 @@
                                                     <Text text = "{WEIGHTAGE}" />
                                                     <HBox justifyContent="Center">
                                                         <Button icon="sap-icon://edit" class="sapUiSmallMarginEnd" type="Default" press="onGroupEdit"></Button>
-                                                        <Button icon="sap-icon://delete" class="right-button" type="Default" press="onGroupDelete"></Button>
+                                                        <Button icon="sap-icon://delete" class="right-button" type="Default" press="onGroupDeleteValidation"></Button>
                                                     </HBox>
                                                 </cells>
                                             </ColumnListItem>
@@ -151,41 +152,22 @@
                                     </Table>
                                 </content>
                                 <footer>
-                                    <!-- <OverflowToolbar class="footer">
-                                       
-                                       
-
-                                        <Button text="{i18n>downloadTemp}" class="downExcel" press="oGroupDownload" type="Ghost"></Button>
-                                        <u:FileUploader id="oGroupPrior" sameFilenameAllowed="true" buttonText="Upload" iconOnly="false" buttonOnly="true" visible="true" icon="sap-icon://upload" iconFirst="true" style="Emphasized" change="oGroupUpload" />
-                                        <ToolbarSpacer />
-
-                                    </OverflowToolbar> -->
-
                                     <OverflowToolbar class="footer">
-                                        <u:FileUploader class="classBrowseButton" change="oGroupUpload" id="oGroupPrior" sameFilenameAllowed="true" iconOnly="true" buttonOnly="true"
-                                         visible="true" />
-                                        <MenuButton id="idMenuGroup" type="Neutral" buttonMode="Split" useDefaultActionOnly="true" class="classOverlay" 
-                                        defaultAction="onPressBrowse" text="Upload" icon="sap-icon://upload">
+                                        <u:FileUploader class="classBrowseButton" change="oGroupUpload" id="oGroupPrior" sameFilenameAllowed="true" iconOnly="true" buttonOnly="true" visible="true" />
+                                        <MenuButton id="idMenuGroup" type="Neutral" buttonMode="Split" useDefaultActionOnly="true" class="classOverlay" defaultAction="onPressBrowse" text="Upload" icon="sap-icon://upload">
                                             <menu>
                                                 <Menu>
                                                     <MenuItem text="{i18n>downloadTemp}" press="oGroupDownload"/>
                                                 </Menu>
                                             </menu>
                                         </MenuButton>
-
                                         <ToolbarSpacer/>
-                                        <!-- <Button id="idupdate" type='Ghost' text="Update IBP Char" press="onClassUpdate" /> -->
-
                                     </OverflowToolbar>
                                 </footer>
 
                             </Page>
                         </content>
-
-
-
                     </IconTabFilter>
-
                     <!-- <Characteristic Prioritization> -->
                     <IconTabFilter text="Characteristic Prioritization" key="CharacteristicPriority">
                         <content>
@@ -276,13 +258,13 @@
                               
                                 <f2:content> -->
                             <Page showFooter="true" showHeader="false">
-                              <Toolbar class="stickyToolbar">
-                                            <content>
-                                                <SearchField id="idPartialSearch" liveChange="onSearch" placeholder="Characteristic Name" />
-                                                <ToolbarSpacer />
-                                                <Button id="idShowSelected" text="Show Selected" press="handleShowSelect" />
-                                            </content>
-                                        </Toolbar>
+                                <Toolbar class="stickyToolbar">
+                                    <content>
+                                        <SearchField id="idPartialSearch" liveChange="onSearch" placeholder="Characteristic Name" />
+                                        <ToolbarSpacer />
+                                        <Button id="idShowSelected" text="Show Selected" press="handleShowSelect" />
+                                    </content>
+                                </Toolbar>
                                 <Table id="prodList" items="{path: '/results'}" sticky="ColumnHeaders" mode="MultiSelect" selectionChange="onTableItemsSelect" growingScrollToLoad="true" growing="true" growingThreshold="100" updateFinished="onTableScroll">
                                     <!-- <headerToolbar>
                                       
@@ -313,10 +295,29 @@
                                         </ColumnListItem>
                                     </items>
                                 </Table>
-                                <footer>
+                                <!-- <footer>
                                        <OverflowToolbar class="footer">
                                         <ToolbarSpacer/>
                                        <Button id="idSaveBtn" text="Save" type="Emphasized" press="onSaveChar" enabled="true" />
+
+                                    </OverflowToolbar>
+                                </footer> -->
+
+                                <footer>
+                                    <OverflowToolbar class="footer">
+                                        <u:FileUploader class="classBrowseButton" id="idoPartialProd" sameFilenameAllowed="true" iconOnly="true" 
+                                        buttonOnly="true" visible="true" change="oPartialUpload" />
+                                        <MenuButton id="idMenuPartialProd" type="Neutral" buttonMode="Split" useDefaultActionOnly="true" 
+                                        class="classOverlay" defaultAction="onPressBrowse" text="Upload" icon="sap-icon://upload">
+                                            <menu>
+                                                <Menu>
+                                                    <MenuItem text="{i18n>downloadTemp}" press="oPartiaDownload"/>
+                                                </Menu>
+                                            </menu>
+                                        </MenuButton>
+
+                                        <ToolbarSpacer/>
+                                        <Button id="idSaveBtn" text="Save" type="Emphasized" press="onSaveChar" enabled="true" />
 
                                     </OverflowToolbar>
                                 </footer>
