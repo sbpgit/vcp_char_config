@@ -87,10 +87,8 @@
                                 <footer>
 
                                     <OverflowToolbar class="footer">
-                                        <u:FileUploader class="classBrowseButton" id="oSCMRelevent" sameFilenameAllowed="true" iconOnly="true" 
-                                        buttonOnly="true" visible="true" change="uploadData" />
-                                        <MenuButton id="idMenuSCM" type="Neutral" buttonMode="Split" useDefaultActionOnly="true" 
-                                        class="classOverlay" defaultAction="onPressBrowse" text="Upload" icon="sap-icon://upload">
+                                        <u:FileUploader class="classBrowseButton" id="oSCMRelevent" sameFilenameAllowed="true" iconOnly="true" buttonOnly="true" visible="true" change="uploadData" />
+                                        <MenuButton id="idMenuSCM" type="Neutral" buttonMode="Split" useDefaultActionOnly="true" class="classOverlay" defaultAction="onPressBrowse" text="Upload" icon="sap-icon://upload">
                                             <menu>
                                                 <Menu>
                                                     <MenuItem text="{i18n>downloadTemp}" press="oDownloadClassesData"/>
@@ -143,7 +141,7 @@
                                                     <!-- <Text text="{WEIGHTAGE}" /> -->
                                                     <Text text = "{WEIGHTAGE}" />
                                                     <HBox justifyContent="Center">
-                                                        <Button icon="sap-icon://edit" class="sapUiSmallMarginEnd" type="Default" press="onGroupEdit"></Button>
+                                                        <Button icon="sap-icon://edit" class="sapUiSmallMarginEnd" type="Default" press="onGroupEditValidation"></Button>
                                                         <Button icon="sap-icon://delete" class="right-button" type="Default" press="onGroupDeleteValidation"></Button>
                                                     </HBox>
                                                 </cells>
@@ -153,7 +151,7 @@
                                 </content>
                                 <footer>
                                     <OverflowToolbar class="footer">
-                                        <u:FileUploader class="classBrowseButton" change="oGroupUpload" id="oGroupPrior" sameFilenameAllowed="true" iconOnly="true" buttonOnly="true" visible="true" />
+                                        <u:FileUploader class="classBrowseButton" change="onGroupUploadValidation" id="oGroupPrior" sameFilenameAllowed="true" iconOnly="true" buttonOnly="true" visible="true" />
                                         <MenuButton id="idMenuGroup" type="Neutral" buttonMode="Split" useDefaultActionOnly="true" class="classOverlay" defaultAction="onPressBrowse" text="Upload" icon="sap-icon://upload">
                                             <menu>
                                                 <Menu>
@@ -305,10 +303,8 @@
 
                                 <footer>
                                     <OverflowToolbar class="footer">
-                                        <u:FileUploader class="classBrowseButton" id="idoPartialProd" sameFilenameAllowed="true" iconOnly="true" 
-                                        buttonOnly="true" visible="true" change="oPartialUpload" />
-                                        <MenuButton id="idMenuPartialProd" type="Neutral" buttonMode="Split" useDefaultActionOnly="true" 
-                                        class="classOverlay" defaultAction="onPressBrowse" text="Upload" icon="sap-icon://upload">
+                                        <u:FileUploader class="classBrowseButton" id="idoPartialProd" sameFilenameAllowed="true" iconOnly="true" buttonOnly="true" visible="true" change="oPartialUpload" />
+                                        <MenuButton id="idMenuPartialProd" type="Neutral" buttonMode="Split" useDefaultActionOnly="true" class="classOverlay" defaultAction="onPressBrowse" text="Upload" icon="sap-icon://upload">
                                             <menu>
                                                 <Menu>
                                                     <MenuItem text="{i18n>downloadTemp}" press="oPartiaDownload"/>
@@ -365,11 +361,28 @@
                                         </ColumnListItem>
                                     </items>
                                 </Table>
-                                <footer>
+                                <!-- <footer>
                                     <OverflowToolbar class="footer">
                                         <ToolbarSpacer />
                                         <Button id="idUpdate3" visible="false" icon="sap-icon://cancel-maintenance" text="Update Char." type="Emphasized" press="onPressUpdate" />
                                         <Button id="idReset3" icon="sap-icon://repost" text="Reload Char." type="Emphasized" press="onReset" />
+                                    </OverflowToolbar>
+                                </footer> -->
+                                <footer>
+                                    <OverflowToolbar class="footer">
+                                        <u:FileUploader class="classBrowseButton" id="idoAttribuets" sameFilenameAllowed="true" iconOnly="true" buttonOnly="true" visible="true" change="oAttributeUpload" />
+                                        <MenuButton id="idMenuAttributes" type="Neutral" buttonMode="Split" useDefaultActionOnly="true" class="classOverlay" defaultAction="onPressBrowse" text="Upload" icon="sap-icon://upload">
+                                            <menu>
+                                                <Menu>
+                                                    <MenuItem text="{i18n>downloadTemp}" press="oAttributeDownload"/>
+                                                </Menu>
+                                            </menu>
+                                        </MenuButton>
+
+                                        <ToolbarSpacer/>
+                                        <Button id="idUpdate3" visible="false" icon="sap-icon://cancel-maintenance" text="Update Char." type="Emphasized" press="onPressUpdate" />
+                                        <Button id="idReset3" icon="sap-icon://repost" text="Reload Char." type="Emphasized" press="onReset" />
+
                                     </OverflowToolbar>
                                 </footer>
 
