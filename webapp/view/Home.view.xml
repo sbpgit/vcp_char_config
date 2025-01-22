@@ -231,7 +231,8 @@
                                 </content>
                                 <footer>
                                     <OverflowToolbar class="footer">
-                                        <u:FileUploader class="classBrowseButton" id="idoCharPrioritiz" sameFilenameAllowed="true" iconOnly="true" buttonOnly="true" visible="true" change="oCharPrioritiz" />
+                                        <u:FileUploader class="classBrowseButton" id="idoCharPrioritiz" sameFilenameAllowed="true" iconOnly="true" buttonOnly="true"
+                                         visible="true" change="oCharPrioritiz" />
                                         <MenuButton id="idMenuCharPrior" type="Neutral" buttonMode="Split" useDefaultActionOnly="true" class="classOverlay" defaultAction="onPressBrowse" text="Upload" icon="sap-icon://upload">
                                             <menu>
                                                 <Menu>
@@ -342,7 +343,7 @@
                                             <Text text="{i18n>chardesc2}" />
                                         </Column>
                                         <Column>
-                                            <Text text="IBP Relevant / All Characteristics" />
+                                            <Text text="SCM Relevant Class / All Characteristics" />
                                         </Column>
                                     </columns>
                                     <dragDropConfig>
