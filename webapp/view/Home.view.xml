@@ -326,7 +326,7 @@
                     </IconTabFilter>
 
                     <!-- <IBP Attributes> -->
-                    <IconTabFilter text="IBP Attributes" key="IBPAttributes">
+                    <IconTabFilter text="SCM IBP Attributes" key="IBPAttributes">
                         <content>
                             <Page showFooter="true" showHeader="false">
                                 <Toolbar class="stickyToolbar">
