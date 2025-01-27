@@ -174,9 +174,6 @@
                                     <Toolbar class="stickyToolbar">
                                         <SearchField liveChange="onPrimarySearch" placeholder="Characteristics Name" id="idPrimarySearch" />
                                         <ToolbarSpacer ></ToolbarSpacer>
-                                        <!-- <Button text="{i18n>downloadTemp}" class="downExcel" press="oCharPrioritizDownload" type="Ghost"></Button>
-                                    <u:FileUploader id="idoCharPrioritiz" sameFilenameAllowed="true" buttonText="Upload" iconOnly="false" buttonOnly="true" visible="true" icon="sap-icon://upload" iconFirst="true" style="Emphasized" change="oCharPrioritiz" /> -->
-                                        <!-- <Button id="idReset2" icon="sap-icon://synchronize" type="Emphasized" press="onReset1" /> -->
                                         <Button id="idReset2" icon="sap-icon://reset" iconFirst="true" text="Reset" tooltip="It will Reload All Characteristics" type="Emphasized" press="onReset1" />
                                     </Toolbar>
                                     <!-- Added a container to control table scrolling -->
@@ -231,8 +228,7 @@
                                 </content>
                                 <footer>
                                     <OverflowToolbar class="footer">
-                                        <u:FileUploader class="classBrowseButton" id="idoCharPrioritiz" sameFilenameAllowed="true" iconOnly="true" buttonOnly="true"
-                                         visible="true" change="oCharPrioritiz" />
+                                        <u:FileUploader class="classBrowseButton" id="idoCharPrioritiz" sameFilenameAllowed="true" iconOnly="true" buttonOnly="true" visible="true" change="oCharPrioritiz" />
                                         <MenuButton id="idMenuCharPrior" type="Neutral" buttonMode="Split" useDefaultActionOnly="true" class="classOverlay" defaultAction="onPressBrowse" text="Upload" icon="sap-icon://upload">
                                             <menu>
                                                 <Menu>
@@ -304,8 +300,7 @@
 
                                 <footer>
                                     <OverflowToolbar class="footer">
-                                        <u:FileUploader class="classBrowseButton" id="idoPartialProd" sameFilenameAllowed="true" iconOnly="true"
-                                         buttonOnly="true" visible="true" change="oPartialUpload" />
+                                        <u:FileUploader class="classBrowseButton" id="idoPartialProd" sameFilenameAllowed="true" iconOnly="true" buttonOnly="true" visible="true" change="oPartialUpload" />
                                         <MenuButton id="idMenuPartialProd" type="Neutral" buttonMode="Split" useDefaultActionOnly="true" class="classOverlay" defaultAction="onPressBrowse" text="Upload" icon="sap-icon://upload">
                                             <menu>
                                                 <Menu>
@@ -331,6 +326,8 @@
                             <Page showFooter="true" showHeader="false">
                                 <Toolbar class="stickyToolbar">
                                     <SearchField liveChange="onPrimarySearch2" placeholder="Characteristics Name" id="idPrimarySearch2" />
+                                    <ToolbarSpacer ></ToolbarSpacer>
+                                    <Button id="idReset3" icon="sap-icon://reset" iconFirst="true" text="Reset." type="Emphasized" press="onReset" />
                                 </Toolbar>
                                 <Table id="Primarytable2" mode="SingleSelectMaster" items="{ path: '/results2'}">
                                     <columns>
@@ -363,13 +360,7 @@
                                         </ColumnListItem>
                                     </items>
                                 </Table>
-                                <!-- <footer>
-                                    <OverflowToolbar class="footer">
-                                        <ToolbarSpacer />
-                                        <Button id="idUpdate3" visible="false" icon="sap-icon://cancel-maintenance" text="Update Char." type="Emphasized" press="onPressUpdate" />
-                                        <Button id="idReset3" icon="sap-icon://repost" text="Reload Char." type="Emphasized" press="onReset" />
-                                    </OverflowToolbar>
-                                </footer> -->
+                              
                                 <footer>
                                     <OverflowToolbar class="footer">
                                         <u:FileUploader class="classBrowseButton" id="idoAttribuets" sameFilenameAllowed="true" iconOnly="true" buttonOnly="true" visible="true" change="oAttributeUpload" />
@@ -383,7 +374,7 @@
 
                                         <ToolbarSpacer/>
                                         <Button id="idUpdate3" visible="false" icon="sap-icon://cancel-maintenance" text="Update Char." type="Emphasized" press="onPressUpdate" />
-                                        <Button id="idReset3" icon="sap-icon://repost" text="Reload Char." type="Emphasized" press="onReset" />
+                                        <!-- <Button id="idReset3" icon="sap-icon://repost" text="Reload Char." type="Emphasized" press="onReset" /> -->
 
                                     </OverflowToolbar>
                                 </footer>

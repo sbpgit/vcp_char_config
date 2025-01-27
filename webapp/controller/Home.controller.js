@@ -194,6 +194,16 @@ sap.ui.define([
                         },
                     });
                 }
+                this.getModel("BModel").read("/getCharGroupWeightage", {
+                    success: function (oData) {
+                        that.oAllPrds = oData.results
+
+                    },
+                    error: function (oData, error) {
+                        sap.ui.core.BusyIndicator.hide();
+                        MessageToast.show("error");
+                    },
+                });
             },
 
             // this function for showing table data in IBP Class Characteristic and added 30k functionality (onInit)
@@ -394,7 +404,7 @@ sap.ui.define([
                 // }
                 that.partialFlag = "X";
                 that.onGetData3();
-             
+
                 // IBP Attributes Data
                 if (that.sKey === "IBPAttributes") {
 
@@ -507,16 +517,16 @@ sap.ui.define([
                 }
                 else if (that.sKey === "CharacteristicPriority") {
 
-                    this.getModel("BModel").read("/getCharGroupWeightage", {
-                        success: function (oData) {
-                            that.oAllPrds = oData.results
+                    // this.getModel("BModel").read("/getCharGroupWeightage", {
+                    //     success: function (oData) {
+                    //         that.oAllPrds = oData.results
 
-                        },
-                        error: function (oData, error) {
-                            sap.ui.core.BusyIndicator.hide();
-                            MessageToast.show("error");
-                        },
-                    });
+                    //     },
+                    //     error: function (oData, error) {
+                    //         sap.ui.core.BusyIndicator.hide();
+                    //         MessageToast.show("error");
+                    //     },
+                    // });
 
                     if (that.byId("idCommon").getValue() != "") {
 
@@ -903,51 +913,51 @@ sap.ui.define([
                                 `Updation for this PRODUCT_ID: ${x.PRODUCT_ID}, GROUP_NAME: ${x.GROUP_NAME}, WEIGHTAGE:${x.WEIGHTAGE} already in Prioritazition`
                             );
                         })
-                        if(that.resultArray1.length >0){
-                           that.nonAssgn =  that.resultArray1.filter(ele1=>
-                                assignedGroups.some(ele2=>ele1.GROUP_NAME !== ele2.GROUP_NAME)
+                        if (that.resultArray1.length > 0) {
+                            that.nonAssgn = that.resultArray1.filter(ele1 =>
+                                assignedGroups.some(ele2 => ele1.GROUP_NAME !== ele2.GROUP_NAME)
                             )
                         }
-                           const endData = that.changes.filter(cc=>
-                                that.nonAssgn.some(dd=>cc.GROUP_NAME === dd.GROUP_NAME)
-                            )
-                        
-                            that.getOwnerComponent().getModel("BModel").callFunction("/modifyCustomerGroup", {
-                                method: "GET",
-                                urlParameters: {
-                                    Flag: "D",
-                                    customerGroupData: JSON.stringify(endData)
-                                },
-                                success: function (oData) {
-                                    that.getOwnerComponent().getModel("BModel").callFunction("/modifyCustomerGroup", {
-                                        method: "GET",
-                                        urlParameters: {
-                                            Flag: "C",
-                                            customerGroupData: JSON.stringify( that.nonAssgn)
-                                        },
-                                        success: function (oData) {
-                                            // if(validationErrors.length>0){
-                                            //     MessageBox.warning(validationErrors.join("\n") + ("\n") + ("\n") + "Remaining Data Uploaded Successfully.");
-                                            // }
-                                            MessageBox.alert("Found Duplicates / Non Integer / already Prioritized Weightages from uploaded file."
-                                                + ("\n")+" Remaining Data Uploaded Successfully")
-                                            // sap.m.MessageToast.show("Data Uploaded Succesfully");
-                                            that.oGModel.setProperty("/refresh", "X");
-                                            that.oGroupView()
-    
-    
-                                        },
-                                        error: function (oData, error) {
-                                            MessageToast.show("error");
-                                        },
-                                    });
-    
-                                },
-                                error: function (oData, error) {
-                                    MessageToast.show("error");
-                                },
-                            });
-                        
+                        const endData = that.changes.filter(cc =>
+                            that.nonAssgn.some(dd => cc.GROUP_NAME === dd.GROUP_NAME)
+                        )
+
+                        that.getOwnerComponent().getModel("BModel").callFunction("/modifyCustomerGroup", {
+                            method: "GET",
+                            urlParameters: {
+                                Flag: "D",
+                                customerGroupData: JSON.stringify(endData)
+                            },
+                            success: function (oData) {
+                                that.getOwnerComponent().getModel("BModel").callFunction("/modifyCustomerGroup", {
+                                    method: "GET",
+                                    urlParameters: {
+                                        Flag: "C",
+                                        customerGroupData: JSON.stringify(that.nonAssgn)
+                                    },
+                                    success: function (oData) {
+                                        // if(validationErrors.length>0){
+                                        //     MessageBox.warning(validationErrors.join("\n") + ("\n") + ("\n") + "Remaining Data Uploaded Successfully.");
+                                        // }
+                                        MessageBox.alert("Found Duplicates / Non Integer / already Prioritized Weightages from uploaded file."
+                                            + ("\n") + " Remaining Data Uploaded Successfully")
+                                        // sap.m.MessageToast.show("Data Uploaded Succesfully");
+                                        that.oGModel.setProperty("/refresh", "X");
+                                        that.oGroupView()
+
+
+                                    },
+                                    error: function (oData, error) {
+                                        MessageToast.show("error");
+                                    },
+                                });
+
+                            },
+                            error: function (oData, error) {
+                                MessageToast.show("error");
+                            },
+                        });
+
                         // // MessageBox.warning(validationErrors.join("\n") + ("\n") + ("\n") + "Please remove from prioritization and upload again.");
                         // MessageBox.alert("Found Duplicates or Non Integer or already Prioritized Weightages from uploaded file."
                         //     + ("\n")+" Remaining Data Uploaded Successfully")
@@ -972,7 +982,7 @@ sap.ui.define([
                                         //     MessageBox.warning(validationErrors.join("\n") + ("\n") + ("\n") + "Remaining Data Uploaded Successfully.");
                                         // }
                                         MessageBox.alert("Found Duplicates / Non Integer / already Prioritized Weightages from uploaded file."
-                                            + ("\n")+" Remaining Data Uploaded Successfully")
+                                            + ("\n") + " Remaining Data Uploaded Successfully")
                                         // sap.m.MessageToast.show("Data Uploaded Succesfully");
                                         that.oGModel.setProperty("/refresh", "X");
                                         that.oGroupView()
@@ -1964,11 +1974,11 @@ sap.ui.define([
             onSearch: function (oEvent) {
                 var sQuery = oEvent.getParameter("value") || oEvent.getParameter("newValue")
                 var sId = oEvent.getParameter("id");
-               
+
                 var oFilters = [];
                 // Check if search filter is to be applied
                 sQuery = sQuery ? sQuery.trim() : "";
-   
+
                 if (sQuery !== "") {
                     oFilters.push(
                         new Filter({
@@ -2339,6 +2349,8 @@ sap.ui.define([
                         }
                     }
                 }
+                that.oLocList = sap.ui.getCore().byId("LocSlctListCPS");
+                that.oLocList.getBinding("items").filter([]);
             },
 
 
@@ -2786,12 +2798,13 @@ sap.ui.define([
                 that.PrimarylistModel.setData({
                     results: temp,
                 });
+                that.oPList = that.byId("Primarytable");
                 that.oPList.setModel(null);
                 that.oPList.setModel(that.PrimarylistModel);
 
                 var oFileUploader = oEvent.getSource();
                 var oFile = oEvent.getParameter("files")[0];
-
+                sap.ui.core.BusyIndicator.show();
                 if (oFile) {
                     var reader = new FileReader();
 
@@ -2812,6 +2825,70 @@ sap.ui.define([
             },
 
             // old code
+            // oCharPrioritizprocessExcelData: function (aData) {
+            //     var aHeaders = aData[0];
+            //     var aRows = aData.slice(1);
+            //     var resultArray1 = [];
+            //     var productSequenceMap = {};
+
+            //     for (var i = 0; i < aRows.length; i++) {
+            //         var oObject = {};
+            //         aHeaders.forEach(function (sHeader, j) {
+            //             oObject[sHeader] = aRows[i][j];
+            //         });
+
+            //         // var hasNonEmptyValue = Object.values(oObject).some(function (value) {
+            //         //     return value !== null && value !== undefined && value !== '' ;
+            //         // });
+
+            //         var hasMandatoryFields = oObject.PRODUCT_ID && oObject.CHAR_NAME && oObject.CHAR_DESC && oObject.CHAR_NUM !== undefined;
+
+            //         var hasNonEmptyValue = Object.values(oObject).some(function (value) {
+            //             return value !== null && value !== undefined && value !== '';
+            //         });
+
+            //         // Check if mandatory fields are valid
+            //         if (!hasMandatoryFields || !hasNonEmptyValue) {
+            //             sap.m.MessageToast.show("Error: All mandatory fields must be filled with valid data.");
+            //             return false;
+            //         }
+
+            //         //  verifying CHAR_TYPE Primary(p),Secondary(s) or not..
+            //         if (hasNonEmptyValue && oObject.CHAR_TYPE && oObject.CHAR_TYPE !== 'P' && oObject.CHAR_TYPE !== 'S') {
+            //             sap.m.MessageToast.show("Error: CHAR_TYPE must be either 'Primary(p)' or 'Secondary(s)'.");
+            //             return false;
+            //         }
+
+            //         // if (hasNonEmptyValue && oObject.CHAR_NAME && oObject.CHAR_DESC && oObject.CHAR_NUM === undefined) {
+            //         //     sap.m.MessageToast.show("Error: Created Data must be valid data");
+            //         //     return false;
+            //         // }
+
+            //         // verifying if any duplicate seq found
+            //         if (hasNonEmptyValue) {
+            //             var productId = oObject.PRODUCT_ID;
+            //             var sequence = oObject.SEQUENCE;
+
+            //             if (!productSequenceMap[productId]) {
+            //                 productSequenceMap[productId] = new Set();
+            //             }
+            //             if (productSequenceMap[productId].has(sequence)) {
+            //                 sap.m.MessageToast.show("Error: Duplicate SEQUENCE value for PRODUCT_ID: " + productId);
+            //                 return false;
+            //             }
+
+            //             productSequenceMap[productId].add(sequence);
+            //             resultArray1.push(oObject);
+            //         }
+            //     }
+
+            //     that.oUploadclassData = resultArray1;
+            //     that.Product_Id = [];
+            //     // for upload used below function
+            //     that.onSaveSeq12();
+            //     return true;
+            // },
+
             oCharPrioritizprocessExcelData: function (aData) {
                 var aHeaders = aData[0];
                 var aRows = aData.slice(1);
@@ -2824,11 +2901,9 @@ sap.ui.define([
                         oObject[sHeader] = aRows[i][j];
                     });
 
-                    // var hasNonEmptyValue = Object.values(oObject).some(function (value) {
-                    //     return value !== null && value !== undefined && value !== '' ;
-                    // });
-
-                    var hasMandatoryFields = oObject.PRODUCT_ID && oObject.CHAR_NAME && oObject.CHAR_DESC && oObject.CHAR_NUM !== undefined;
+                    // checking in object all values must have valid data
+                    var hasMandatoryFields = oObject.PRODUCT_ID && oObject.CHAR_NUM && oObject.CHAR_NAME &&
+                        oObject.CHAR_DESC && oObject.CHAR_TYPE && oObject.SEQUENCE !== undefined;
 
                     var hasNonEmptyValue = Object.values(oObject).some(function (value) {
                         return value !== null && value !== undefined && value !== '';
@@ -2837,19 +2912,16 @@ sap.ui.define([
                     // Check if mandatory fields are valid
                     if (!hasMandatoryFields || !hasNonEmptyValue) {
                         sap.m.MessageToast.show("Error: All mandatory fields must be filled with valid data.");
+                        sap.ui.core.BusyIndicator.hide();
                         return false;
                     }
 
-                    //  verifying CHAR_TYPE Primary(p),Secondary(s) or not..
+                    // verifying CHAR_TYPE Primary(p), Secondary(s) or not..
                     if (hasNonEmptyValue && oObject.CHAR_TYPE && oObject.CHAR_TYPE !== 'P' && oObject.CHAR_TYPE !== 'S') {
                         sap.m.MessageToast.show("Error: CHAR_TYPE must be either 'Primary(p)' or 'Secondary(s)'.");
+                        sap.ui.core.BusyIndicator.hide();
                         return false;
                     }
-
-                    // if (hasNonEmptyValue && oObject.CHAR_NAME && oObject.CHAR_DESC && oObject.CHAR_NUM === undefined) {
-                    //     sap.m.MessageToast.show("Error: Created Data must be valid data");
-                    //     return false;
-                    // }
 
                     // verifying if any duplicate seq found
                     if (hasNonEmptyValue) {
@@ -2861,6 +2933,7 @@ sap.ui.define([
                         }
                         if (productSequenceMap[productId].has(sequence)) {
                             sap.m.MessageToast.show("Error: Duplicate SEQUENCE value for PRODUCT_ID: " + productId);
+                            sap.ui.core.BusyIndicator.hide();
                             return false;
                         }
 
@@ -2869,12 +2942,160 @@ sap.ui.define([
                     }
                 }
 
-                that.oUploadclassData = resultArray1;
-                that.Product_Id = [];
-                // for upload used below function
-                that.onSaveSeq12();
-                return true;
+                that.oUploadclassData1 = resultArray1;
+
+                var Array1 = that.prodGroups(that.oUploadclassData1); // Excel Data
+                var Array2 = that.prodGroups(that.oAllPrds);     // Overall Groups Data
+
+                // that.nonPriority = [];
+
+                const nonPrior = Array2.filter(ele =>
+                    !ele.children.some(obj =>
+                        obj.CHAR_TYPE === "P")
+
+                )
+                if (nonPrior.length > 0) {
+                    that.nonPriority = Array1.filter(obj1 =>
+                        nonPrior.some(obj2 => obj1.PRODUCT === obj2.PRODUCT)
+                    )
+                }
+
+                that.nonPriorityPriorityObj = that.nonPriority.filter(ele =>
+                    ele.children.some(obj =>
+                        obj.CHAR_TYPE === "P")
+
+                )
+                if (that.nonPriorityPriorityObj.length > 0) {
+
+                    that.oUploadclassData = [];
+                    if (that.nonPriority.length > 0) {
+                        that.nonPriority.forEach(ele => {
+                            ele.children.forEach(ele2 => {
+                                if (ele2.CHAR_TYPE === "P") {
+                                    ele2.GROUP_NAME = "";
+                                    ele2.WEIGHTAGE = 1;
+                                }
+                                else {
+                                    ele2.GROUP_NAME = "";
+                                    ele2.WEIGHTAGE = -1;
+                                }
+                            })
+                        })
+
+                        that.nonPriority.forEach(ele => {
+                            var pData = ele.children
+                                .filter((el) => el.CHAR_TYPE === "P")
+                                .sort((a, b) => a.SEQUENCE - b.SEQUENCE);
+
+
+                            var sData = ele.children
+                                .filter((el) => el.CHAR_TYPE === "S")
+                                .sort((a, b) => a.SEQUENCE - b.SEQUENCE);
+
+                            var classData = [...pData, ...sData];
+
+                            classData.forEach((item, index) => {
+                                item.SEQUENCE = index + 1;
+                            });
+                            that.oUploadclassData.push(...classData);
+
+                        })
+                    }
+
+                    if (that.oUploadclassData.length > 0) {
+
+                        that.getModel("BModel").callFunction("/changeToPrimaryNewMulti", {
+                            method: "GET",
+                            urlParameters: {
+                                CharData: JSON.stringify(that.oUploadclassData)
+                            },
+                            success: function (oData) {
+                                sap.ui.core.BusyIndicator.hide();
+                                // that.onPressUpdate();
+                                MessageBox.alert("Some Products are Already in Prioritization. Remaining Data Uploaded Successfully.")
+                            },
+                            error: function (oData) {
+                                sap.ui.core.BusyIndicator.hide();
+                                MessageToast.show("Failed to changes the update");
+                            },
+                        });
+
+                    }
+                } else {
+                    sap.ui.core.BusyIndicator.hide();
+                    MessageToast.show("There is no Prioritized Data from Uploaded file.")
+                }
             },
+            prodGroups: function (val1) {
+
+                var Array1 = [];
+                var dArray = [];
+                // var Total = 100;
+                for (let i = 0; i < val1.length; i++) {
+                    var index = dArray.indexOf(val1[i].PRODUCT_ID);
+                    if (index === -1) {
+                        val1[i].visible = false;
+                        var obj1 = {
+                            PRODUCT: val1[i].PRODUCT_ID,
+                            children: [val1[i]],
+                            visible: true
+                        }
+                        dArray.push(val1[i].PRODUCT_ID)
+                        Array1.push(obj1)
+                    }
+                    else {
+                        val1[i].visible = false;
+                        Array1[index].children.push(val1[i])
+                    }
+                }
+                return Array1;
+            },
+
+            onCancel: function () {
+                // Close the dialog
+                //this.byId("yourDialogId").close();
+                that.valueHelpClasUploadFrag.close()
+            },
+
+            onSelect: function (oEvent) {
+                if (oEvent.getSource().getSelected() === true) {
+                    const oExcel = oEvent.getSource().getBindingContext().getObject().FLAG = "E"
+                } else {
+                    const oExcel = delete (oEvent.getSource().getBindingContext().getObject().FLAG)
+                }
+            },
+
+            onProceed: function (oEvent) {
+                var oExcelData = sap.ui.getCore().byId("tree").getModel().getData()
+                var ofinalUpload = [];
+                sap.ui.getCore().byId("tree").getModel().getData().forEach(g => {
+                    if (g.FLAG) {
+                        g.children.forEach(j => {
+                            ofinalUpload.push(j);
+                        })
+                    }
+                });
+
+                //  that.oSeq = ofinalUpload
+
+                that.getModel("BModel").callFunction("/changeToPrimaryNewMulti", {
+                    method: "GET",
+                    urlParameters: {
+                        CharData: JSON.stringify(ofinalUpload)
+                    },
+                    success: function (oData) {
+                        sap.ui.core.BusyIndicator.hide();
+                        //    that.onPressUpdate();
+                    },
+                    error: function (oData) {
+                        sap.ui.core.BusyIndicator.hide();
+                        MessageToast.show("Failed to changes the update");
+                    },
+                });
+                //   that.oAllsave(); // function for Groups Up
+
+            },
+
 
 
             // oCharPrioritizprocessExcelData: function (aData) {
@@ -3217,6 +3438,8 @@ sap.ui.define([
                         that.oProdList.getBinding("items").filter([]);
                     }
                 }
+                that.oLocList = sap.ui.getCore().byId("LocSlctListCPS");
+                that.oLocList.getBinding("items").filter([]);
             },
 
             /**
@@ -3229,7 +3452,7 @@ sap.ui.define([
                     sId = oEvent.getParameter("id"),
                     oFilters = [];
                 // Check if search filter is to be applied
-                sQuery = sQuery ? sQuery.trim() : ""; FACTORY_LOC
+                sQuery = sQuery ? sQuery.trim() : "";
 
                 if (sId.includes("LocS")) {
                     if (sQuery !== "") {
@@ -3267,6 +3490,8 @@ sap.ui.define([
                     that.oProdList.getBinding("items").filter(oFilters);
                 }
             },
+
+       
 
             /**
            * This function is called when selection on dialogs list.
@@ -3915,7 +4140,7 @@ sap.ui.define([
                                     PRODUCT_ID: that.oItem,
                                     CHAR_NAME: el.CHAR_NAME,
                                     CHAR_DESC: el.CHAR_DESC,
-                                    CHAR_VAL: el.CHAR_VALUE,
+                                    CHAR_VALUE: el.CHAR_VALUE,
                                     CHARVAL_DESC: el.CHARVAL_DESC,
                                     CHAR_NUM: el.CHAR_NUM,
                                     CHARVAL_NUM: el.CHARVAL_NUM,
@@ -4101,7 +4326,7 @@ sap.ui.define([
                             }
                             else {
                                 that.loadArray = oData.results;
-                             //   that.partialProd = oData.results;
+                                //   that.partialProd = oData.results;
                                 that.productChar = oData.results;
                                 that.AvailChars = removeDuplicate(that.productChar, 'CHAR_NAME');
                                 that.oListModel.setData({ results: that.AvailChars });
@@ -4175,23 +4400,23 @@ sap.ui.define([
                                     }
                                 }
                             });
-                            if(that.partialFlag === "X"){
+                            if (that.partialFlag === "X") {
                                 // setTimeout(function () {
-                                    that.partialProd = [];
-                                    that.byId("prodList").getItems().forEach(x => {
-                                        if (x.getSelected() === true) {
-                                            x.getBindingContext().getObject().sel = true;
-                                        }
-                                        else {
-                                            x.getBindingContext().getObject().sel = false;
-                                        }
-                                        that.partialProd.push(x.getBindingContext().getObject())
-                                    })
-                                    that.partialFlag = "";
+                                that.partialProd = [];
+                                that.byId("prodList").getItems().forEach(x => {
+                                    if (x.getSelected() === true) {
+                                        x.getBindingContext().getObject().sel = true;
+                                    }
+                                    else {
+                                        x.getBindingContext().getObject().sel = false;
+                                    }
+                                    that.partialProd.push(x.getBindingContext().getObject())
+                                })
+                                that.partialFlag = "";
                                 // }, 2000);
                             }
                         }
-                        
+
                         sap.ui.core.BusyIndicator.hide();
                     }.bind(this),
                     error: function (oError) {
@@ -4246,7 +4471,7 @@ sap.ui.define([
             },
 
 
-             /* uploading functionality for Partial products */
+            /* uploading functionality for Partial products */
             oPartialUpload: function (oEvent) {
                 var oFileUploader = oEvent.getSource();
                 var oFile = oEvent.getParameter("files")[0];
@@ -4268,6 +4493,7 @@ sap.ui.define([
                 }
 
             },
+
 
             oPartialProd: function (aData) {
                 var aHeaders = aData[0];
@@ -4303,15 +4529,20 @@ sap.ui.define([
                 that.oPartialData = aRows
                 var oPartialProdData = [];
                 for (var i = 0; i < that.oPartialData.length; i++) {
+
                     var customerGrpObj =
                     {
                         "PRODUCT_ID": that.oPartialData[i][0],
                         "CHAR_NAME": that.oPartialData[i][1],
-                        "CLASS_NAME": that.oPartialData[i][2]
+                        "CLASS_NAME": that.oPartialData[i][2],
+                        "SELECTED": that.oPartialData[i][3]
                     }
                     oPartialProdData.push(customerGrpObj)
                 }
-                that.oPartUploadData = oPartialProdData
+
+                let selectedProducts = oPartialProdData.filter(item => item.SELECTED.toLowerCase() === "true");
+
+                that.oPartUploadData = selectedProducts;
 
                 var data = {
                     PRODUCT_ID: oPartialProdData[0].PRODUCT_ID
@@ -4332,9 +4563,7 @@ sap.ui.define([
                             // that.loadArray = oData.results;
                             that.partprod = oData.results;
                             that.partprod.forEach(el => {
-                                el.CHAR_VAL = el.CHAR_VALUE
 
-                                delete (el.CHAR_VALUE)
                                 delete (el.IBPCHAR_CHK)
                                 delete (el.MULTI_CHAR)
                                 delete (el.CLASS_NUM)
@@ -4344,7 +4573,7 @@ sap.ui.define([
                             that.oParti = removeDuplicate(that.partprod, 'CHAR_NAME');
 
                             let matchedData = that.oParti.filter(availChar =>
-                                oPartialProdData.some(partialData =>
+                                that.oPartUploadData.some(partialData =>
                                     availChar.PRODUCT_ID === partialData.PRODUCT_ID &&
                                     availChar.CHAR_NAME === partialData.CHAR_NAME &&
                                     availChar.CLASS_NAME === partialData.CLASS_NAME
@@ -4374,7 +4603,7 @@ sap.ui.define([
                         PRODATA: JSON.stringify(that.oFinalPartialData)
                     },
                     success: function (oData) {
-                     //   sap.ui.core.BusyIndicator.hide();
+                        //   sap.ui.core.BusyIndicator.hide();
                         that.partialFlag = "X";
                         that.onGetData3();
                         MessageToast.show("Uploaded succesfully");
@@ -4386,7 +4615,164 @@ sap.ui.define([
                     },
                 });
             },
-    
+
+            oAttributeDownload: function () {
+                that.oPList = that.byId("Primarytable2");
+                that.oAttr
+                that.ops = that.forDownattr  //that.selectedChars //that.AvailChars
+
+                that.ops.forEach(op => {
+                    const matchingAttr = that.oAttr.find(attr =>
+                        attr.PRODUCT_ID === op.PRODUCT_ID &&
+                        attr.CHAR_NAME === op.CHAR_NAME &&
+                        attr.CHAR_NUM === op.CHAR_NUM
+                    );
+
+                    if (matchingAttr) {
+                        // Assign CHAR_TYPE from that.oAttr to that.ops
+                        op.CHAR_TYPE = matchingAttr.CHAR_TYPE;
+
+                        // Add SELECTED property based on CHAR_TYPE
+                        op.SELECTED = matchingAttr.CHAR_TYPE === "P";
+                    } else {
+                        // Default CHAR_TYPE and SELECTED if no match found
+                        op.CHAR_TYPE = "S";
+                        op.SELECTED = false;
+                    }
+                });
+
+                var oGProduct = that.byId("idCommon").getValue();
+                if (!oGProduct) {
+                    MessageToast.show("Select product for downlaod")
+                    return false
+                }
+                var exportToExcel = function () {
+                    var aCols = [
+                        { label: 'PRODUCT_ID', property: 'PRODUCT_ID', width: 30 },
+                        { label: 'CHAR_NAME', property: 'CHAR_NAME', width: 30 },
+                        { label: 'CHAR_DESC', property: 'CHAR_DESC', width: 30 },
+                        { label: 'SELECTED', property: 'SELECTED', width: 30 }
+
+                    ];
+                    var oSettings = {
+                        workbook: {
+                            columns: aCols,
+                        },
+
+                        dataSource: that.ops, //sData,
+                        fileName: 'SCM IBP Attributes.xlsx',
+                        worker: true
+                    };
+
+                    var oSheet = new sap.ui.export.Spreadsheet(oSettings);
+                    oSheet.build().then(function () {
+                        sap.m.MessageToast.show('Succesfully Download');
+                    }).finally(function () {
+                        oSheet.destroy();
+                    });
+                };
+      
+                exportToExcel();
+
+            },
+
+            // oAttributeUpload: function (oEvent) {
+            //     var oFileUploader = oEvent.getSource();
+            //     var oFile = oEvent.getParameter("files")[0];
+
+            //     if (oFile) {
+            //         var reader = new FileReader();
+
+            //         reader.onload = function (e) {
+            //             var data = e.target.result;
+            //             var workbook = XLSX.read(data, { type: 'binary' });
+            //             var firstSheetName = workbook.SheetNames[0];
+            //             var worksheet = workbook.Sheets[firstSheetName];
+            //             var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+            //             // Process the JSON data
+            //             that.oSCMAttribute(jsonData);
+            //         };
+
+            //         reader.readAsBinaryString(oFile);
+            //     }
+
+            // },
+
+            // oSCMAttribute: function (aData) {
+            //     var aHeaders = aData[0];
+            //     var aRows = aData.slice(1);
+            //     var hasEmptyValue = false;
+            //     var errorMessages = [];
+
+            //     for (var i = 0; i < aRows.length; i++) {
+            //         var oObject = {};
+            //         aHeaders.forEach(function (sHeader, j) {
+            //             oObject[sHeader] = aRows[i][j];
+            //         });
+
+            //         aHeaders.forEach(function (sHeader, j) {
+            //             var value = aRows[i][j];
+            //             if (value === null || value === undefined || value === "") {
+            //                 hasEmptyValue = true;
+            //                 errorMessages.push(
+            //                     `Empty value found at Row ${i + 2}, Column: ${sHeader || `Column ${j + 1}`}`
+            //                 );
+            //                 return false;
+            //             }
+            //         });
+            //     }
+
+            //     if (hasEmptyValue) {
+            //         // Show all error messages in a consolidated manner
+            //         MessageToast.show(errorMessages.join("\n"), {
+            //             duration: 5000 // Adjust duration as needed
+            //         });
+            //     }
+
+            //     that.oSCMAttr = aRows
+            //     var oSCMProdData = [];
+            //     for (var i = 0; i < that.oSCMAttr.length; i++) {
+
+            //         var customerGrpObj =
+            //         {
+            //             "PRODUCT_ID": that.oSCMAttr[i][0],
+            //             "CHAR_NAME": that.oSCMAttr[i][1],
+            //             "CLASS_NAME": that.oSCMAttr[i][2],
+            //             "SELECTED": that.oSCMAttr[i][3]
+            //         }
+            //         oSCMProdData.push(customerGrpObj)
+            //     }
+
+            //     let oSCMatt = oSCMProdData.filter(item => item.SELECTED.toLowerCase() === "true");
+
+            //     that.oSCMatt = oSCMatt;
+            //     that.oUpload1();
+
+            
+            // },
+
+            // oUpload1: function () {
+            //     sap.ui.core.BusyIndicator.show();
+            //     this.getOwnerComponent().getModel("BModel").callFunction("/getProductCharVal", {
+            //         method: "GET",
+            //         urlParameters: {
+            //             Flag: "",
+            //             PRODATA: JSON.stringify(that.oSCMatt)
+            //         },
+            //         success: function (oData) {
+            //             //   sap.ui.core.BusyIndicator.hide();
+            //             that.partialFlag = "X";
+            //             that.onGetData3();
+            //             MessageToast.show("Uploaded succesfully");
+
+            //         },
+            //         error: function (error) {
+            //             sap.ui.core.BusyIndicator.hide();
+            //             MessageToast.show("error");
+            //         },
+            //     });
+            // },
+
             onSectoPrim: function (oEvent) {
 
                 var oSelection = oEvent.getSource().getSelected()
@@ -5068,6 +5454,7 @@ sap.ui.define([
                                 that.PrimarylistModel.setSizeLimit(5000);
                                 that.oPList.setModel(that.PrimarylistModel);
                             }
+                            sap.ui.core.BusyIndicator.hide();
                         },
                         error: function (error) {
                             sap.ui.core.BusyIndicator.hide();
