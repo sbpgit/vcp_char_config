@@ -1051,8 +1051,11 @@ sap.ui.define([
                     oWeightage = parseFloat(sap.ui.getCore().byId("oWeightage").getValue());
 
                 const results = that.gData.filter(obj1 => obj1.GROUP_NAME == oGroupName || parseFloat(obj1.WEIGHTAGE) == oWeightage)
-                if (results.length > 0 || oWeightage <= 1) {
+                if (results.length > 0) {
                     MessageBox.alert("Group Name or Weightage is already taken Choose different")
+                }
+                else if( oWeightage <= 1){
+                    MessageBox.alert("Weightage must be more than 1")
                 }
                 else {
                     var customerGroupData = JSON.stringify([
@@ -4380,6 +4383,7 @@ sap.ui.define([
 
                         that.selectedChars = oData.results;
                         let aDistinct = that.removeDuplicate(that.selectedChars, 'CHAR_NAME');
+                        that.forDownattr = aDistinct
                         var table = that.byId("prodList");
                         var tableItems = table.getItems();
 
@@ -4428,9 +4432,62 @@ sap.ui.define([
 
 
             /* Download & upload functionalities for Partial Products */
-            oPartiaDownload: function () {
-                that.AvailChars
+            // oPartiaDownload: function () {
+            //     that.AvailChars
 
+            //     var oGProduct = that.byId("idCommon").getValue();
+            //     if (!oGProduct) {
+            //         MessageToast.show("Select product for downlaod")
+            //         return false
+            //     }
+            //     var exportToExcel = function () {
+            //         var aCols = [
+            //             { label: 'PRODUCT_ID', property: 'PRODUCT_ID', width: 30 },
+            //             { label: 'CHAR_NAME', property: 'CHAR_NAME', width: 30 },
+            //             // { label: 'CHAR_DESC', property: 'CHAR_DESC', width: 30 },
+            //             // { label: 'CHAR_VALUE', property: 'CHAR_VALUE', width: 30 },
+            //             // { label: 'CHARVAL_DESC', property: 'CHARVAL_DESC', width: 30 },
+            //             // { label: 'CHAR_NUM', property: 'CHAR_NUM', width: 30 },
+            //             // { label: 'CHARVAL_NUM', property: 'CHARVAL_NUM', width: 30 },
+            //             // { label: 'CLASS_DESC', property: 'CLASS_DESC', width: 30 },
+            //             { label: 'CLASS_NAME', property: 'CLASS_NAME', width: 30 }
+
+            //         ];
+            //         var oSettings = {
+            //             workbook: {
+            //                 columns: aCols,
+            //             },
+
+            //             dataSource: that.AvailChars,
+            //             fileName: 'Partial Products.xlsx',
+            //             worker: true
+            //         };
+
+            //         var oSheet = new sap.ui.export.Spreadsheet(oSettings);
+            //         oSheet.build().then(function () {
+            //             sap.m.MessageToast.show('Succesfully Download');
+            //         }).finally(function () {
+            //             oSheet.destroy();
+            //         });
+            //     };
+            //     // Call the export function to download the Excel file
+            //     exportToExcel();
+            // },
+            
+            
+            oPartiaDownload: function () {
+
+                that.AvailChars
+                that.selectedChars
+
+                that.AvailChars.forEach(availChar => {
+                    const isSelected = that.selectedChars.some(selectedChar =>
+                        selectedChar.PRODUCT_ID === availChar.PRODUCT_ID &&
+                        selectedChar.CHAR_NAME === availChar.CHAR_NAME &&
+                        selectedChar.CLASS_NAME === availChar.CLASS_NAME
+                    );
+                    availChar.SELECTED = isSelected; // Assign true or false
+                });
                 var oGProduct = that.byId("idCommon").getValue();
                 if (!oGProduct) {
                     MessageToast.show("Select product for downlaod")
@@ -4440,13 +4497,8 @@ sap.ui.define([
                     var aCols = [
                         { label: 'PRODUCT_ID', property: 'PRODUCT_ID', width: 30 },
                         { label: 'CHAR_NAME', property: 'CHAR_NAME', width: 30 },
-                        // { label: 'CHAR_DESC', property: 'CHAR_DESC', width: 30 },
-                        // { label: 'CHAR_VALUE', property: 'CHAR_VALUE', width: 30 },
-                        // { label: 'CHARVAL_DESC', property: 'CHARVAL_DESC', width: 30 },
-                        // { label: 'CHAR_NUM', property: 'CHAR_NUM', width: 30 },
-                        // { label: 'CHARVAL_NUM', property: 'CHARVAL_NUM', width: 30 },
-                        // { label: 'CLASS_DESC', property: 'CLASS_DESC', width: 30 },
-                        { label: 'CLASS_NAME', property: 'CLASS_NAME', width: 30 }
+                        { label: 'CLASS_NAME', property: 'CLASS_NAME', width: 30 },
+                        { label: 'SELECTED', property: 'SELECTED', width: 30 }
 
                     ];
                     var oSettings = {
@@ -4469,7 +4521,6 @@ sap.ui.define([
                 // Call the export function to download the Excel file
                 exportToExcel();
             },
-
 
             /* uploading functionality for Partial products */
             oPartialUpload: function (oEvent) {
@@ -5383,6 +5434,7 @@ sap.ui.define([
                         },
                         success: function (oData) {
                             var data = oData.results;
+                            that.oAttr = data
                             if (sData && sData.length > 0) {
                                 var selectedData = [];
                                 sData.forEach(el => {
@@ -5464,46 +5516,6 @@ sap.ui.define([
                 } else {
                     MessageToast.show("Please select Product");
                 }
-            },
-
-
-
-            oAttributeDownload: function () {
-                that.oPList = that.byId("Primarytable2");
-                var sData = that.oPartialSelected //that.oPList.getItems()
-
-                var oGProduct = that.byId("idCommon").getValue();
-                if (!oGProduct) {
-                    MessageToast.show("Select product for downlaod")
-                    return false
-                }
-                var exportToExcel = function () {
-                    var aCols = [
-                        { label: 'PRODUCT_ID', property: 'PRODUCT_ID', width: 30 },
-                        { label: 'CHAR_NAME', property: 'CHAR_NAME', width: 30 },
-                        { label: 'CHAR_DESC', property: 'CHAR_DESC ', width: 30 }
-
-                    ];
-                    var oSettings = {
-                        workbook: {
-                            columns: aCols,
-                        },
-
-                        dataSource: that.ops, //sData,
-                        fileName: 'IBP Attributes.xlsx',
-                        worker: true
-                    };
-
-                    var oSheet = new sap.ui.export.Spreadsheet(oSettings);
-                    oSheet.build().then(function () {
-                        sap.m.MessageToast.show('Succesfully Download');
-                    }).finally(function () {
-                        oSheet.destroy();
-                    });
-                };
-                // Call the export function to download the Excel file
-                exportToExcel();
-
             },
 
             onIBPatbs_Checkbox: function (oEvent) {
