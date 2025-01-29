@@ -99,7 +99,6 @@
                                         <ToolbarSpacer/>
                                         <Button id="idupdate" type='Emphasized' icon="sap-icon://cancel-maintenance" text="Update" press="onClassUpdate" />
 
-
                                     </OverflowToolbar>
                                 </footer>
                             </Page>
@@ -290,17 +289,11 @@
                                         </ColumnListItem>
                                     </items>
                                 </Table>
-                                <!-- <footer>
-                                       <OverflowToolbar class="footer">
-                                        <ToolbarSpacer/>
-                                       <Button id="idSaveBtn" text="Save" type="Emphasized" press="onSaveChar" enabled="true" />
-
-                                    </OverflowToolbar>
-                                </footer> -->
 
                                 <footer>
                                     <OverflowToolbar class="footer">
-                                        <u:FileUploader class="classBrowseButton" id="idoPartialProd" sameFilenameAllowed="true" iconOnly="true" buttonOnly="true" visible="true" change="oPartialUpload" />
+                                        <u:FileUploader class="classBrowseButton" id="idoPartialProd" 
+                                        sameFilenameAllowed="true" iconOnly="true" buttonOnly="true" visible="true" change="oPartialUpload" />
                                         <MenuButton id="idMenuPartialProd" type="Neutral" buttonMode="Split" useDefaultActionOnly="true" class="classOverlay" defaultAction="onPressBrowse" text="Upload" icon="sap-icon://upload">
                                             <menu>
                                                 <Menu>
@@ -363,7 +356,8 @@
                               
                                 <footer>
                                     <OverflowToolbar class="footer">
-                                        <u:FileUploader class="classBrowseButton" id="idoAttribuets" sameFilenameAllowed="true" iconOnly="true" buttonOnly="true" visible="true" change="oAttributeUpload" />
+                                        <u:FileUploader class="classBrowseButton" id="idoAttribuets" sameFilenameAllowed="true" iconOnly="true" 
+                                        buttonOnly="true" visible="true" change="oAttributeUpload" />
                                         <MenuButton id="idMenuAttributes" type="Neutral" buttonMode="Split" useDefaultActionOnly="true" class="classOverlay" defaultAction="onPressBrowse" text="Upload" icon="sap-icon://upload">
                                             <menu>
                                                 <Menu>
