@@ -4393,6 +4393,8 @@ sap.ui.define([
                         that.selectedChars = [];
                         if (oData.results.length === 0) {
                             sap.ui.core.BusyIndicator.hide();
+                            that.partialProd = [];
+                            that.partialFlag="";
                             return;
                         }
 
