@@ -225,12 +225,15 @@ sap.ui.define([
                         } else {
                             that.skip = 0;
                             that.oclassTable = that.oclassTable.concat(oData.results);
+                            let aItems = that.removeDuplicateforProdClas(that.oclassTable, "CLASS_NAME")
                             that.byId("classSearch").setValue("")
                             var aModel = new JSONModel()
                             aModel.setData({
-                                results: that.oclassTable
+                                results: aItems
                             })
+                            aModel.setSizeLimit(aItems.length)
                             that.byId("classList").setModel(aModel)
+
                         }
                         sap.ui.core.BusyIndicator.hide();
                     },
@@ -328,21 +331,23 @@ sap.ui.define([
                 that.charPrioritize = [];
                 that.partialProd = [];
                 that.IBPAttributes = [];
+                that.releventCls = that.clsResults
+                //  that.charPrioritize = ""
 
                 //// Relevent Class Data
                 // if(that.sKey === "ClassIBP" || that.sKey === ""){
-                that.getOwnerComponent().getModel("BModel").read("/getIBPProdClass", {
-                    filters: [
-                        new Filter("PRODUCT_ID", FilterOperator.EQ, that.oItem)
-                    ],
-                    success: function (oData) {
-                        oData.results = that.removeDuplicateforProdClas(oData.results, "CLASS_NAME")
-                        that.releventCls = oData.results;
-                    },
-                    error: function (oData, error) {
-                        console.log(error)
-                    },
-                });
+                // that.getOwnerComponent().getModel("BModel").read("/getIBPProdClass", {
+                //     filters: [
+                //         new Filter("PRODUCT_ID", FilterOperator.EQ, that.oItem)
+                //     ],
+                //     success: function (oData) {
+                //         oData.results = that.removeDuplicateforProdClas(oData.results, "CLASS_NAME")
+                //         that.releventCls = oData.results;
+                //     },
+                //     error: function (oData, error) {
+                //         console.log(error)
+                //     },
+                // });
                 // }
 
                 // Groups Data
@@ -489,24 +494,31 @@ sap.ui.define([
 
             // oPening Group Fragment
             onGroupMaintenance: function (oEv) {
+                var prod = that.byId("idCommon").getValue();
+                if (prod !== "") {
 
-                if (!this.groupDialog) {
-                    this.groupDialog = sap.ui.xmlfragment(
-                        "demo.vcpcharconfig.view.Group",
-                        this
-                    );
-                    this.getView().addDependent(this.groupDialog);
+
+                    if (!this.groupDialog) {
+                        this.groupDialog = sap.ui.xmlfragment(
+                            "demo.vcpcharconfig.view.Group",
+                            this
+                        );
+                        this.getView().addDependent(this.groupDialog);
+                    }
+                    sap.ui.getCore().byId("oDlg").setTitle("Create Group Name")
+                    sap.ui.getCore().byId("gCreate").setVisible(true)
+                    sap.ui.getCore().byId("gEdit").setVisible(false)
+                    var oPrd = that.byId("idCommon").getValue();
+                    sap.ui.getCore().byId("oProduct").setValue(oPrd)
+                    sap.ui.getCore().byId("oGroupName").setValue("")
+                    sap.ui.getCore().byId("oGroupName").setEnabled(true);
+                    sap.ui.getCore().byId("oWeightage").setValue("")
+
+                    that.groupDialog.open();
                 }
-                sap.ui.getCore().byId("oDlg").setTitle("Create Group Name")
-                sap.ui.getCore().byId("gCreate").setVisible(true)
-                sap.ui.getCore().byId("gEdit").setVisible(false)
-                var oPrd = that.byId("idCommon").getValue();
-                sap.ui.getCore().byId("oProduct").setValue(oPrd)
-                sap.ui.getCore().byId("oGroupName").setValue("")
-                sap.ui.getCore().byId("oGroupName").setEnabled(true);
-                sap.ui.getCore().byId("oWeightage").setValue("")
-
-                that.groupDialog.open();
+                else {
+                    MessageToast.show("Please Select Product.")
+                }
             },
 
             onGo: function () {
@@ -1050,6 +1062,9 @@ sap.ui.define([
                 var oProd = that.byId("idCommon").getValue();
                 var oGroupName = sap.ui.getCore().byId("oGroupName").getValue(),
                     oWeightage = parseFloat(sap.ui.getCore().byId("oWeightage").getValue());
+                // if(that.gData.length === 0){
+
+                // }
 
                 const results = that.gData.filter(obj1 => obj1.GROUP_NAME == oGroupName || parseFloat(obj1.WEIGHTAGE) == oWeightage)
                 if (results.length > 0) {
@@ -1975,14 +1990,40 @@ sap.ui.define([
 
 
             // Partial Products Characteristics search
+            // onSearch: function (oEvent) {
+            //     var sQuery = oEvent.getParameter("value") || oEvent.getParameter("newValue")
+            //     var sId = oEvent.getParameter("id");
+
+            //     var oFilters = [];
+            //     // Check if search filter is to be applied
+            //     sQuery = sQuery ? sQuery.trim() : "";
+
+            //     if (sQuery !== "") {
+            //         oFilters.push(
+            //             new Filter({
+            //                 filters: [
+            //                     new Filter("CHAR_NAME", FilterOperator.Contains, sQuery),
+            //                     new Filter("CHAR_DESC", FilterOperator.Contains, sQuery)
+            //                 ],
+            //                 and: false,
+            //             })
+            //         );
+            //     }
+            //     that.byId("prodList").getBinding("items").filter(oFilters);
+
+            // },
+
             onSearch: function (oEvent) {
-                var sQuery = oEvent.getParameter("value") || oEvent.getParameter("newValue")
-                var sId = oEvent.getParameter("id");
-
+                var sQuery = oEvent.getParameter("value") || oEvent.getParameter("newValue");
+                var oTable = this.byId("prodList");
+                var oBinding = oTable.getBinding("items");
                 var oFilters = [];
-                // Check if search filter is to be applied
-                sQuery = sQuery ? sQuery.trim() : "";
 
+                // Store the selected items' CHAR_NAME values before filtering
+                var aSelectedContexts = oTable.getSelectedItems().map(item => item.getBindingContext().getObject().CHAR_NAME);
+
+                // Apply filter if query is not empty
+                sQuery = sQuery ? sQuery.trim() : "";
                 if (sQuery !== "") {
                     oFilters.push(
                         new Filter({
@@ -1990,13 +2031,29 @@ sap.ui.define([
                                 new Filter("CHAR_NAME", FilterOperator.Contains, sQuery),
                                 new Filter("CHAR_DESC", FilterOperator.Contains, sQuery)
                             ],
-                            and: false,
+                            and: false
                         })
                     );
                 }
-                that.byId("prodList").getBinding("items").filter(oFilters);
+
+                oBinding.filter(oFilters);
+                var tableItems = oTable.getItems();
+
+                aSelectedContexts.forEach(function (item) {
+                    tableItems.forEach(function (tableItem) {
+                        var context = tableItem.getBindingContext();
+                        if (context) {
+                            var rowData = context.getProperty();
+                            if (rowData.CHAR_NAME == item) {
+                                tableItem.setSelected(true);  // Select the matching row
+                            }
+                        }
+                    });
+                });
+
 
             },
+
 
             // Grouping Tab search
             onGroupSearch: function (oEvent) {
@@ -4394,7 +4451,7 @@ sap.ui.define([
                         if (oData.results.length === 0) {
                             sap.ui.core.BusyIndicator.hide();
                             that.partialProd = [];
-                            that.partialFlag="";
+                            that.partialFlag = "";
                             return;
                         }
 
@@ -6432,30 +6489,32 @@ sap.ui.define([
                 }
 
                 that.byId("idCommon").setValue(that.oItem)
-                that.getOwnerComponent().getModel("BModel").read("/getIBPProdClass", {
-                    filters: [
-                        new Filter("PRODUCT_ID", FilterOperator.EQ, that.oItem)
-                    ],
-                    success: function (oData) {
-                        oData.results = that.removeDuplicateforProdClas(oData.results, "CLASS_NAME")
-                        that.oModel.setData({
-                            results: oData.results,
-                        });
-                        var temp = JSON.stringify(oData.results)
-                        that.clsResults = JSON.parse(temp);
-                        that.byId("classList").setModel(that.oModel);
-                        that.validation();
-                    },
-                    error: function (oData, error) {
-                        console.log(error)
-                    },
-                });
+                that.loadIbp();
+                // that.getOwnerComponent().getModel("BModel").read("/getIBPProdClass", {
+                //     filters: [
+                //         new Filter("PRODUCT_ID", FilterOperator.EQ, that.oItem)
+                //     ],
+                //     success: function (oData) {
+                //         oData.results = that.removeDuplicateforProdClas(oData.results, "CLASS_NAME")
+                //         that.oModel.setData({
+                //             results: oData.results,
+                //         });
+                //         var temp = JSON.stringify(oData.results)
+                //         that.clsResults = JSON.parse(temp);
+                //         that.byId("classList").setModel(that.oModel);
+                //         that.validation();
+                //     },
+                //     error: function (oData, error) {
+                //         console.log(error)
+                //     },
+                // });
             },
 
             loadIbp: function (oEvent) {
-
                 var oItem = that.byId("idCommon").getValue(),
                     oFilters = [];
+                that.ocIbp = [];
+                var topCount = that.oGModel.getProperty("/MaxCount");
                 if (oItem) {
                     var filter = new Filter("PRODUCT_ID", FilterOperator.EQ, oItem);
                     oFilters.push(filter);
@@ -6463,18 +6522,76 @@ sap.ui.define([
 
                 that.getOwnerComponent().getModel("BModel").read("/getIBPProdClass", {
                     filters: oFilters,
+                    urlParameters: {
+                        "$skip": that.skip,
+                        "$top": topCount
+                    },
                     success: function (oData) {
-                        oData.results = that.removeDuplicateforProdClas(oData.results, "CLASS_NAME")
-                        that.oModel.setData({
-                            results: oData.results,
-                        });
-                        var temp = JSON.stringify(oData.results)
-                        that.clsResults = JSON.parse(temp);
-                        that.byId("classList").setModel(that.oModel);
+                        if (topCount == oData.results.length) {
+                            that.skip += parseInt(topCount);
+                            that.ocIbp = that.ocIbp.concat(oData.results);
+                            that.loadIbp();
+                        } else {
+                            that.skip = 0;
+                            that.ocIbp = that.ocIbp.concat(oData.results);
+
+                            that.byId("classSearch").setValue("")
+                            oData.results = that.removeDuplicateforProdClas(that.ocIbp, "CLASS_NAME")
+                            that.oModel.setData({
+                                results: oData.results,
+                            });
+                            that.oModel.setSizeLimit(oData.results.length)
+                            var temp = JSON.stringify(oData.results)
+                            that.clsResults = JSON.parse(temp);
+                            that.byId("classList").setModel(that.oModel);
+
+                            // that.releventCls = that.clsResults
+                            that.validation();
+                        }
+
+
                     },
                     error: function (oData, error) {
                         console.log(error)
                     },
+                });
+            },
+
+
+            loadDataforClas: function () {
+                that.oclassIbp = [];
+                var topCount = that.oGModel.getProperty("/MaxCount");
+                //  sap.ui.core.BusyIndicator.show();
+                that.getOwnerComponent().getModel("BModel").read("/getProducts", {
+                    // filters: aFilters,
+                    urlParameters: {
+                        "$skip": that.skip,
+                        "$top": topCount
+                    },
+                    success: function (oData) {
+                        if (topCount == oData.results.length) {
+                            that.skip += parseInt(topCount);
+                            that.oclassIbp = that.oclassIbp.concat(oData.results);
+                            that.loadDataforClas();
+                        } else {
+                            that.skip = 0;
+                            that.oclassIbp = that.oclassIbp.concat(oData.results);
+
+                            that.byId("classSearch").setValue("")
+                            let aItems = that.removeDuplicateforProdClas(that.oclassIbp, "PRODUCT_ID")
+                            var aModel = new JSONModel()
+                            aModel.setData({
+                                aItems: aItems
+                            })
+                            sap.ui.getCore().byId("idClasProd").setModel(aModel)
+
+                        }
+                        //        sap.ui.core.BusyIndicator.hide();
+                    },
+                    error: function (err) {
+                        sap.ui.core.BusyIndicator.hide();
+                        MessageToast.show("Error Loading Products Data");
+                    }
                 });
             },
 
@@ -6715,20 +6832,20 @@ sap.ui.define([
                     };
                     oEntry.CLASSDATA.push(vRuleslist);
                 }
-
+                sap.ui.core.BusyIndicator.show();
                 that.getModel("BModel").callFunction("/updateIBPClass", {
                     method: "GET",
                     urlParameters: {
                         CLASSDATA: JSON.stringify(oEntry.CLASSDATA)
                     },
                     success: function (oData) {
-
+                        sap.ui.core.BusyIndicator.hide();
                         if (oData.updateIBPClass === "ERROR") {
                             MessageToast.show("Selected Product Characteristics Already Exist in Secondary")
 
                             // that.onAfterRendering();
-                            that.loadIbp()
-                            that.handleSelectionForProdClas();
+                            // that.loadIbp()
+                            // that.handleSelectionForProdClas();
                             // that.handleSearch2();
 
                         }
@@ -6738,7 +6855,7 @@ sap.ui.define([
 
                             // that.onAfterRendering();
                             that.loadIbp()
-                            that.handleSelectionForProdClas()
+                            // that.handleSelectionForProdClas()
                             // that.handleSearch2();
 
                         }
@@ -6757,18 +6874,19 @@ sap.ui.define([
             onClearReset: function () {
                 that.byId("idCommon").setValue("");
                 that.byId("classSearch").setValue("")
-                this.getModel("BModel").read("/getClass ", {
-                    success: function (oData) {
-                        that.oModel.setData({
-                            results: oData.results,
-                        });
-                        that.byId("classList").setModel(that.oModel);
-                        sap.ui.core.BusyIndicator.hide();
-                    },
-                    error: function () {
-                        MessageToast.show("Failed to get data");
-                    },
-                });
+                that.loadIbpClassCharacteristics();
+                // this.getModel("BModel").read("/getClass ", {
+                //     success: function (oData) {
+                //         that.oModel.setData({
+                //             results: oData.results,
+                //         });
+                //         that.byId("classList").setModel(that.oModel);
+                //         sap.ui.core.BusyIndicator.hide();
+                //     },
+                //     error: function () {
+                //         MessageToast.show("Failed to get data");
+                //     },
+                // });
             },
 
 
