@@ -4,15 +4,15 @@
         <VBox class="container">
           <HBox>
                 <Label text="Product :" class="configLabel" />
-                <Input id="oProduct" width="140px" required="true" enabled="false"  />
+                <Input id="oProduct" width="180px" required="true" enabled="false"  />
             </HBox>
             <HBox>
                 <Label text="Group Name :" class="configLabel" />
-                <Input id="oGroupName" width="140px" required="true" />
+                <Input id="oGroupName" width="180px" required="true" />
             </HBox>
             <HBox>
                 <Label text="Weightage :" class="configLabel" />
-                <Input id="oWeightage" width="140px" required="true" type="Number" />
+                <Input id="oWeightage" width="180px" required="true" type="Number" />
             </HBox>
             <OverflowToolbar style="Clear">
                 <ToolbarSpacer ></ToolbarSpacer>

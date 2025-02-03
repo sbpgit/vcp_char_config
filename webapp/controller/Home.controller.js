@@ -844,6 +844,31 @@ sap.ui.define([
                 // const mainData = that.oGroupNames;
                 var header = aData[0];
                 var excData = aData.slice(1);
+                that.oGDel = [];
+                for (var i = 0; i < excData.length; i++) {
+                    var obj = {
+                        PRODUCT_ID: excData[i][0],
+                        GROUP_NAME: excData[i][1],
+                        WEIGHTAGE: parseFloat(excData[i][2])
+                    }
+                    that.oGDel.push(obj)
+                }
+
+                that.missedObjects = that.oGroupNames.filter(groupItem =>
+                    !that.oGDel.some(delItem =>
+                        delItem.PRODUCT_ID === groupItem.PRODUCT_ID &&
+                        delItem.GROUP_NAME === groupItem.GROUP_NAME &&
+                        delItem.WEIGHTAGE === groupItem.WEIGHTAGE
+                    )
+                );
+                // Remove objects with empty PRODUCT_ID
+
+
+                if (that.missedObjects.length > 1) {
+                    that.missedObjects = that.missedObjects.filter(obj => obj.PRODUCT_ID);
+                    that.onGroupDeleteValidation()
+                }
+
                 that.changes = [];
                 that.resultArray1 = [];
 
@@ -1022,23 +1047,14 @@ sap.ui.define([
                 else {
                     that.oExcelGroup();
                 }
+                //   that.oGroupNames
                 // }
 
             },
 
 
             oExcelGroup: function () {
-                // var customerGroupData = [];
-                // for (var i = 0; i < that.resultArray1.length; i++) {
-                //     var customerGrpObj =
-                //     {
-                //         "PRODUCT_ID": that.resultArray1[i][0],
-                //         "GROUP_NAME": that.resultArray1[i][1],
-                //         "WEIGHTAGE": that.resultArray1[i][2]
-                //     }
-
-                //     customerGroupData.push(customerGrpObj)
-                // }
+              
                 that.getOwnerComponent().getModel("BModel").callFunction("/modifyCustomerGroup", {
                     method: "GET",
                     urlParameters: {
@@ -1109,7 +1125,12 @@ sap.ui.define([
             // Group Deleting Funtion
             onGroupDeleteValidation: function (oEv) {
                 var oProd = that.byId("idCommon").getValue();
-                var gSelect = oEv.getSource().getBindingContext().getObject();
+                if (oEv) {
+                    var gSelect = []
+                     gSelect.push(oEv.getSource().getBindingContext().getObject());
+                } else {
+                    var gSelect = that.missedObjects;
+                }
                 this.getModel("BModel").read("/getCharGroupWeightage", {
                     filters: [
                         new Filter("PRODUCT_ID", FilterOperator.EQ, oProd)
@@ -1117,12 +1138,19 @@ sap.ui.define([
                     sorters: [new sap.ui.model.Sorter("WEIGHTAGE", true)],
 
                     success: function (oData) {
-                        const validGroups = oData.results.filter(obj1 => obj1.GROUP_NAME === gSelect.GROUP_NAME);
+                        //    const validGroups = oData.results.filter(obj1 => obj1.GROUP_NAME === gSelect.GROUP_NAME);
+                        const validGroups = oData.results.filter(obj1 =>
+                            gSelect.some(obj2 =>
+                                obj1.GROUP_NAME === obj2.GROUP_NAME &&
+                                obj1.PRODUCT_ID === obj2.PRODUCT_ID // Add more conditions if needed
+                            )
+                        );
+
                         if (validGroups.length == 0) {
                             that.onGroupDelete(oEv);
                         }
                         else {
-                            MessageBox.warning("Selected Group is already assigned to Prioritization. Please go to Characteristic Prioritization and remove assigned group.")
+                            MessageBox.warning("Selected group is already assigned to prioritization. Please go to characteristic prioritization and remove assigned group.")
                         }
                     },
                     error: function (oData, error) {
@@ -1135,14 +1163,31 @@ sap.ui.define([
             // Group Deleting Funtion
             onGroupDelete: function (oEvent) {
                 var oProd = that.byId("idCommon").getValue();
-                var gSelect = oEvent.getSource().getBindingContext().getObject();
+                if (oEvent) {
+                    var gSelect = []
+                     gSelect.push(oEvent.getSource().getBindingContext().getObject());
+                } else {
+                    var gSelect = that.missedObjects;
+                }
+                //   var gSelect = oEvent.getSource().getBindingContext().getObject();
                 // var gSelect = oEvent;
-                var customerGroupData = JSON.stringify([{
-                    "PRODUCT_ID": oProd,
-                    "GROUP_NAME": gSelect.GROUP_NAME,
-                    "WEIGHTAGE": gSelect.WEIGHTAGE
-                }])
-                MessageBox.confirm("Do you want to Delete this Group ?", {
+                // var customerGroupData = JSON.stringify([{
+                //     "PRODUCT_ID": oProd,
+                //     "GROUP_NAME": gSelect.GROUP_NAME,
+                //     "WEIGHTAGE": gSelect.WEIGHTAGE
+                // }])
+                // based on array
+                var customerGroupData = JSON.stringify(
+                    gSelect.map(item => ({
+                        "PRODUCT_ID": oProd,   // Keeping the same product ID for all
+                        "GROUP_NAME": item.GROUP_NAME,
+                        "WEIGHTAGE": item.WEIGHTAGE
+                    }))
+                );
+
+                console.log(customerGroupData);
+
+                MessageBox.confirm("Do you want to delete this group ?", {
                     actions: [MessageBox.Action.YES, MessageBox.Action.NO],
                     onClose: function (sAction) {
                         sap.ui.core.BusyIndicator.show();
@@ -1154,7 +1199,7 @@ sap.ui.define([
                                     customerGroupData: customerGroupData
                                 },
                                 success: function (oData) {
-                                    sap.m.MessageToast.show("Group Deleted Succesfully.");
+                                    sap.m.MessageToast.show("Group deleted succesfully.");
                                     that.oGModel.setProperty("/refresh", "X");
                                     that.oGroupView();
                                     sap.ui.core.BusyIndicator.hide();
@@ -1170,7 +1215,7 @@ sap.ui.define([
                         }
                         else {
                             sap.ui.core.BusyIndicator.hide();
-                            sap.m.MessageToast.show("Deletion Cancelled.")
+                            sap.m.MessageToast.show("Deletion cancelled.")
                         }
                     },
                     dependentOn: this.getView()
@@ -2551,7 +2596,7 @@ sap.ui.define([
 
                     var oSheet = new sap.ui.export.Spreadsheet(oSettings);
                     oSheet.build().then(function () {
-                        sap.m.MessageToast.show('Succesfully Download');
+                        sap.m.MessageToast.show('Succesfully download');
                     }).finally(function () {
                         oSheet.destroy();
                     });
@@ -2607,8 +2652,8 @@ sap.ui.define([
                                         { label: 'CHAR_NAME', property: 'CHAR_NAME', width: 30 },
                                         { label: 'CHAR_DESC', property: 'CHAR_DESC', width: 30 },
                                         { label: 'CHAR_NUM', property: 'CHAR_NUM', width: 30 },
-                                        { label: 'CHAR_TYPE', property: 'CHAR_TYPE', width: 30 }
-                                        // { label: 'SEQUENCE', property: 'SEQUENCE', width: 30 }
+                                        { label: 'CHAR_TYPE', property: 'CHAR_TYPE', width: 30 },
+                                        { label: 'SEQUENCE', property: 'SEQUENCE', width: 30 }
                                     ];
                                     var oSettings = {
                                         workbook: {
@@ -2622,7 +2667,7 @@ sap.ui.define([
 
                                     var oSheet = new sap.ui.export.Spreadsheet(oSettings);
                                     oSheet.build().then(function () {
-                                        sap.m.MessageToast.show('Succesfully Download');
+                                        sap.m.MessageToast.show('Succesfully download');
                                     }).finally(function () {
                                         oSheet.destroy();
                                     });
@@ -2774,7 +2819,7 @@ sap.ui.define([
 
                     var oSheet = new sap.ui.export.Spreadsheet(oSettings);
                     oSheet.build().then(function () {
-                        sap.m.MessageToast.show('Succesfully Download');
+                        sap.m.MessageToast.show('Succesfully download');
                     }).finally(function () {
                         oSheet.destroy();
                     });
@@ -2925,11 +2970,12 @@ sap.ui.define([
 
                     // checking in object all values must have valid data
                     var hasMandatoryFields = oObject.PRODUCT_ID && oObject.CHAR_NUM && oObject.CHAR_NAME &&
-                        oObject.CHAR_DESC && oObject.CHAR_TYPE && oObject.SEQUENCE !== undefined;
+                        oObject.CHAR_DESC && oObject.CHAR_TYPE;
 
                     var hasNonEmptyValue = Object.values(oObject).some(function (value) {
                         return value !== null && value !== undefined && value !== '';
                     });
+
 
                     // Check if mandatory fields are valid
                     if (!hasMandatoryFields || !hasNonEmptyValue) {
@@ -3034,7 +3080,7 @@ sap.ui.define([
                             success: function (oData) {
                                 sap.ui.core.BusyIndicator.hide();
                                 // that.onPressUpdate();
-                                MessageBox.alert("Some Products are Already in Prioritization. Remaining Data Uploaded Successfully.")
+                                MessageBox.alert("Some products are already in prioritization. Remaining data uploaded successfully.")
                             },
                             error: function (oData) {
                                 sap.ui.core.BusyIndicator.hide();
@@ -3045,7 +3091,7 @@ sap.ui.define([
                     }
                 } else {
                     sap.ui.core.BusyIndicator.hide();
-                    MessageToast.show("There is no Prioritized Data from Uploaded file.")
+                    MessageToast.show("There is no prioritized data from uploaded file.")
                 }
             },
             prodGroups: function (val1) {
@@ -4138,9 +4184,22 @@ sap.ui.define([
                 var that = this;
                 that.getEnable();
                 that.oStore = [];
+                if(that.unselected.length > 0){
+                    that.oPreviousSelection = that.oPreviousSelection.filter(groupItem =>
+                        !that.unselected.some(delItem =>
+                            delItem.PRODUCT_ID === groupItem.PRODUCT_ID &&
+                            delItem.CHAR_NUM === groupItem.CHAR_NUM &&
+                            delItem.CHAR_NAME === groupItem.CHAR_NAME
+                        )
+                    );
+                }
+                that.oPreviousSelection = that.oPreviousSelection.filter(obj => obj.CHAR_NUM);
                 // sap.ui.core.BusyIndicator.show();
 
                 var finlData = [];
+                if( that.oPreviousSelection.length > 1){
+                    finlData = that.oPreviousSelection
+                }
                 // var selectedItems = that.selectedChars;
                 var selectedItems = that.byId("prodList").getSelectedItems();
 
@@ -4172,18 +4231,21 @@ sap.ui.define([
                                     PRODUCT_ID: that.oItem,
                                     CHAR_NAME: el.CHAR_NAME,
                                     CHAR_DESC: el.CHAR_DESC,
-                                    CHAR_VALUE: el.CHAR_VALUE,
+                                    CHAR_VALUE: el.CHAR_VALUE.trim(),
                                     CHARVAL_DESC: el.CHARVAL_DESC,
                                     CHAR_NUM: el.CHAR_NUM,
-                                    CHARVAL_NUM: el.CHARVAL_NUM,
+                                    CHARVAL_NUM: el.CHARVAL_NUM.trim(),
                                     CLASS_NAME: el.CLASS_NAME,
                                     CLASS_DESC: el.CLASS_DESC,
                                 };
                                 finlData.push(initData);
                             });
                         }
+                        finlData = finlData.filter(obj => obj.CHAR_NUM);
                     }
                 }
+
+               
 
                 // Show a warning dialog if there are checked items
                 //       if (checkedItems.length > 0) {
@@ -4200,6 +4262,7 @@ sap.ui.define([
                                     PRODATA: JSON.stringify(finlData)
                                 },
                                 success: function (oData) {
+                                 
                                     that.oPartialSelected = oData.results
                                     for (var i = 0; i < that.oPartialSelected.length; i++) {
                                         delete that.oPartialSelected[i].__metadata
@@ -4219,6 +4282,7 @@ sap.ui.define([
                             });
                         } else if (oAction === sap.m.MessageBox.Action.NO) {
                             // Do nothing or handle cancellation
+                            that.onGetData3();
                             sap.ui.core.BusyIndicator.hide();
                             MessageToast.show("Operation canceled. No changes were saved.");
                         }
@@ -4331,7 +4395,7 @@ sap.ui.define([
                 that.oStore = [];
 
                 // Reset all selections
-                tableItems.forEach(item => item.setSelected(false));
+                //  tableItems.forEach(item => item.setSelected(false));
                 // that.getEnable();
                 that.oGModel.setProperty("/flag", "");
                 that.skip = 0;
@@ -4351,6 +4415,7 @@ sap.ui.define([
                         PRODUCT_ID: selectedItem
                     }, finalData = [];
                     finalData.push(data);
+                    sap.ui.core.BusyIndicator.show();
                     this.getOwnerComponent().getModel("BModel").callFunction("/getProductCharVal", {
                         method: "GET",
                         urlParameters: {
@@ -4359,6 +4424,11 @@ sap.ui.define([
                         },
                         success: function (oData) {
                             sap.ui.core.BusyIndicator.hide();
+                            oData.results.forEach(el=>{
+                                el.CHARVAL_NUM = el.CHARVAL_NUM.trim()
+                                el.CHAR_VALUE  =  el.CHAR_VALUE.trim()
+                            })
+                     
                             if (oData.results.length === 0) {
                                 MessageToast.show("No characteristics available for the selected product");
                             }
@@ -4375,13 +4445,7 @@ sap.ui.define([
                                 }
                                 //      that.loadData1(0, 5000);
                             }
-                            // that.byId("idCommon").setValue("");
-                            // var selectedItems = []
-                            // that.SeclistModel.setData({
-                            //     results2: selectedItems,
-                            // });
-                            // that.SeclistModel.setSizeLimit(5000);
-                            // that.byId("Secondarytable2").setModel(that.SeclistModel);
+                         
                             that.loadData();
                         },
                         error: function (error) {
@@ -4410,6 +4474,8 @@ sap.ui.define([
                         PRODATA: JSON.stringify(finlData1)
                     },
                     success: function (oData) {
+                        that.unselected = []
+                        that.oPreviousSelection = oData.results
                         that.selectedChars = [];
                         if (oData.results.length === 0) {
                             sap.ui.core.BusyIndicator.hide();
@@ -4483,7 +4549,7 @@ sap.ui.define([
                 });
             },
 
-            
+
             // onTableItemsSelect: function (oEvent) {
             //     var oEntry = {};
             //     if (oEvent.getParameter("selectAll")) {
@@ -4537,51 +4603,21 @@ sap.ui.define([
 
 
             onTableItemsSelect: function (oEvent) {
-                // var oEntry = {};
-                // const item = oEvent.getParameters().listItem;
-                // const bindingContext = item.getBindingContext();
+
+                var oEntry = {};
+               
+                const item = oEvent.getParameters().listItem;
+                const bindingContext = item.getBindingContext();
 
                 // if (!bindingContext) {
                 //     return; // Exit if there's no binding context
                 // }
 
-                // const sPath = bindingContext.sPath;
-                // const checked = item.getSelected();
-                // that.oCheked = checked;
-
-                // // Check if the item is selected
-                // if (checked) {
-                //     // Check if the item is already in the store to avoid duplicates
-                //     if (!that.oStore.some(storedItem => storedItem.getBindingContext().sPath === sPath)) {
-                //         that.oStore.push(item);
-                //     }
-                // } else {
-                //     // Remove the item from the store if it's unchecked, based on the unique "id"
-                //     const indexToRemove = that.oStore.findIndex(storedItem => storedItem.getBindingContext().sPath === sPath);
-                //     if (indexToRemove !== -1) {
-                //         that.oStore.splice(indexToRemove, 1);  // Remove the item by index in the store
-                //     }
-                // }
-
-                // // Update the selected items in the table
-                // const selectedPaths = that.oStore.map(selectedItem => selectedItem.getBindingContext().sPath);
-                // oEvent.getSource().setSelectedContextPaths(selectedPaths);
-
-
-                var oEntry = {};
-                that.unselected = []
-                const item = oEvent.getParameters().listItem;
-                const bindingContext = item.getBindingContext();
-
-                if (!bindingContext) {
-                    return; // Exit if there's no binding context
-                }
-
                 const sPath = bindingContext.sPath;
                 const checked = item.getSelected();
                 const oObject = bindingContext.getObject();
-                that.unselected.push(oObject)
-                that.oChecked = checked;
+                 that.unselected.push(oObject)
+                // that.oChecked = checked;
 
                 // if (checked) {
                 //     if (!that.oStore.some(storedItem => storedItem.getBindingContext().sPath === sPath)) {
@@ -4594,12 +4630,12 @@ sap.ui.define([
                 //     }
                 // }
 
-                // // Update selected context paths
+
                 // const selectedPaths = that.oStore.map(selectedItem => selectedItem.getBindingContext().sPath);
                 // oEvent.getSource().setSelectedContextPaths(selectedPaths);
 
-                // // **Force UI Refresh to Reflect Selection**
-                // oEvent.getSource().getBinding("items").refresh();
+
+                //    oEvent.getSource().getBinding("items").refresh();
 
 
                 if (oEvent.getParameter("selectAll")) {
@@ -4673,8 +4709,8 @@ sap.ui.define([
                         })
                     );
                 }
-                that.byId("prodList").getBinding("items").filter(oFilters);
-                //  oBinding.filter(oFilters);
+                //  that.byId("prodList").getBinding("items").filter(oFilters);
+                oBinding.filter(oFilters);
                 // var tableItems = oTable.getItems();
 
                 // aSelectedContexts.forEach(function (item) {
@@ -4705,7 +4741,8 @@ sap.ui.define([
                         selectedChar.CHAR_NAME === availChar.CHAR_NAME &&
                         selectedChar.CLASS_NAME === availChar.CLASS_NAME
                     );
-                    availChar.SELECTED = isSelected; // Assign true or false
+                    //  availChar.SELECTED = isSelected; // Assign true or false
+                    availChar.SELECTED = isSelected.toString().toUpperCase();
                 });
                 var oGProduct = that.byId("idCommon").getValue();
                 if (!oGProduct) {
@@ -4730,7 +4767,7 @@ sap.ui.define([
 
                     var oSheet = new sap.ui.export.Spreadsheet(oSettings);
                     oSheet.build().then(function () {
-                        sap.m.MessageToast.show('Succesfully Download');
+                        sap.m.MessageToast.show('Succesfully download');
                     }).finally(function () {
                         oSheet.destroy();
                     });
@@ -4902,7 +4939,10 @@ sap.ui.define([
             oAttributeDownload: function () {
                 that.oPList = that.byId("Primarytable2");
                 that.oAttr
-                that.ops = that.forDownattr  //that.selectedChars //that.AvailChars
+                // that.oFordownload = that.ops.forEach(el=>{
+                //     that.ops.SELECTED = FALSE
+                // }) 
+                //   that.ops = that.forDownattr  //that.selectedChars //that.AvailChars
 
                 that.ops.forEach(op => {
                     const matchingAttr = that.oAttr.find(attr =>
@@ -4920,7 +4960,7 @@ sap.ui.define([
                     } else {
                         // Default CHAR_TYPE and SELECTED if no match found
                         op.CHAR_TYPE = "S";
-                        op.SELECTED = false;
+                        op.SELECTED = FALSE;
                     }
                 });
 
@@ -5243,6 +5283,7 @@ sap.ui.define([
 
             onGetData2: async function () {
                 //  that.onResetPressIBP();
+                that.ops = [];
                 that.oPList = that.byId("Primarytable2");
                 var sProd = that.byId("idCommon").getValue();
                 var sData = await that.loadSelectedData();
@@ -5891,7 +5932,7 @@ sap.ui.define([
                     onClose: function (oAction) {
                         if (oAction === sap.m.MessageBox.Action.YES) {
                             that.onGetData2();
-                            var sProd = that.byId("prodInput2").getValue();
+                            var sProd = that.byId("idCommon").getValue();
                             that.oSelectedItem = "";
                             if (sProd !== "") {
                                 that.getModel("BModel").callFunction("/getPrimaryCharIBP", {
@@ -5904,7 +5945,7 @@ sap.ui.define([
                                     success: function (oData) {
                                         sap.ui.core.BusyIndicator.hide();
                                         that.oPList = that.byId("Primarytable2"),
-                                            that.oSList = that.byId("Secondarytable2");
+                                        that.oSList = that.byId("Primarytable2");
 
                                         that.primaryData = [],
                                             that.secData = [];
@@ -6411,7 +6452,7 @@ sap.ui.define([
                     var iTotalRows = oTable.getGrowingInfo().total;;
                     if (iVisibleRows >= iTotalRows) {
                         // Load more data when reaching the bottom of the table
-                        this.loadData(iTotalRows, 1000); // Load the next 100 records
+                       // this.loadData(iTotalRows, 1000); // Load the next 100 records
                     }
                 }
             },
@@ -6662,7 +6703,7 @@ sap.ui.define([
                     var filter = new Filter("PRODUCT_ID", FilterOperator.EQ, oItem);
                     oFilters.push(filter);
                 }
-
+                if(oItem){
                 that.getOwnerComponent().getModel("BModel").read("/getIBPProdClass", {
                     filters: oFilters,
                     urlParameters: {
@@ -6698,6 +6739,9 @@ sap.ui.define([
                         console.log(error)
                     },
                 });
+            }else{
+                that.onClearReset()
+            }
             },
 
 

@@ -259,7 +259,7 @@
                                         <Button id="idShowSelected" text="Show Selected" press="handleShowSelect" />
                                     </content>
                                 </Toolbar>
-                                <Table id="prodList" items="{path: '/results'}" sticky="ColumnHeaders" rememberSelections="false" mode="MultiSelect" selectionChange="onTableItemsSelect" 
+                                <Table id="prodList" items="{path: '/results'}" sticky="ColumnHeaders" rememberSelections="true" mode="MultiSelect" selectionChange="onTableItemsSelect" 
                             
                                 growingScrollToLoad="true" growing="true" growingThreshold="100" updateFinished="onTableScroll">
 
@@ -352,7 +352,8 @@
                                                 <Text text="{CHAR_NUM}" />
                                                 <Text text="{CHAR_NAME}" />
                                                 <Text text="{CHAR_DESC}" />
-                                                <CheckBox selected="{= ${CHAR_TYPE} === 'P' ? true : false }" select="onIBPatbs_Checkbox"/>
+                                                <!-- <CheckBox selected="{= ${CHAR_TYPE} === 'P' ? true : false }" select="onIBPatbs_Checkbox"/> -->
+                                                <CheckBox  select="onIBPatbs_Checkbox"/>
                                             </cells>
                                         </ColumnListItem>
                                     </items>
