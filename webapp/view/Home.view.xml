@@ -259,7 +259,11 @@
                                         <Button id="idShowSelected" text="Show Selected" press="handleShowSelect" />
                                     </content>
                                 </Toolbar>
-                                <Table id="prodList" items="{path: '/results'}" sticky="ColumnHeaders" mode="MultiSelect" selectionChange="onTableItemsSelect" growingScrollToLoad="true" growing="true" growingThreshold="100" updateFinished="onTableScroll">
+                                <Table id="prodList" items="{path: '/results'}" sticky="ColumnHeaders" rememberSelections="false" mode="MultiSelect" selectionChange="onTableItemsSelect" 
+                            
+                                growingScrollToLoad="true" growing="true" growingThreshold="100" updateFinished="onTableScroll">
+
+                                
                                     <!-- <headerToolbar>
                                       
                                     </headerToolbar> -->
@@ -314,7 +318,7 @@
                     </IconTabFilter>
 
                     <!-- <IBP Attributes> -->
-                    <IconTabFilter text="SCM IBP Attributes" key="IBPAttributes">
+                    <IconTabFilter text="SCM Attributes" key="IBPAttributes">
                         <content>
                             <Page showFooter="true" showHeader="false">
                                 <Toolbar class="stickyToolbar">
@@ -334,7 +338,7 @@
                                             <Text text="{i18n>chardesc2}" />
                                         </Column>
                                         <Column>
-                                            <Text text="SCM Relevant Class / All Characteristics" />
+                                            <Text text="SCM Attributes / All Characteristics" />
                                         </Column>
                                     </columns>
                                     <dragDropConfig>
