@@ -706,20 +706,28 @@ sap.ui.define([
             oGroupUpload: function (oEvent) {
                 var oFileUploader = oEvent.getSource();
                 var oFile = oEvent.getParameter("files")[0];
+                var oFileName = oFile.name
 
-                if (oFile) {
-                    var reader = new FileReader();
-                    reader.onload = function (e) {
-                        var data = e.target.result;
-                        var workbook = XLSX.read(data, { type: 'binary' });
-                        var firstSheetName = workbook.SheetNames[0];
-                        var worksheet = workbook.Sheets[firstSheetName];
-                        var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+                if (oFileName.includes("Groups Data")) {
 
-                        // Process the JSON data
-                        that.oGroupExcelData(jsonData);
-                    };
-                    reader.readAsBinaryString(oFile);
+                    if (oFile) {
+                        var reader = new FileReader();
+                        reader.onload = function (e) {
+                            var data = e.target.result;
+                            var workbook = XLSX.read(data, { type: 'binary' });
+                            var firstSheetName = workbook.SheetNames[0];
+                            var worksheet = workbook.Sheets[firstSheetName];
+                            var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+
+                            // Process the JSON data
+                            that.oGroupExcelData(jsonData);
+                        };
+                        reader.readAsBinaryString(oFile);
+                    }
+                }else {
+                    MessageToast.show("Upload valid Groups file")
+                    sap.ui.core.BusyIndicator.hide();
+                    return false
                 }
 
             },
@@ -1054,7 +1062,7 @@ sap.ui.define([
 
 
             oExcelGroup: function () {
-              
+
                 that.getOwnerComponent().getModel("BModel").callFunction("/modifyCustomerGroup", {
                     method: "GET",
                     urlParameters: {
@@ -1127,7 +1135,7 @@ sap.ui.define([
                 var oProd = that.byId("idCommon").getValue();
                 if (oEv) {
                     var gSelect = []
-                     gSelect.push(oEv.getSource().getBindingContext().getObject());
+                    gSelect.push(oEv.getSource().getBindingContext().getObject());
                 } else {
                     var gSelect = that.missedObjects;
                 }
@@ -1165,7 +1173,7 @@ sap.ui.define([
                 var oProd = that.byId("idCommon").getValue();
                 if (oEvent) {
                     var gSelect = []
-                     gSelect.push(oEvent.getSource().getBindingContext().getObject());
+                    gSelect.push(oEvent.getSource().getBindingContext().getObject());
                 } else {
                     var gSelect = that.missedObjects;
                 }
@@ -2871,22 +2879,29 @@ sap.ui.define([
 
                 var oFileUploader = oEvent.getSource();
                 var oFile = oEvent.getParameter("files")[0];
+                var oFileName = oFile.name
                 sap.ui.core.BusyIndicator.show();
-                if (oFile) {
-                    var reader = new FileReader();
+                if (oFileName.includes("Characteristic Prioritization")) {
+                    if (oFile) {
+                        var reader = new FileReader();
 
-                    reader.onload = function (e) {
-                        var data = e.target.result;
-                        var workbook = XLSX.read(data, { type: 'binary' });
-                        var firstSheetName = workbook.SheetNames[0];
-                        var worksheet = workbook.Sheets[firstSheetName];
-                        var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+                        reader.onload = function (e) {
+                            var data = e.target.result;
+                            var workbook = XLSX.read(data, { type: 'binary' });
+                            var firstSheetName = workbook.SheetNames[0];
+                            var worksheet = workbook.Sheets[firstSheetName];
+                            var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
 
-                        // Process the JSON data
-                        that.oCharPrioritizprocessExcelData(jsonData);
-                    };
+                            // Process the JSON data
+                            that.oCharPrioritizprocessExcelData(jsonData);
+                        };
 
-                    reader.readAsBinaryString(oFile);
+                        reader.readAsBinaryString(oFile);
+                    }
+                }else {
+                    MessageToast.show("Upload valid Characteristic Prioritization file")
+                    sap.ui.core.BusyIndicator.hide();
+                    return false
                 }
 
             },
@@ -4184,7 +4199,11 @@ sap.ui.define([
                 var that = this;
                 that.getEnable();
                 that.oStore = [];
-                if(that.unselected.length > 0){
+                if(that.oAllfalse = "F"){
+                    that.oPreviousSelection = [];
+                    that.oAllfalse = ""
+                }
+                if (that.unselected.length > 0) {
                     that.oPreviousSelection = that.oPreviousSelection.filter(groupItem =>
                         !that.unselected.some(delItem =>
                             delItem.PRODUCT_ID === groupItem.PRODUCT_ID &&
@@ -4197,7 +4216,7 @@ sap.ui.define([
                 // sap.ui.core.BusyIndicator.show();
 
                 var finlData = [];
-                if( that.oPreviousSelection.length > 1){
+                if (that.oPreviousSelection.length > 1) {
                     finlData = that.oPreviousSelection
                 }
                 // var selectedItems = that.selectedChars;
@@ -4245,7 +4264,7 @@ sap.ui.define([
                     }
                 }
 
-               
+
 
                 // Show a warning dialog if there are checked items
                 //       if (checkedItems.length > 0) {
@@ -4262,7 +4281,8 @@ sap.ui.define([
                                     PRODATA: JSON.stringify(finlData)
                                 },
                                 success: function (oData) {
-                                 
+                                    that.oPreviousSelection = [];
+
                                     that.oPartialSelected = oData.results
                                     for (var i = 0; i < that.oPartialSelected.length; i++) {
                                         delete that.oPartialSelected[i].__metadata
@@ -4424,11 +4444,11 @@ sap.ui.define([
                         },
                         success: function (oData) {
                             sap.ui.core.BusyIndicator.hide();
-                            oData.results.forEach(el=>{
+                            oData.results.forEach(el => {
                                 el.CHARVAL_NUM = el.CHARVAL_NUM.trim()
-                                el.CHAR_VALUE  =  el.CHAR_VALUE.trim()
+                                el.CHAR_VALUE = el.CHAR_VALUE.trim()
                             })
-                     
+
                             if (oData.results.length === 0) {
                                 MessageToast.show("No characteristics available for the selected product");
                             }
@@ -4445,7 +4465,7 @@ sap.ui.define([
                                 }
                                 //      that.loadData1(0, 5000);
                             }
-                         
+
                             that.loadData();
                         },
                         error: function (error) {
@@ -4603,9 +4623,18 @@ sap.ui.define([
 
 
             onTableItemsSelect: function (oEvent) {
+                var Allselect = oEvent.getParameters().selectAll
+                var oList = oEvent.getParameters().listItems.length
+                var oTbaLength = that.byId("prodList").getItems().length
+                if(oList === oTbaLength){
+                    if(Allselect === false){
+                        that.oAllfalse = "F"
+                    }
+
+                }
 
                 var oEntry = {};
-               
+
                 const item = oEvent.getParameters().listItem;
                 const bindingContext = item.getBindingContext();
 
@@ -4616,7 +4645,7 @@ sap.ui.define([
                 const sPath = bindingContext.sPath;
                 const checked = item.getSelected();
                 const oObject = bindingContext.getObject();
-                 that.unselected.push(oObject)
+                that.unselected.push(oObject)
                 // that.oChecked = checked;
 
                 // if (checked) {
@@ -4780,20 +4809,30 @@ sap.ui.define([
             oPartialUpload: function (oEvent) {
                 var oFileUploader = oEvent.getSource();
                 var oFile = oEvent.getParameter("files")[0];
+                var oFilename = oFile.name
 
-                if (oFile) {
-                    var reader = new FileReader();
-                    reader.onload = function (e) {
-                        var data = e.target.result;
-                        var workbook = XLSX.read(data, { type: 'binary' });
-                        var firstSheetName = workbook.SheetNames[0];
-                        var worksheet = workbook.Sheets[firstSheetName];
-                        var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
-                        // Process the JSON data
-                        that.oPartialProd(jsonData);
-                    };
-                    reader.readAsBinaryString(oFile);
+
+                if (oFilename.includes("Partial Products")) {
+                    if (oFile) {
+                        var reader = new FileReader();
+                        reader.onload = function (e) {
+                            var data = e.target.result;
+                            var workbook = XLSX.read(data, { type: 'binary' });
+                            var firstSheetName = workbook.SheetNames[0];
+                            var worksheet = workbook.Sheets[firstSheetName];
+                            var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+                            // Process the JSON data
+                            that.oPartialProd(jsonData);
+                        };
+                        reader.readAsBinaryString(oFile);
+                    }
+                } else {
+                    MessageToast.show("Upload valid Partial Products characteristics file")
+                    sap.ui.core.BusyIndicator.hide();
+                    return false;
                 }
+
+
             },
 
             oPartialProd: function (aData) {
@@ -5003,21 +5042,27 @@ sap.ui.define([
             oAttributeUpload: function (oEvent) {
                 var oFileUploader = oEvent.getSource();
                 var oFile = oEvent.getParameter("files")[0];
+                var oFilename = oFile.name
+                if (oFilename.includes("SCM IBP Attributes")) {
+                    if (oFile) {
+                        var reader = new FileReader();
 
-                if (oFile) {
-                    var reader = new FileReader();
+                        reader.onload = function (e) {
+                            var data = e.target.result;
+                            var workbook = XLSX.read(data, { type: 'binary' });
+                            var firstSheetName = workbook.SheetNames[0];
+                            var worksheet = workbook.Sheets[firstSheetName];
+                            var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+                            // Process the JSON data
+                            that.oSCMAttribute(jsonData);
+                        };
 
-                    reader.onload = function (e) {
-                        var data = e.target.result;
-                        var workbook = XLSX.read(data, { type: 'binary' });
-                        var firstSheetName = workbook.SheetNames[0];
-                        var worksheet = workbook.Sheets[firstSheetName];
-                        var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
-                        // Process the JSON data
-                        that.oSCMAttribute(jsonData);
-                    };
-
-                    reader.readAsBinaryString(oFile);
+                        reader.readAsBinaryString(oFile);
+                    }
+                } else {
+                    MessageToast.show("Upload valid SCM Attributes file")
+                    sap.ui.core.BusyIndicator.hide();
+                    return false
                 }
 
             },
@@ -5279,7 +5324,7 @@ sap.ui.define([
             },
 
 
-            // IBP Attributes Download functionality
+            // SCM Attributes Download functionality
 
             onGetData2: async function () {
                 //  that.onResetPressIBP();
@@ -5289,8 +5334,30 @@ sap.ui.define([
                 var sData = await that.loadSelectedData();
                 that.oSelctdata = sData;
 
+                that.oSelctdata.forEach(el => {
+                    el.CHAR_TYPE = "S"
+                    el.SEQUENCE = "0"
+
+                })
+                // if( that.oIBPcbox.length>1){
+                //     that.oIBPcbox.CHAR_TYPE
+                // }
+
                 if (sProd !== "") {
                     sap.ui.core.BusyIndicator.show();
+                    // that.priData = that.oSelctdata.filter(el => el.CHAR_TYPE == "P");
+                    // that.seqData = that.priData.sort((a, b) => a.SEQUENCE - b.SEQUENCE);
+
+                    // that.secData = that.oSelctdata.filter(el => el.CHAR_TYPE == "S");
+                    // that.scendseqData = that.secData.sort((a, b) => a.SEQUENCE - b.SEQUENCE);
+
+                    // that.ops = that.seqData.concat(that.secData);
+                    // that.PrimarylistModel.setData({
+                    //     results2: that.ops
+                    // });
+                    // that.PrimarylistModel.setSizeLimit(5000);
+                    // that.oPList.setModel(that.PrimarylistModel);
+                    // sap.ui.core.BusyIndicator.hide();
                     this.getModel("BModel").callFunction("/getPrimaryCharIBP", {
                         method: "GET",
                         urlParameters: {
@@ -5383,10 +5450,147 @@ sap.ui.define([
                             MessageToast.show("Error");
                         }
                     });
-                } else {
+                } 
+                else {
                     MessageToast.show("Please select Product");
                 }
             },
+
+
+            // onGetData2: async function () {
+            //     //  that.onResetPressIBP();
+            //     that.ops = [];
+            //     that.oPList = that.byId("Primarytable2");
+            //     var sProd = that.byId("idCommon").getValue();
+            //     var sData = await that.loadSelectedData();
+            //     that.oSelctdata = sData;
+
+            //     that.oSelctdata.forEach(el => {
+            //         el.CHAR_TYPE = "S"
+            //         el.SEQUENCE = "0"
+
+            //     })
+            //     // if( that.oIBPcbox.length>1){
+            //     //     that.oIBPcbox.CHAR_TYPE
+            //     // }
+
+            //     if (sProd !== "") {
+            //         sap.ui.core.BusyIndicator.show();
+            //         // that.priData = that.oSelctdata.filter(el => el.CHAR_TYPE == "P");
+            //         // that.seqData = that.priData.sort((a, b) => a.SEQUENCE - b.SEQUENCE);
+
+            //         // that.secData = that.oSelctdata.filter(el => el.CHAR_TYPE == "S");
+            //         // that.scendseqData = that.secData.sort((a, b) => a.SEQUENCE - b.SEQUENCE);
+
+            //         // that.ops = that.seqData.concat(that.secData);
+            //         // that.PrimarylistModel.setData({
+            //         //     results2: that.ops
+            //         // });
+            //         // that.PrimarylistModel.setSizeLimit(5000);
+            //         // that.oPList.setModel(that.PrimarylistModel);
+            //         // sap.ui.core.BusyIndicator.hide();
+            //         this.getModel("BModel").callFunction("/getPrimaryCharIBP", {
+            //             method: "GET",
+            //             urlParameters: {
+            //                 FLAG: "G",
+            //                 PRODUCT_ID: sProd
+            //             },
+            //             success: function (oData) {
+            //                 var data = oData.results;
+            //                 that.oAttr = data
+            //                 if (sData && sData.length > 0) {
+            //                     var selectedData = [];
+            //                     sData.forEach(el => {
+            //                         for (let index = 0; index < data.length; index++) {
+            //                             const item = data[index];
+            //                             if (item.PRODUCT_ID == el.PRODUCT_ID && item.REF_CHAR_NUM == el.CHAR_NUM) {
+            //                                 item.CHAR_NAME = el.CHAR_NAME;
+            //                                 item.CHAR_DESC = el.CHAR_DESC;
+            //                                 selectedData.push(item);
+            //                             }
+            //                         }
+            //                     });
+
+            //                     let oAllData = removeDuplicate(selectedData, 'CHAR_NAME');
+            //                     function removeDuplicate(array, key) {
+            //                         var check = new Set();
+            //                         return array.filter(obj => !check.has(obj[key]) && check.add(obj[key]));
+            //                     }
+
+            //                     var osData = oAllData;
+            //                     that.seqData = [];
+            //                     that.scendseqData = [];
+            //                     that.priData = osData.filter(el => el.CHAR_TYPE == "P");
+            //                     that.seqData = that.priData.sort((a, b) => a.SEQUENCE - b.SEQUENCE);
+
+            //                     that.secData = osData.filter(el => el.CHAR_TYPE == "S");
+            //                     that.scendseqData = that.secData.sort((a, b) => a.SEQUENCE - b.SEQUENCE);
+
+            //                     that.ops = that.seqData.concat(that.secData);
+            //                     that.ops.forEach(el => {
+            //                         el.CHAR_TYPE = "S"
+            //                         el.SEQUENCE = "0"
+                
+            //                     })
+            //                     sap.ui.core.BusyIndicator.hide();
+
+            //                     // First, bind an empty model to the table to avoid issues with initial empty data
+            //                     var emptyModel = new sap.ui.model.json.JSONModel({
+            //                         results2: []
+            //                     });
+            //                     that.oPList.setModel(emptyModel);
+
+            //                     // Update the table model with the actual data
+            //                     that.PrimarylistModel.setData({
+            //                         results2: that.ops
+            //                     });
+            //                     that.PrimarylistModel.setSizeLimit(5000);
+            //                     that.oPList.setModel(that.PrimarylistModel);
+
+            //                     // Reset all selections before applying new ones
+            //                     var tableItems = that.oPList.getItems();
+            //                     tableItems.forEach(function (item) {
+            //                         item.setSelected(false);  // Reset all selections
+            //                     });
+
+            //                     // Apply selection logic based on your condition
+            //                     // that.ops.forEach(function (item) {
+            //                     //     tableItems.forEach(function (tableItem) {
+            //                     //         var context = tableItem.getBindingContext();
+            //                     //         if (context) {
+            //                     //             var rowData = context.getProperty();
+            //                     //             if (rowData.PRODUCT_ID == item.PRODUCT_ID && rowData.REF_CHAR_NUM == item.CHAR_NUM) {
+            //                     //                 tableItem.setSelected(true);  // Select the matching row
+            //                     //             }
+            //                     //         }
+            //                     //     });
+            //                     // });
+            //                 } else {
+            //                     that.priData = data.filter(el => el.CHAR_TYPE == "P");
+            //                     that.seqData = that.priData.sort((a, b) => a.SEQUENCE - b.SEQUENCE);
+
+            //                     that.secData = data.filter(el => el.CHAR_TYPE == "S");
+            //                     that.scendseqData = that.secData.sort((a, b) => a.SEQUENCE - b.SEQUENCE);
+
+            //                     that.ops = that.seqData.concat(that.secData);
+            //                     that.PrimarylistModel.setData({
+            //                         results2: that.ops
+            //                     });
+            //                     that.PrimarylistModel.setSizeLimit(5000);
+            //                     that.oPList.setModel(that.PrimarylistModel);
+            //                 }
+            //                 sap.ui.core.BusyIndicator.hide();
+            //             },
+            //             error: function (error) {
+            //                 sap.ui.core.BusyIndicator.hide();
+            //                 MessageToast.show("Error");
+            //             }
+            //         });
+            //     } 
+            //     else {
+            //         MessageToast.show("Please select Product");
+            //     }
+            // },
 
             onIBPatbs_Checkbox: function (oEvent) {
                 that.oIBPcbox = {};
@@ -5400,6 +5604,7 @@ sap.ui.define([
                         CHAR_NUM: oCheckbox.CHAR_NUM,
                         SEQUENCE: iSeq,
                         CHAR_TYPE: oChar_Type,
+                        oChar_Type: "P"
                     }
                     this.getModel("BModel").callFunction("/changeToPrimaryIBP", {
                         method: "GET",
@@ -5945,7 +6150,7 @@ sap.ui.define([
                                     success: function (oData) {
                                         sap.ui.core.BusyIndicator.hide();
                                         that.oPList = that.byId("Primarytable2"),
-                                        that.oSList = that.byId("Primarytable2");
+                                            that.oSList = that.byId("Primarytable2");
 
                                         that.primaryData = [],
                                             that.secData = [];
@@ -6452,7 +6657,7 @@ sap.ui.define([
                     var iTotalRows = oTable.getGrowingInfo().total;;
                     if (iVisibleRows >= iTotalRows) {
                         // Load more data when reaching the bottom of the table
-                       // this.loadData(iTotalRows, 1000); // Load the next 100 records
+                        // this.loadData(iTotalRows, 1000); // Load the next 100 records
                     }
                 }
             },
@@ -6703,45 +6908,45 @@ sap.ui.define([
                     var filter = new Filter("PRODUCT_ID", FilterOperator.EQ, oItem);
                     oFilters.push(filter);
                 }
-                if(oItem){
-                that.getOwnerComponent().getModel("BModel").read("/getIBPProdClass", {
-                    filters: oFilters,
-                    urlParameters: {
-                        "$skip": that.skip,
-                        "$top": topCount
-                    },
-                    success: function (oData) {
-                        if (topCount == oData.results.length) {
-                            that.skip += parseInt(topCount);
-                            that.ocIbp = that.ocIbp.concat(oData.results);
-                            that.loadIbp();
-                        } else {
-                            that.skip = 0;
-                            that.ocIbp = that.ocIbp.concat(oData.results);
+                if (oItem) {
+                    that.getOwnerComponent().getModel("BModel").read("/getIBPProdClass", {
+                        filters: oFilters,
+                        urlParameters: {
+                            "$skip": that.skip,
+                            "$top": topCount
+                        },
+                        success: function (oData) {
+                            if (topCount == oData.results.length) {
+                                that.skip += parseInt(topCount);
+                                that.ocIbp = that.ocIbp.concat(oData.results);
+                                that.loadIbp();
+                            } else {
+                                that.skip = 0;
+                                that.ocIbp = that.ocIbp.concat(oData.results);
 
-                            that.byId("classSearch").setValue("")
-                            oData.results = that.removeDuplicateforProdClas(that.ocIbp, "CLASS_NAME")
-                            that.oModel.setData({
-                                results: oData.results,
-                            });
-                            that.oModel.setSizeLimit(oData.results.length)
-                            var temp = JSON.stringify(oData.results)
-                            that.clsResults = JSON.parse(temp);
-                            that.byId("classList").setModel(that.oModel);
+                                that.byId("classSearch").setValue("")
+                                oData.results = that.removeDuplicateforProdClas(that.ocIbp, "CLASS_NAME")
+                                that.oModel.setData({
+                                    results: oData.results,
+                                });
+                                that.oModel.setSizeLimit(oData.results.length)
+                                var temp = JSON.stringify(oData.results)
+                                that.clsResults = JSON.parse(temp);
+                                that.byId("classList").setModel(that.oModel);
 
-                            // that.releventCls = that.clsResults
-                            //     that.validation();
-                        }
+                                // that.releventCls = that.clsResults
+                                //     that.validation();
+                            }
 
 
-                    },
-                    error: function (oData, error) {
-                        console.log(error)
-                    },
-                });
-            }else{
-                that.onClearReset()
-            }
+                        },
+                        error: function (oData, error) {
+                            console.log(error)
+                        },
+                    });
+                } else {
+                    that.onClearReset()
+                }
             },
 
 
@@ -6886,22 +7091,31 @@ sap.ui.define([
             uploadData: function (oEvent) {
                 var oFileUploader = oEvent.getSource();
                 var oFile = oEvent.getParameter("files")[0];
+                var oFileName = oFile.name
 
-                if (oFile) {
-                    var reader = new FileReader();
+                if (oFileName.includes("Class IBP Characteriestics")) {
 
-                    reader.onload = function (e) {
-                        var data = e.target.result;
-                        var workbook = XLSX.read(data, { type: 'binary' });
-                        var firstSheetName = workbook.SheetNames[0];
-                        var worksheet = workbook.Sheets[firstSheetName];
-                        var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+                    if (oFile) {
+                        var reader = new FileReader();
 
-                        // Process the JSON data
-                        that.processExcelData(jsonData);
-                    };
+                        reader.onload = function (e) {
+                            var data = e.target.result;
+                            var workbook = XLSX.read(data, { type: 'binary' });
+                            var firstSheetName = workbook.SheetNames[0];
+                            var worksheet = workbook.Sheets[firstSheetName];
+                            var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
 
-                    reader.readAsBinaryString(oFile);
+                            // Process the JSON data
+                            that.processExcelData(jsonData);
+                        };
+
+                        reader.readAsBinaryString(oFile);
+                    }
+                }
+                else {
+                    MessageToast.show("Upload valid Class IBP Characteriestics file")
+                    sap.ui.core.BusyIndicator.hide();
+                    return false
                 }
 
             },
