@@ -87,7 +87,8 @@
                                 <footer>
 
                                     <OverflowToolbar class="footer">
-                                        <u:FileUploader class="classBrowseButton" id="oSCMRelevent" sameFilenameAllowed="true" iconOnly="true" buttonOnly="true" visible="true" change="uploadData" />
+                                        <u:FileUploader class="classBrowseButton" id="oSCMRelevent" sameFilenameAllowed="true" 
+                                        iconOnly="true" buttonOnly="true" visible="true" change="uploadData" />
                                         <MenuButton id="idMenuSCM" type="Neutral" buttonMode="Split" useDefaultActionOnly="true" class="classOverlay" defaultAction="onPressBrowse" text="Upload" icon="sap-icon://upload">
                                             <menu>
                                                 <Menu>
@@ -97,7 +98,7 @@
                                         </MenuButton>
 
                                         <ToolbarSpacer/>
-                                        <Button id="idupdate" type='Emphasized' icon="sap-icon://cancel-maintenance" text="Update" press="onClassUpdate" />
+                                        <Button id="idupdate" type='Emphasized' text="Update" press="onClassUpdate" />
 
                                     </OverflowToolbar>
                                 </footer>
@@ -114,16 +115,16 @@
                                         <SearchField liveChange="onGroupSearch" placeholder="Group Name" id="groupSearch" />
                                         <ToolbarSpacer ></ToolbarSpacer>
 
-                                        <Button text="Group Maintenance" icon = "sap-icon://add-equipment" class="right-button" type="Default" press="onGroupMaintenance" />
+                                      
                                     </Toolbar>
 
                                     <Table id="Group" mode="SingleSelectMaster" items="{ path: '/results',sorter:{path:'WEIGHTAGE'}}">
                                         <columns>
                                             <Column>
-                                                <Text text="GROUP NAME" />
+                                                <Text text="Group Name" />
                                             </Column>
                                             <Column >
-                                                <Text text="WEIGHTAGE" />
+                                                <Text text="Weightage" />
                                             </Column>
 
                                             <Column hAlign="Center">
@@ -159,6 +160,7 @@
                                             </menu>
                                         </MenuButton>
                                         <ToolbarSpacer/>
+                                          <Button text="Create"  class="right-button" type="Default" press="onGroupMaintenance" />
                                     </OverflowToolbar>
                                 </footer>
 
@@ -227,8 +229,10 @@
                                 </content>
                                 <footer>
                                     <OverflowToolbar class="footer">
-                                        <u:FileUploader class="classBrowseButton" id="idoCharPrioritiz" sameFilenameAllowed="true" iconOnly="true" buttonOnly="true" visible="true" change="oCharPrioritiz" />
-                                        <MenuButton id="idMenuCharPrior" type="Neutral" buttonMode="Split" useDefaultActionOnly="true" class="classOverlay" defaultAction="onPressBrowse" text="Upload" icon="sap-icon://upload">
+                                        <u:FileUploader class="classBrowseButton" id="idoCharPrioritiz" sameFilenameAllowed="true" iconOnly="true"
+                                         buttonOnly="true" visible="true" change="oCharPrioritiz" />
+                                        <MenuButton id="idMenuCharPrior" type="Neutral" buttonMode="Split" useDefaultActionOnly="true" 
+                                        class="classOverlay" defaultAction="onPressBrowse" text="Upload" icon="sap-icon://upload">
                                             <menu>
                                                 <Menu>
                                                     <MenuItem text="{i18n>downloadTemp}" press="oCharPrioritizDownload"/>
@@ -237,7 +241,7 @@
                                         </MenuButton>
 
                                         <ToolbarSpacer/>
-                                        <Button id="idUpdate2" text="Update" icon="sap-icon://cancel-maintenance" iconFirst="true" type="Emphasized" press="oAllSave" />
+                                        <Button id="idUpdate2" text="Update" iconFirst="true" type="Emphasized" press="oAllSave" />
 
                                     </OverflowToolbar>
                                 </footer>
@@ -259,7 +263,7 @@
                                         <Button id="idShowSelected" text="Show Selected" press="handleShowSelect" />
                                     </content>
                                 </Toolbar>
-                                <Table id="prodList" items="{path: '/results'}" sticky="ColumnHeaders" rememberSelections="true" mode="MultiSelect" selectionChange="onTableItemsSelect" 
+                                <Table id="prodList" items="{path: '/results'}"  sticky="ColumnHeaders" rememberSelections="true" mode="MultiSelect" selectionChange="onTableItemsSelect" 
                             
                                 growingScrollToLoad="true" growing="true" growingThreshold="100" updateFinished="onTableScroll">
 
@@ -307,7 +311,7 @@
                                         </MenuButton>
 
                                         <ToolbarSpacer/>
-                                        <Button id="idSaveBtn" text="Save" type="Emphasized" press="onSaveChar" enabled="true" />
+                                        <Button id="idSaveBtn" text="Update" type="Emphasized" press="onSaveChar" enabled="true" />
 
                                     </OverflowToolbar>
                                 </footer>
@@ -318,7 +322,7 @@
                     </IconTabFilter>
 
                     <!-- <IBP Attributes> -->
-                    <IconTabFilter text="SCM Attributes" key="IBPAttributes">
+                    <IconTabFilter text="SCM Attributes" key="IBPAttributes" visible="false">
                         <content>
                             <Page showFooter="true" showHeader="false">
                                 <Toolbar class="stickyToolbar">
@@ -352,8 +356,8 @@
                                                 <Text text="{CHAR_NUM}" />
                                                 <Text text="{CHAR_NAME}" />
                                                 <Text text="{CHAR_DESC}" />
-                                                <!-- <CheckBox selected="{= ${CHAR_TYPE} === 'P' ? true : false }" select="onIBPatbs_Checkbox"/> -->
-                                                <CheckBox  select="onIBPatbs_Checkbox"/>
+                                                <CheckBox selected="{= ${CHAR_TYPE} === 'P' ? true : false }" select="onIBPatbs_Checkbox"/>
+                                                <!-- <CheckBox  select="onIBPatbs_Checkbox"/> -->
                                             </cells>
                                         </ColumnListItem>
                                     </items>
