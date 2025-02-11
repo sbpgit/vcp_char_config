@@ -396,7 +396,7 @@ sap.ui.define([
                     this._valueHelpDialogProd2.getId() + "-list"
                 );
                 if (that.sKey === "ClassIBP" || that.sKey === "") {
-                    //  sap.ui.core.BusyIndicator.show();
+                      sap.ui.core.BusyIndicator.show();
                     that.getOwnerComponent().getModel("BModel").read("/getUserPreferences", {
                         filters: [
                             new Filter("PARAMETER", FilterOperator.EQ, "MAX_RECORDS")
@@ -549,7 +549,7 @@ sap.ui.define([
                                 }
                             }
                         });
-                        that.charPrioritize = oData.results;
+                        that.charPrioritize = oDat1;
                     },
                     error: function (oData, error) {
                         MessageToast.show("error");
@@ -1666,6 +1666,7 @@ sap.ui.define([
                                             el.GROUP_NAME = "";
                                             el.WEIGHTAGE = 1;
                                         } else {
+                                            el.GROUP_NAME = "";
                                             el.WEIGHTAGE = -1;
                                         }
                                     }
@@ -4289,7 +4290,7 @@ sap.ui.define([
                 var tableItems = table.getItems();
                 that.oStore = [];
                 // Reset all selections
-                //  tableItems.forEach(item => item.setSelected(false));
+                 tableItems.forEach(item => item.setSelected(false));
                 // that.getEnable();
                 that.oGModel.setProperty("/flag", "");
                 that.skip = 0;
@@ -4778,7 +4779,7 @@ sap.ui.define([
                                 el.CHAR_VALUE = el.CHAR_VALUE.trim()
                             })
                             that.oFinalPartialData = matchedData
-                            that.oUpload()
+                            that.oPUpload()
                             function removeDuplicate(array, key) {
                                 var check = new Set();
                                 return array.filter(obj => !check.has(obj[key]) && check.add(obj[key]));
@@ -4792,7 +4793,7 @@ sap.ui.define([
                 });
             },
 
-            oUpload: function () {
+            oPUpload: function () {
                 var table = that.byId("prodList");
                 var tableItems = table.getItems();
 
