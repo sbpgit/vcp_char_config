@@ -85,7 +85,6 @@
                                     </Table>
                                 </content>
                                 <footer>
-
                                     <OverflowToolbar class="footer">
                                         <u:FileUploader class="classBrowseButton" id="oSCMRelevent" sameFilenameAllowed="true" 
                                         iconOnly="true" buttonOnly="true" visible="true" change="uploadData" />
@@ -167,6 +166,7 @@
                             </Page>
                         </content>
                     </IconTabFilter>
+                    
                     <!-- <Characteristic Prioritization> -->
                     <IconTabFilter text="Characteristic Prioritization" key="CharacteristicPriority">
                         <content>
