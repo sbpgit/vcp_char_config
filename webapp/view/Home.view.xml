@@ -286,7 +286,7 @@
                                         </Column>
                                     </columns>
                                     <items>
-                                        <ColumnListItem id="_IDGenColumnListItem1">
+                                        <ColumnListItem id="_IDGenColumnListItem1" selected="{= ${selected} === 'true' ? true : false }">
                                             <cells>
                                                 <ObjectIdentifier title="{CHAR_DESC}" text="{CHAR_NAME}" />
                                                 <ObjectIdentifier title="{CHAR_VALUE}" text="{CHARVAL_DESC}" />

@@ -404,7 +404,7 @@ sap.ui.define([
                         success: function (oData) {
                             that.oGModel.setProperty("/MaxCount", oData.results[0].PARAMETER_VALUE);
 
-                            that.loadIbpClassCharacteristics()
+                            // that.loadIbpClassCharacteristics()
                             // Class IBP Characteristics, works for Configurable Product Value Help F4 BOX
                             that.loadDataforClas();
 
@@ -442,13 +442,12 @@ sap.ui.define([
 
                             that.byId("classSearch").setValue("")
                             let aItems = that.removeDuplicateforProdClas(that.oclassIbp, "PRODUCT_ID")
+                            that.oUsePartialDownload = aItems
                             var aModel = new JSONModel()
                             aModel.setData({
                                 aItems: aItems
                             })
                             sap.ui.getCore().byId("idClasProd").setModel(aModel)
-
-
                         }
                         sap.ui.core.BusyIndicator.hide();
 
@@ -613,6 +612,11 @@ sap.ui.define([
             },
 
             onGo: function () {
+                var oProd = that.byId("idCommon").getValue();
+                if (oProd.length === 0) {
+                    MessageToast.show("Please select product..")
+                    return false;
+                }
                 if (that.sKey === "ClassIBP" || that.sKey === "") {
                     that.loadIbp();
                 }
@@ -691,6 +695,7 @@ sap.ui.define([
                     },
                 });
             },
+
             // oPening Group Fragment
             onGroupMaintenance: function (oEv) {
                 var prod = that.byId("idCommon").getValue();
@@ -714,7 +719,7 @@ sap.ui.define([
                     that.groupDialog.open();
                 }
                 else {
-                    MessageToast.show("Please Select Product.")
+                    MessageToast.show("Please Select Product..")
                 }
             },
 
@@ -1833,6 +1838,11 @@ sap.ui.define([
 
 
             oAllSave: function () {
+                var product = that.byId("idCommon").getValue();
+                if (product.length === 0) {
+                    MessageToast.show("No data for update..")
+                    return false;
+                }
                 const oInitialData = that.CharPrior
                 const allData = that.oSeq
 
@@ -3894,33 +3904,11 @@ sap.ui.define([
 
             },
 
-
-
-            // Partial Product Characteristics app save functionality
             onSaveChar: function () {
                 var that = this;
-                that.getEnable();
-                that.oStore = [];
-                if (that.oAllfalse = "F") {
-                    that.oPreviousSelection = [];
-                    that.oAllfalse = ""
-                }
-                if (that.unselected.length > 0) {
-                    that.oPreviousSelection = that.oPreviousSelection.filter(groupItem =>
-                        !that.unselected.some(delItem =>
-                            delItem.PRODUCT_ID === groupItem.PRODUCT_ID &&
-                            delItem.CHAR_NUM === groupItem.CHAR_NUM &&
-                            delItem.CHAR_NAME === groupItem.CHAR_NAME
-                        )
-                    );
-                }
-                that.oPreviousSelection = that.oPreviousSelection.filter(obj => obj.CHAR_NUM);
-                // sap.ui.core.BusyIndicator.show();
+                //    that.getEnable();
 
                 var finlData = [];
-                if (that.oPreviousSelection.length > 1) {
-                    finlData = that.oPreviousSelection
-                }
                 // var selectedItems = that.selectedChars;
                 var selectedItems = that.byId("prodList").getSelectedItems();
 
@@ -3928,8 +3916,7 @@ sap.ui.define([
 
                 // Collect data based on selected items
                 if (selectedItems.length === 0) {
-                    // finlData = that.oListModel.oData.results;
-                    // sap.ui.core.BusyIndicator.hide();
+
                     let initData = {
                         PRODUCT_ID: that.oItem,
                         CHAR_NAME: "",
@@ -3939,8 +3926,6 @@ sap.ui.define([
 
                     };
                     finlData.push(initData);
-
-                    //   return;
                 } else {
                     for (var i = 0; i < selectedItems.length; i++) {
                         let sChar = selectedItems[i].getCells()[0].getText(),
@@ -3952,29 +3937,21 @@ sap.ui.define([
                                     PRODUCT_ID: that.oItem,
                                     CHAR_NAME: el.CHAR_NAME,
                                     CHAR_DESC: el.CHAR_DESC,
-                                    CHAR_VALUE: el.CHAR_VALUE.trim(),
+                                    CHAR_VALUE: el.CHAR_VALUE,
                                     CHARVAL_DESC: el.CHARVAL_DESC,
                                     CHAR_NUM: el.CHAR_NUM,
-                                    CHARVAL_NUM: el.CHARVAL_NUM.trim(),
+                                    CHARVAL_NUM: el.CHARVAL_NUM,
                                     CLASS_NAME: el.CLASS_NAME,
                                     CLASS_DESC: el.CLASS_DESC,
                                 };
                                 finlData.push(initData);
                             });
                         }
-                        finlData = finlData.filter(obj => obj.CHAR_NUM);
                     }
                 }
-                // var oAlfinal = [];
-                // var abj = {}
-                // for (var i = 0; i < finlData.length; i++) {
-                //     abj.PRODUCT_ID = finlData[i].PRODUCT_ID
-                //     abj.CHAR_NUM = finlData[i].CHAR_NUM
-                //     oAlfinal.push(abj)
-                // }
 
                 // Show a warning dialog if there are checked items
-                //       if (checkedItems.length > 0) {
+                //    if (checkedItems.length > 0) {
                 sap.m.MessageBox.warning("Partial Products Configuration has already been used in planning. Any modification would lead to discrepancies and needs reprocessing. Would you like to continue with the change?", {
                     title: "Warning",
                     actions: [sap.m.MessageBox.Action.YES, sap.m.MessageBox.Action.NO],
@@ -3989,11 +3966,6 @@ sap.ui.define([
                                 },
                                 success: function (oData) {
                                     that.oPreviousSelection = [];
-
-                                    that.oPartialSelected = oData.results
-                                    for (var i = 0; i < that.oPartialSelected.length; i++) {
-                                        delete that.oPartialSelected[i].__metadata
-                                    }
                                     that.partialProd = [];
                                     that.byId("idPartialSearch").setValue();
                                     that.byId("prodList").getBinding("items").filter([]);
@@ -4011,15 +3983,165 @@ sap.ui.define([
                             });
                         } else if (oAction === sap.m.MessageBox.Action.NO) {
                             // Do nothing or handle cancellation
-                            that.onGetData3();
                             sap.ui.core.BusyIndicator.hide();
                             MessageToast.show("Operation canceled. No changes were saved.");
                         }
                     }
                 });
-                //       }
-
+                //  }
+                // else {
+                //     // If no items are checked, directly save the data
+                //     that.getOwnerComponent().getModel("BModel").callFunction("/getProductCharVal", {
+                //         method: "GET",
+                //         urlParameters: {
+                //             Flag: "C",
+                //             PRODATA: JSON.stringify(finlData)
+                //         },
+                //         success: function (oData) {
+                //             that.byId("idSearch").setValue();
+                //             that.byId("prodList").getBinding("items").filter([]);
+                //             sap.ui.core.BusyIndicator.hide();
+                //             MessageToast.show("Successfully saved");
+                //             that.onGetData3(); 
+                //         },
+                //         error: function (error) {
+                //             sap.ui.core.BusyIndicator.hide();
+                //             MessageToast.show("Error occurred while saving.");
+                //         }
+                //     });
+                // }
             },
+
+
+            // Partial Product Characteristics app save functionality
+            // onSaveChar: function () {
+            //     var that = this;
+            //     var oProd = that.byId("idCommon").getValue();
+            //     if (oProd.length === 0) {
+            //         MessageToast.show("No data for update..")
+            //         return false;
+            //     }
+            //     that.getEnable();
+            //     that.oStore = [];
+            //     // if (that.oAllfalse = "F") {
+            //     //     that.oPreviousSelection = [];
+            //     //     that.oAllfalse = ""
+            //     // }
+            //     // if (that.unselected.length > 0) {
+            //     //     that.oPreviousSelection = that.oPreviousSelection.filter(groupItem =>
+            //     //         !that.unselected.some(delItem =>
+            //     //             delItem.PRODUCT_ID === groupItem.PRODUCT_ID &&
+            //     //             delItem.CHAR_NUM === groupItem.CHAR_NUM &&
+            //     //             delItem.CHAR_NAME === groupItem.CHAR_NAME
+            //     //         )
+            //     //     );
+            //     // }
+            //     // that.oPreviousSelection = that.oPreviousSelection.filter(obj => obj.CHAR_NUM);
+            //     // sap.ui.core.BusyIndicator.show();
+
+            //     var finlData = [];
+            //     if (that.oPreviousSelection.length > 1) {
+            //         finlData = that.oPreviousSelection
+            //     }
+            //     // var selectedItems = that.selectedChars;
+            //     var selectedItems = that.byId("prodList").getSelectedItems();
+
+            //     var checkedItems = that.getView().byId("prodList").getSelectedItems();
+
+            //     // Collect data based on selected items
+            //     if (selectedItems.length === 0) {
+            //         // finlData = that.oListModel.oData.results;
+            //         // sap.ui.core.BusyIndicator.hide();
+            //         let initData = {
+            //             PRODUCT_ID: that.oItem,
+            //             CHAR_NAME: "",
+            //             CHAR_VALUE: "",
+            //             CHAR_NUM: "",
+            //             CLASS_NAME: ""
+
+            //         };
+            //         finlData.push(initData);
+
+            //         //   return;
+            //     } else {
+            //         for (var i = 0; i < selectedItems.length; i++) {
+            //             let sChar = selectedItems[i].getCells()[0].getText(),
+            //                 sClassName = selectedItems[i].getCells()[3].getText();
+            //             let aData = that.loadArray.filter(f => f.CHAR_NAME === sChar && f.CLASS_NAME === sClassName);
+            //             if (aData.length > 0) {
+            //                 aData.forEach(el => {
+            //                     let initData = {
+            //                         PRODUCT_ID: that.oItem,
+            //                         CHAR_NAME: el.CHAR_NAME,
+            //                         CHAR_DESC: el.CHAR_DESC,
+            //                         CHAR_VALUE: el.CHAR_VALUE.trim(),
+            //                         CHARVAL_DESC: el.CHARVAL_DESC,
+            //                         CHAR_NUM: el.CHAR_NUM,
+            //                         CHARVAL_NUM: el.CHARVAL_NUM.trim(),
+            //                         CLASS_NAME: el.CLASS_NAME,
+            //                         CLASS_DESC: el.CLASS_DESC,
+            //                     };
+            //                     finlData.push(initData);
+            //                 });
+            //             }
+            //             finlData = finlData.filter(obj => obj.CHAR_NUM);
+            //         }
+            //     }
+            //     // var oAlfinal = [];
+            //     // var abj = {}
+            //     // for (var i = 0; i < finlData.length; i++) {
+            //     //     abj.PRODUCT_ID = finlData[i].PRODUCT_ID
+            //     //     abj.CHAR_NUM = finlData[i].CHAR_NUM
+            //     //     oAlfinal.push(abj)
+            //     // }
+
+            //     // Show a warning dialog if there are checked items
+            //     //       if (checkedItems.length > 0) {
+            //     sap.m.MessageBox.warning("Partial Products Configuration has already been used in planning. Any modification would lead to discrepancies and needs reprocessing. Would you like to continue with the change?", {
+            //         title: "Warning",
+            //         actions: [sap.m.MessageBox.Action.YES, sap.m.MessageBox.Action.NO],
+            //         onClose: function (oAction) {
+            //             if (oAction === sap.m.MessageBox.Action.YES) {
+            //                 // Save data only if user clicked "Yes"
+            //                 that.getOwnerComponent().getModel("BModel").callFunction("/getProductCharVal", {
+            //                     method: "GET",
+            //                     urlParameters: {
+            //                         Flag: "C",
+            //                         PRODATA: JSON.stringify(finlData)
+            //                     },
+            //                     success: function (oData) {
+            //                         that.oPreviousSelection = [];
+
+            //                         that.oPartialSelected = oData.results
+            //                         for (var i = 0; i < that.oPartialSelected.length; i++) {
+            //                             delete that.oPartialSelected[i].__metadata
+            //                         }
+            //                         that.partialProd = [];
+            //                         that.byId("idPartialSearch").setValue();
+            //                         that.byId("prodList").getBinding("items").filter([]);
+            //                         sap.ui.core.BusyIndicator.hide();
+            //                         MessageToast.show("Successfully saved");
+            //                         that.partialFlag = "X";
+            //                         that.cFlag = "";
+            //                         //   that.oSave()
+            //                         that.onGetData3();
+            //                     },
+            //                     error: function (error) {
+            //                         sap.ui.core.BusyIndicator.hide();
+            //                         MessageToast.show("Error occurred while saving.");
+            //                     }
+            //                 });
+            //             } else if (oAction === sap.m.MessageBox.Action.NO) {
+            //                 // Do nothing or handle cancellation
+            //                 that.onGetData3();
+            //                 sap.ui.core.BusyIndicator.hide();
+            //                 MessageToast.show("Operation canceled. No changes were saved.");
+            //             }
+            //         }
+            //     });
+            //     //       }
+
+            // },
 
             /*  ===============> All functions of Partial Product Characteristics  <======================
             
@@ -4027,7 +4149,7 @@ sap.ui.define([
                   ====================> Partial Production Tab <======================*/
 
 
-            onGetData3: function () {
+            onGetData31: function () {
                 var table = that.byId("prodList");
                 var tableItems = table.getItems();
                 that.oStore = [];
@@ -4060,20 +4182,22 @@ sap.ui.define([
                             PRODATA: JSON.stringify(finalData)
                         },
                         success: function (oData) {
+                            var ogetData = JSON.parse(oData.getProductCharVal)
+                            //  that.Loadflag = true
                             that.cFlag = ""
                             sap.ui.core.BusyIndicator.hide();
-                            oData.results.forEach(el => {
+                            ogetData.forEach(el => {
                                 el.CHARVAL_NUM = el.CHARVAL_NUM.trim()
                                 el.CHAR_VALUE = el.CHAR_VALUE.trim()
                             })
 
-                            if (oData.results.length === 0) {
+                            if (ogetData.length === 0) {
                                 MessageToast.show("No characteristics available for the selected product");
                             }
                             else {
-                                that.loadArray = oData.results;
+                                that.loadArray = ogetData;
                                 //   that.partialProd = oData.results;
-                                that.productChar = oData.results;
+                                that.productChar = ogetData;
                                 that.AvailChars = removeDuplicate(that.productChar, 'CHAR_NAME');
                                 that.oListModel.setData({ results: that.AvailChars });
                                 that.byId("prodList").setModel(that.oListModel);
@@ -4081,10 +4205,9 @@ sap.ui.define([
                                     var check = new Set();
                                     return array.filter(obj => !check.has(obj[key]) && check.add(obj[key]));
                                 }
-                                //      that.loadData1(0, 5000);
                             }
 
-                            that.loadData();
+                            //       that.loadData();
                         },
                         error: function (error) {
                             sap.ui.core.BusyIndicator.hide();
@@ -4099,31 +4222,114 @@ sap.ui.define([
                 }
             },
 
+
+            onGetData3: function () {
+                var table = that.byId("prodList");
+                var tableItems = table.getItems();
+                that.oStore = [];
+                // Reset all selections
+                // tableItems.forEach(item => item.setSelected(false));
+                that.oGModel.setProperty("/flag", "");
+                that.skip = 0;
+                that.byId("idPartialSearch").setValue("");
+                var selectedItem = that.byId("idCommon").getValue();
+                if (selectedItem !== "") {
+                    sap.ui.core.BusyIndicator.show();
+
+                    that.byId("idSaveBtn").setEnabled(true);
+
+                    that.byId("idPartialSearch").setValue("");
+                    sap.ui.core.BusyIndicator.show();
+                    that.loadArray = [];
+                    that.AvailChars = [];
+                    var data = {
+                        PRODUCT_ID: selectedItem
+                    }, finalData = [];
+                    finalData.push(data);
+                    sap.ui.core.BusyIndicator.show();
+                    that.getOwnerComponent().getModel("BModel").callFunction("/getProductCharVal", {
+                        method: "GET",
+                        urlParameters: {
+                            Flag: "X",
+                            PRODATA: JSON.stringify(finalData)
+                        },
+                        success: function (oData) {
+                            var ogetData = JSON.parse(oData.getProductCharVal);
+                            that.cFlag = "";
+                            sap.ui.core.BusyIndicator.hide();
+                            ogetData.forEach(el => {
+                                el.CHARVAL_NUM = el.CHARVAL_NUM.trim();
+                                el.CHAR_VALUE = el.CHAR_VALUE.trim();
+                            });
+
+                            if (ogetData.length === 0) {
+                                MessageToast.show("No characteristics available for the selected product");
+                            } else {
+                                that.loadArray = ogetData;
+                                that.productChar = ogetData;
+                                that.AvailChars = removeDuplicate(that.productChar, 'CHAR_NAME');
+                                that.oListModel.setData({ results: that.AvailChars });
+                                that.byId("prodList").setModel(that.oListModel);
+
+                                // Function to remove duplicates
+                                function removeDuplicate(array, key) {
+                                    var check = new Set();
+                                    return array.filter(obj => !check.has(obj[key]) && check.add(obj[key]));
+                                }
+
+                                // Set selected rows based on "selected" property in ogetData
+                                // tableItems.forEach(item => {
+                                //     var itemData = item.getBindingContext().getObject(); // Get row data
+                                //     var matchedItem = ogetData.find(data => 
+                                //         data.PRODUCT_ID === itemData.PRODUCT_ID &&
+                                //         data.CLASS_NAME === itemData.CLASS_NAME &&
+                                //         data.CHAR_NAME === itemData.CHAR_NAME
+                                //     );
+                                //     if (matchedItem && matchedItem.selected === true) {
+                                //         item.setSelected(true); // Set row as selected
+                                //     }
+                                // });
+                            }
+                        },
+                        error: function (error) {
+                            sap.ui.core.BusyIndicator.hide();
+                            MessageToast.show("Error");
+                        },
+                    });
+                } else {
+                    sap.ui.core.BusyIndicator.hide();
+                    that.byId("idSaveBtn").setEnabled(true);
+                }
+            },
+
+
             loadData: function (skip, top) {
                 var initData1 = {}, finlData1 = [];
                 initData1 = {
                     PRODUCT_ID: that.oItem
                 };
                 finlData1.push(initData1);
-                this.getOwnerComponent().getModel("BModel").callFunction("/getProductCharVal", {
+                //     finlData1 = that.oUsePartialDownload
+                that.getOwnerComponent().getModel("BModel").callFunction("/getProductCharVal", {
                     method: "GET",
                     urlParameters: {
                         Flag: "Y",
                         PRODATA: JSON.stringify(finlData1)
                     },
                     success: function (oData) {
+                        var ogetData = JSON.parse(oData.getProductCharVal)
                         that.unselected = []
-                        that.oPreviousSelection = oData.results
+                        that.oPreviousSelection = ogetData //oData.results
 
                         that.selectedChars = [];
-                        if (oData.results.length === 0) {
+                        if (ogetData.length === 0) {
                             sap.ui.core.BusyIndicator.hide();
                             that.partialProd = [];
                             that.partialFlag = "";
                             return;
                         }
 
-                        that.selectedChars = oData.results;
+                        that.selectedChars = ogetData;
                         let aDistinct = that.removeDuplicate(that.selectedChars, 'CHAR_NAME');
                         that.forDownattr = aDistinct
                         //  that.oSave()
@@ -4202,26 +4408,78 @@ sap.ui.define([
             },
 
 
+            // onTableItemsSelect: function (oEvent) {
+            //     var Allselect = oEvent.getParameters().selectAll
+            //     var oList = oEvent.getParameters().listItems.length
+            //     var oTbaLength = that.byId("prodList").getItems().length
+            //     // if (oList === oTbaLength) {
+            //     //     if (Allselect === false) {
+            //     //         that.oAllfalse = "F"
+            //     //     }
+
+            //     // }
+            //     // var oEntry = {};
+            //     // const item = oEvent.getParameters().listItem;
+            //     // const bindingContext = item.getBindingContext();
+
+
+            //     // const sPath = bindingContext.sPath;
+            //     // const checked = item.getSelected();
+            //     // const oObject = bindingContext.getObject();
+            //     // that.unselected.push(oObject)
+
+            //     if (oEvent.getParameter("selectAll")) {
+            //         that.fullChars = that.AvailChars;
+            //         that.selectedChars = [];
+            //         for (var i = 0; i < that.AvailChars.length; i++) {
+            //             oEntry = {
+            //                 PRODUCT_ID: that.oItem,
+            //                 CHAR_NAME: that.AvailChars[i].CHAR_NAME,
+            //                 CHAR_DESC: that.AvailChars[i].CHAR_DESC,
+            //                 CLASS_NAME: that.AvailChars[i].CLASS_NAME,
+            //                 CLASS_DESC: that.AvailChars[i].CLASS_DESC
+            //             }
+            //             that.selectedChars.push(oEntry);
+            //         }
+            //         sap.ui.core.BusyIndicator.hide();
+            //     }
+            //     else {
+            //         that.selectedChars = [];
+            //         var selected = oEvent.getParameters().selected;
+            //         if (selected) {
+            //             oEntry = {
+            //                 PRODUCT_ID: that.oItem,
+            //                 CHAR_NAME: oEvent.getParameters().listItem.getCells()[0].getText(),
+            //                 CHAR_DESC: oEvent.getParameters().listItem.getCells()[0].getTitle(),
+            //                 CLASS_NAME: oEvent.getParameters().listItem.getCells()[3].getText(),
+            //                 CLASS_DESC: oEvent.getParameters().listItem.getCells()[3].getTitle()
+            //             }
+            //             that.selectedChars.push(oEntry);
+            //             sap.ui.core.BusyIndicator.hide();
+            //         }
+            //         else {
+            //             var unSelectAll = oEvent.getParameters().listItems;
+            //             if (unSelectAll.length === that.AvailChars.length) {
+            //                 that.selectedChars = [];
+            //             }
+            //             else {
+            //                 that.selectedChars = [];
+            //                 var selectedId = oEvent.getParameters().listItem.getCells()[0].getText();
+            //                 that.selectedChars = removeElementById(that.selectedChars, selectedId);
+            //                 function removeElementById(array, idToRemove) {
+            //                     return array.filter(function (obj) {
+            //                         return obj.CHAR_NAME !== idToRemove;
+            //                     });
+            //                 }
+            //             }
+            //             sap.ui.core.BusyIndicator.hide();
+            //         }
+            //     }
+            // },
+
+
             onTableItemsSelect: function (oEvent) {
-                var Allselect = oEvent.getParameters().selectAll
-                var oList = oEvent.getParameters().listItems.length
-                var oTbaLength = that.byId("prodList").getItems().length
-                if (oList === oTbaLength) {
-                    if (Allselect === false) {
-                        that.oAllfalse = "F"
-                    }
-
-                }
                 var oEntry = {};
-                const item = oEvent.getParameters().listItem;
-                const bindingContext = item.getBindingContext();
-
-
-                const sPath = bindingContext.sPath;
-                const checked = item.getSelected();
-                const oObject = bindingContext.getObject();
-                that.unselected.push(oObject)
-
                 if (oEvent.getParameter("selectAll")) {
                     that.fullChars = that.AvailChars;
                     that.selectedChars = [];
@@ -4359,23 +4617,7 @@ sap.ui.define([
 
             /* Download & upload functionalities for Partial Products */
 
-            oPartiaDownload: function () {
-
-
-                // that.AvailChars.forEach(availChar => {
-                //     const isSelected = that.selectedChars.some(selectedChar =>
-                //         selectedChar.PRODUCT_ID === availChar.PRODUCT_ID &&
-                //         selectedChar.CHAR_NAME === availChar.CHAR_NAME &&
-                //         selectedChar.CLASS_NAME === availChar.CLASS_NAME
-                //     );
-                //     //  availChar.SELECTED = isSelected; // Assign true or false
-                //     availChar.SELECTED = isSelected.toString().toUpperCase();
-                // });
-                // var oGProduct = that.byId("idCommon").getValue();
-                // if (!oGProduct) {
-                //     MessageToast.show("Select product for downlaod")
-                //     return false
-                // }
+            oSaved_Data: function () {
                 this.getOwnerComponent().getModel("BModel").callFunction("/getProductCharVal", {
                     method: "GET",
                     urlParameters: {
@@ -4384,24 +4626,47 @@ sap.ui.define([
                     },
                     success: function (oData) {
                         sap.ui.core.BusyIndicator.hide();
-                        if (oData.results.length === 0) {
+                        that.oAllselectedChars = oData.results
+
+                    },
+                    error: function (error) {
+                        sap.ui.core.BusyIndicator.hide();
+                        MessageToast.show("error");
+                    },
+                });
+            },
+
+            oPartiaDownload: function () {
+                sap.ui.core.BusyIndicator.show();
+                this.getOwnerComponent().getModel("BModel").callFunction("/getProductCharVal", {
+                    method: "GET",
+                    urlParameters: {
+                        Flag: "A",
+                        PRODATA: JSON.stringify("{}")
+                    },
+                    success: function (oData) {
+                        sap.ui.core.BusyIndicator.hide();
+                        var ogetDowndata = JSON.parse(oData.getProductCharVal)
+                        if (ogetDowndata.length === 0) {
                             MessageToast.show("No data for download");
                         }
                         else {
 
-                            var oAllData = oData.results
-                            that.selectedChars
-
-                            oAllData.forEach(availChar => {
-                                const isSelected = that.selectedChars.some(selectedChar =>
-                                    selectedChar.PRODUCT_ID === availChar.PRODUCT_ID &&
-                                    selectedChar.CHAR_NAME === availChar.CHAR_NAME &&
-                                    selectedChar.CLASS_NAME === availChar.CLASS_NAME
-                                );
-                                //  availChar.SELECTED = isSelected; // Assign true or false
-                                availChar.SELECTED = isSelected.toString().toUpperCase();
-                            });
-
+                            var oAlldndata = []
+                            var oAlldndata = [];
+                            for (var i = 0; i < ogetDowndata.length; i++) {
+                                var customerGrpObj =
+                                {
+                                    "PRODUCT_ID": ogetDowndata[i].PRODUCT_ID,
+                                    "CHAR_NAME": ogetDowndata[i].CHAR_NAME,
+                                    "CLASS_NAME": ogetDowndata[i].CLASS_NAME,
+                                    "SELECTED": ogetDowndata[i].selected.toUpperCase()
+                                }
+                                oAlldndata.push(customerGrpObj)
+                            }
+                            var akeys = ["PRODUCT_ID", "CHAR_NAME"];
+                            let aItems = that.removeDupScmrelevent(oAlldndata, akeys);
+                            sap.ui.core.BusyIndicator.hide();
                             var exportToExcel = function () {
                                 var aCols = [
                                     { label: 'PRODUCT_ID', property: 'PRODUCT_ID', width: 30 },
@@ -4413,7 +4678,7 @@ sap.ui.define([
                                     workbook: {
                                         columns: aCols,
                                     },
-                                    dataSource: oAllData,
+                                    dataSource: aItems,
                                     fileName: 'Partial Products.xlsx',
                                     worker: true
                                 };
@@ -4438,33 +4703,82 @@ sap.ui.define([
                 });
 
             },
-
+            //// ============> working perfect <=====================/////////
             /* uploading functionality for Partial products */
             oPartialUpload: function (oEvent) {
-                var oFileUploader = oEvent.getSource();
-                var oFile = oEvent.getParameter("files")[0];
-                var oFilename = oFile.name
+                sap.ui.core.BusyIndicator.show();
+                that.getOwnerComponent().getModel("BModel").callFunction("/getProductCharVal", {
+                    method: "GET",
+                    urlParameters: {
+                        Flag: "A",
+                        PRODATA: JSON.stringify("{}")
+                    },
+                    success: function (oData) {
+                        sap.ui.core.BusyIndicator.hide();
+                        var ogetDowndata = JSON.parse(oData.getProductCharVal)
+
+                        if (ogetDowndata.length === 0) {
+                            MessageToast.show("No data for download");
+                        }
+                        else {
+                            var oAlldndata = []
+                            for (var i = 0; i < ogetDowndata.length; i++) {
+                                var customerGrpObj =
+                                {
+                                    // "PRODUCT_ID": ogetDowndata[i].PRODUCT_ID,
+                                    // "CHAR_NAME": ogetDowndata[i].CHAR_NAME,
+                                    // "CLASS_NAME": ogetDowndata[i].CLASS_NAME,
+                                    // "SELECTED": ogetDowndata[i].selected.toUpperCase()
+                                    "PRODUCT_ID": ogetDowndata[i].PRODUCT_ID,
+                                    "CHARVAL_DESC": ogetDowndata[i].CHARVAL_DESC,
+                                    "CHARVAL_NUM": ogetDowndata[i].CHARVAL_NUM,
+                                    "CHAR_DESC": ogetDowndata[i].CHAR_DESC,
+                                    "CHAR_NUM": ogetDowndata[i].CHAR_NUM,
+                                    "CHAR_VALUE": ogetDowndata[i].CHAR_VALUE,
+                                    "CLASS_DESC": ogetDowndata[i].CLASS_DESC,
+                                    "CHAR_NAME": ogetDowndata[i].CHAR_NAME,
+                                    "CLASS_NAME": ogetDowndata[i].CLASS_NAME,
+                                    "SELECTED": ogetDowndata[i].selected.toUpperCase()
+                                }
+                                oAlldndata.push(customerGrpObj)
+                            }
+                            var akeys = ["PRODUCT_ID", "CHAR_NAME"];
+                            let aItems1 = that.removeDupScmrelevent(oAlldndata, akeys);
+                            that.oPartialMainata = aItems1
+
+                            var oFileUploader = oEvent.getSource();
+                            var oFile = oEvent.getParameter("files")[0];
+                            var oFilename = oFile.name
 
 
-                if (oFilename.includes("Partial Products")) {
-                    if (oFile) {
-                        var reader = new FileReader();
-                        reader.onload = function (e) {
-                            var data = e.target.result;
-                            var workbook = XLSX.read(data, { type: 'binary' });
-                            var firstSheetName = workbook.SheetNames[0];
-                            var worksheet = workbook.Sheets[firstSheetName];
-                            var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
-                            // Process the JSON data
-                            that.oPartialProd(jsonData);
-                        };
-                        reader.readAsBinaryString(oFile);
-                    }
-                } else {
-                    MessageToast.show("Upload valid Partial Products characteristics file")
-                    sap.ui.core.BusyIndicator.hide();
-                    return false;
-                }
+                            if (oFilename.includes("Partial Products")) {
+                                if (oFile) {
+                                    var reader = new FileReader();
+                                    reader.onload = function (e) {
+                                        var data = e.target.result;
+                                        var workbook = XLSX.read(data, { type: 'binary' });
+                                        var firstSheetName = workbook.SheetNames[0];
+                                        var worksheet = workbook.Sheets[firstSheetName];
+                                        var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+                                        // Process the JSON data
+                                        that.oPartialProd(jsonData);
+                                    };
+                                    reader.readAsBinaryString(oFile);
+                                }
+                            } else {
+                                MessageToast.show("Upload valid Partial Products characteristics file")
+                                sap.ui.core.BusyIndicator.hide();
+                                return false;
+                            }
+                        }
+                    },
+                    error: function (error) {
+                        sap.ui.core.BusyIndicator.hide();
+                        MessageToast.show("error");
+                    },
+                });
+
+
 
 
             },
@@ -4514,41 +4828,112 @@ sap.ui.define([
                     oPartialProdData.push(customerGrpObj)
                 }
 
-                let selectedProducts = oPartialProdData.filter(item => item.SELECTED === "TRUE");
 
-                that.oPartUploadData = selectedProducts;
+                //     let selectedProducts = oPartialProdData.filter(item => item.SELECTED === "TRUE");
+                //   that.oPartUploadData = selectedProducts;
+
+                var oMain = that.oPartialMainata //main data
+                var oUploaddata = oPartialProdData // upload data
+
+
+                // var oDuplicates = []
+                // oDuplicates = oUploaddata.filter(groupItem =>
+                //     !oMain.some(delItem =>
+                //         delItem.PRODUCT_ID === groupItem.PRODUCT_ID &&
+                //         delItem.CLASS_NAME === groupItem.CLASS_NAME &&
+                //         delItem.CHAR_NAME === groupItem.CHAR_NAME &&
+                //         delItem.SELECTED === groupItem.SELECTED
+                //     )
+                // );
+                var oChanged1 = oUploaddata.filter(item => item.SELECTED === "TRUE");
+                var oChangedData = []
+                //    oChangedData = removeDuplicate(oDuplicates, 'CHAR_NAME');
+                that.oChangedData = oChanged1 //oChangedData
+                function removeDuplicate(array, key) {
+                    var check = new Set();
+                    return array.filter(obj => !check.has(obj[key]) && check.add(obj[key]));
+                }
+
+                // var allFinal = []
+                // for (var i = 0; i < oChangedData.length; i++) {
+                //     for (var n = 0; n < oMain.length; n++) {
+                //         if (oChangedData[i].PRODUCT_ID === oMain[n].PRODUCT_ID &&
+                //             oChangedData[i].CLASS_NAME === oMain[n].CLASS_NAME &&
+                //             oChangedData[i].CHAR_NAME === oMain[n].CHAR_NAME
+                //         ) {
+                //             allFinal.push(oMain[n])
+                //         }
+                //     }
+                // }
+                // var oFnaldata = []
+                // for (var i = 0; i < allFinal.length; i++) {
+                //     for (var n = 0; n < oChangedData.length; n++) {
+                //         if (allFinal[i].PRODUCT_ID === oChangedData[n].PRODUCT_ID &&
+                //             allFinal[i].CLASS_NAME === oChangedData[n].CLASS_NAME &&
+                //             allFinal[i].CHAR_NAME === oChangedData[n].CHAR_NAME &&
+                //             allFinal[i].SELECTED != oChangedData[n].SELECTED
+                //         ) {
+                //             allFinal[i].CHARVAL_NUM = allFinal[i].CHARVAL_NUM.trim()
+                //             allFinal[i].CHAR_VALUE = allFinal[i].CHAR_VALUE.trim()
+                //             allFinal[i].SELECTED = oChangedData[n].SELECTED
+                //         }
+                //     }
+                // }
+                // allFinal.forEach(el => {
+                //     delete (el.SELECTED)
+                // })
+
+                //    that.oFinalPartialData = allFinal
+                //     that.oPUpload();
 
 
                 var data = {
                     PRODUCT_ID: oPartialProdData[0].PRODUCT_ID
                 }, finalData = [];
                 finalData.push(data);
+
+                var oFinData = []
+                for (var i = 0; i < oChanged1.length; i++) {
+                    var obj = {
+                        PRODUCT_ID: oChanged1[i].PRODUCT_ID
+                    }
+                    oFinData.push(obj)
+                }
+                var finalData = removeDuplicateProd(oFinData, 'PRODUCT_ID');
+                function removeDuplicateProd(array, key) {
+                    var check = new Set();
+                    return array.filter(obj => !check.has(obj[key]) && check.add(obj[key]));
+                }
+
                 this.getOwnerComponent().getModel("BModel").callFunction("/getProductCharVal", {
                     method: "GET",
                     urlParameters: {
-                        Flag: "X",
-                        PRODATA: JSON.stringify(finalData)
+                        Flag: "A",
+                        PRODATA: JSON.stringify(oFinData)
                     },
                     success: function (oData) {
                         sap.ui.core.BusyIndicator.hide();
-                        if (oData.results.length === 0) {
+                        var oDat = JSON.parse(oData.getProductCharVal)
+                        if (oDat.length === 0) {
                             MessageToast.show("No characteristics available for the selected product");
                         }
                         else {
                             // that.loadArray = oData.results;
-                            that.partprod = oData.results;
+                            that.partprod = oDat;
                             that.partprod.forEach(el => {
 
                                 delete (el.IBPCHAR_CHK)
                                 delete (el.MULTI_CHAR)
                                 delete (el.CLASS_NUM)
+                                delete (el.selected)
                                 delete (el.__metadata)
+                            
 
                             })
-                            that.oParti = removeDuplicate(that.partprod, 'CHAR_NAME');
+                            that.oParti = that.partprod //removeDuplicate(that.partprod, 'CHAR_NAME'); //    that.oPartUploadData
 
                             let matchedData = that.oParti.filter(availChar =>
-                                that.oPartUploadData.some(partialData =>
+                                that.oChangedData.some(partialData =>
                                     availChar.PRODUCT_ID === partialData.PRODUCT_ID &&
                                     availChar.CHAR_NAME === partialData.CHAR_NAME &&
                                     availChar.CLASS_NAME === partialData.CLASS_NAME
@@ -4613,6 +4998,12 @@ sap.ui.define([
                     },
                 });
             },
+
+            //// ============> working perfect <=====================/////////
+
+
+
+
 
             oSCMAttribute: function (aData) {
                 var aHeaders = aData[0];
@@ -6030,6 +6421,12 @@ sap.ui.define([
                     that.byId("classSearch").setValue("");
                     that.byId("classList").setModel(new JSONModel([]));
 
+                } else if (that.sKey === "CharacteristicPriority" || that.sKey === "") {
+
+                    that.byId("idCommon").setValue("");
+                    that.byId("idPrimarySearch").setValue("");
+                    that.byId("Primarytable").setModel(new JSONModel([]));
+
                 } else {
                     that.byId("idCommon").setValue("");
 
@@ -6216,11 +6613,16 @@ sap.ui.define([
 
             /* /////////////////// SCM Relevent manual updating function starts ////////////////////////// */
             onClassUpdate: function () {
+                var aClassData = that.byId("classList").getItems();
+                if (aClassData.length === 0) {
+                    MessageToast.show("No data for update..")
+                    return false;
+                }
                 var oEntry = {
                     CLASSDATA: [],
                 },
                     vRuleslist;
-                var aClassData = that.byId("classList").getItems();
+
                 var product = that.byId("idCommon").getValue();
                 for (var i = 0; i < aClassData.length; i++) {
                     let vIbpCheck = '';
@@ -6317,28 +6719,85 @@ sap.ui.define([
                 }
             },
 
+            // oDownloadClassesData: function () {
+            //     sap.ui.core.BusyIndicator.show({
+            //         text: "Processing data, please wait..."
+            //     });
+            //     setTimeout(function () {
+            //         that.loadIbpClassCharacteristics()
+            //     }, 10)
+
+            //     // that.loadIbpClassCharacteristics()
+            //     //   var oTableData = that.byId("classList").getModel().getData().results
+            //     //   var oProd = that.byId("idCommon").getValue();
+
+            //     var transformedData = that.oSCMreleventData.map(item => {
+            //         return {
+            //             PRODUCT_ID: item.PRODUCT_ID,
+            //             CLASS_NAME: item.CLASS_NAME,
+            //             CLASS_DESC: item.CLASS_DESC,
+            //             CLASS_TYPE: item.CLASS_TYPE,
+            //             CLASS_NUM: item.CLASS_NUM,
+            //             IBPCHAR_CHK: String(item.IBPCHAR_CHK).toUpperCase()
+            //             // IBPCHAR_CHK: item.IBPCHAR_CHK ? 'X' : ''
+            //         };
+            //     });
+
+            //     // Now, define the export function using sap.ui.export.Spreadsheet
+            //     var exportToExcel = function () {
+            //         var aCols = [
+            //             { label: 'PRODUCT_ID', property: 'PRODUCT_ID', width: 30 },
+            //             { label: 'CLASS_NAME', property: 'CLASS_NAME', width: 30 },
+            //             { label: 'CLASS_DESC', property: 'CLASS_DESC', width: 30 },
+            //             { label: 'CLASS_TYPE', property: 'CLASS_TYPE', width: 30 },
+            //             { label: 'CLASS_NUM', property: 'CLASS_NUM', width: 30 },
+            //             { label: 'IBPCHAR_CHK', property: 'IBPCHAR_CHK', width: 30 }
+            //         ];
+            //         sap.ui.core.BusyIndicator.hide();
+            //         var oSettings = {
+            //             workbook: {
+            //                 columns: aCols,
+
+            //             },
+            //             dataSource: transformedData,
+            //             fileName: 'Class IBP Characteriestics.xlsx',
+            //             worker: true
+            //         };
+
+            //         var oSheet = new sap.ui.export.Spreadsheet(oSettings);
+            //         oSheet.build().then(function () {
+            //             sap.m.MessageToast.show('Export complete');
+            //         }).finally(function () {
+            //             oSheet.destroy();
+            //         });
+            //     };
+
+            //     // Call the export function to download the Excel file
+            //     exportToExcel();
+
+            // },
+
+
             oDownloadClassesData: function () {
+                var that = this;
                 sap.ui.core.BusyIndicator.show({
                     text: "Processing data, please wait..."
                 });
-                // that.loadIbpClassCharacteristics()
-                //   var oTableData = that.byId("classList").getModel().getData().results
-                //   var oProd = that.byId("idCommon").getValue();
 
-                var transformedData = that.oSCMreleventData.map(item => {
-                    return {
-                        PRODUCT_ID: item.PRODUCT_ID,
-                        CLASS_NAME: item.CLASS_NAME,
-                        CLASS_DESC: item.CLASS_DESC,
-                        CLASS_TYPE: item.CLASS_TYPE,
-                        CLASS_NUM: item.CLASS_NUM,
-                        IBPCHAR_CHK: String(item.IBPCHAR_CHK).toUpperCase()
-                        // IBPCHAR_CHK: item.IBPCHAR_CHK ? 'X' : ''
-                    };
-                });
+                that.loadIbpClassCharacteristics().then(function () {
+                    // Transform the data after it is fully loaded
+                    var transformedData = that.oSCMreleventData.map(item => {
+                        return {
+                            PRODUCT_ID: item.PRODUCT_ID,
+                            CLASS_NAME: item.CLASS_NAME,
+                            CLASS_DESC: item.CLASS_DESC,
+                            CLASS_TYPE: item.CLASS_TYPE,
+                            CLASS_NUM: item.CLASS_NUM,
+                            IBPCHAR_CHK: String(item.IBPCHAR_CHK).toUpperCase()
+                        };
+                    });
 
-                // Now, define the export function using sap.ui.export.Spreadsheet
-                var exportToExcel = function () {
+                    // Export to Excel
                     var aCols = [
                         { label: 'PRODUCT_ID', property: 'PRODUCT_ID', width: 30 },
                         { label: 'CLASS_NAME', property: 'CLASS_NAME', width: 30 },
@@ -6347,14 +6806,12 @@ sap.ui.define([
                         { label: 'CLASS_NUM', property: 'CLASS_NUM', width: 30 },
                         { label: 'IBPCHAR_CHK', property: 'IBPCHAR_CHK', width: 30 }
                     ];
+
                     sap.ui.core.BusyIndicator.hide();
                     var oSettings = {
-                        workbook: {
-                            columns: aCols,
-
-                        },
+                        workbook: { columns: aCols },
                         dataSource: transformedData,
-                        fileName: 'Class IBP Characteriestics.xlsx',
+                        fileName: 'Class IBP Characteristics.xlsx',
                         worker: true
                     };
 
@@ -6364,47 +6821,93 @@ sap.ui.define([
                     }).finally(function () {
                         oSheet.destroy();
                     });
-                };
-
-                // Call the export function to download the Excel file
-                exportToExcel();
-
-            },
-
-            // this function for showing table data in IBP Class Characteristic and added 30k functionality (onInit)
-            loadIbpClassCharacteristics: function () {
-                that.byId("classSearch").setValue("")
-                that.oclassTable = [];
-                var topCount = that.oGModel.getProperty("/MaxCount");
-                that.getOwnerComponent().getModel("BModel").read("/getIBPProdClass", {
-                    urlParameters: {
-                        "$skip": that.skip,
-                        "$top": topCount
-                    },
-                    success: function (oData) {
-                        that.cFlag = ""
-                        if (topCount == oData.results.length) {
-                            that.skip += parseInt(topCount);
-                            that.oclassTable = that.oclassTable.concat(oData.results);
-                            that.loadIbpClassCharacteristics();
-                        } else {
-                            that.skip = 0;
-                            that.oclassTable = that.oclassTable.concat(oData.results);
-                            var arry = that.oclassTable
-
-                            var akeys = ["PRODUCT_ID", "CLASS_NAME"]
-                            let aItems = that.removeDupScmrelevent(that.oclassTable, akeys);
-
-                            that.oSCMreleventData = aItems
-                        }
-                        sap.ui.core.BusyIndicator.hide();
-                    },
-                    error: function (err) {
-                        sap.ui.core.BusyIndicator.hide();
-                        MessageToast.show("Error");
-                    }
+                }).catch(function (error) {
+                    sap.ui.core.BusyIndicator.hide();
+                    sap.m.MessageBox.error("Error: " + error.message);
                 });
             },
+
+
+
+            loadIbpClassCharacteristics: function () {
+                var that = this;
+                return new Promise(function (resolve, reject) {
+                    that.byId("classSearch").setValue("");
+                    that.oclassTable = [];
+                    var topCount = that.oGModel.getProperty("/MaxCount");
+
+                    function fetchData() {
+                        that.getOwnerComponent().getModel("BModel").read("/getIBPProdClass", {
+                            urlParameters: {
+                                "$skip": that.skip,
+                                "$top": topCount
+                            },
+                            success: function (oData) {
+                                that.cFlag = "";
+                                if (topCount == oData.results.length) {
+                                    that.skip += parseInt(topCount);
+                                    that.oclassTable = that.oclassTable.concat(oData.results);
+                                    fetchData(); // Recursive call to fetch next batch
+                                } else {
+                                    that.skip = 0;
+                                    that.oclassTable = that.oclassTable.concat(oData.results);
+
+                                    var akeys = ["PRODUCT_ID", "CLASS_NAME"];
+                                    let aItems = that.removeDupScmrelevent(that.oclassTable, akeys);
+                                    that.oSCMreleventData = aItems;
+
+                                    resolve(); // Resolve the Promise when all data is loaded
+                                }
+                            },
+                            error: function (err) {
+                                sap.ui.core.BusyIndicator.hide();
+                                MessageToast.show("Error");
+                                reject(err); // Reject the Promise in case of an error
+                            }
+                        });
+                    }
+
+                    fetchData(); // Start fetching data
+                });
+            },
+
+
+
+
+            // this function for showing table data in IBP Class Characteristic and added 30k functionality (onInit)
+            // loadIbpClassCharacteristics: function () {
+            //     that.byId("classSearch").setValue("")
+            //     that.oclassTable = [];
+            //     var topCount = that.oGModel.getProperty("/MaxCount");
+            //     that.getOwnerComponent().getModel("BModel").read("/getIBPProdClass", {
+            //         urlParameters: {
+            //             "$skip": that.skip,
+            //             "$top": topCount
+            //         },
+            //         success: function (oData) {
+            //             that.cFlag = ""
+            //             if (topCount == oData.results.length) {
+            //                 that.skip += parseInt(topCount);
+            //                 that.oclassTable = that.oclassTable.concat(oData.results);
+            //                 that.loadIbpClassCharacteristics();
+            //             } else {
+            //                 that.skip = 0;
+            //                 that.oclassTable = that.oclassTable.concat(oData.results);
+            //                 var arry = that.oclassTable
+
+            //                 var akeys = ["PRODUCT_ID", "CLASS_NAME"]
+            //                 let aItems = that.removeDupScmrelevent(that.oclassTable, akeys);
+
+            //                 that.oSCMreleventData = aItems
+            //             }
+            //             sap.ui.core.BusyIndicator.hide();
+            //         },
+            //         error: function (err) {
+            //             sap.ui.core.BusyIndicator.hide();
+            //             MessageToast.show("Error");
+            //         }
+            //     });
+            // },
 
             removeDupScmrelevent: function (array, keys) {
                 const filtered = array.filter(
@@ -6422,7 +6925,7 @@ sap.ui.define([
             /* /////////////////// SCM Relevent Upload functionality starts ////////////////////////// */
 
             uploadData: function (oEvent) {
-              //  sap.ui.core.BusyIndicator.show();
+                //  sap.ui.core.BusyIndicator.show();
                 sap.ui.core.BusyIndicator.show({
                     text: "Processing data, please wait..."
                 });
