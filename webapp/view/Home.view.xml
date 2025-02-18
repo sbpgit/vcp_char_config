@@ -36,23 +36,18 @@
 
                     <!-- <Class IBP Characteristics> -->
                     <IconTabFilter text="SCM Relevant Class" key="ClassIBP">
+                        <Toolbar class="stickyToolbar">
+                            <content>
+                                <SearchField id="classSearch" class ="SCMSearch" liveChange="handleSearch2" placeholder="Class Name/ Class Desc" />
+
+                            </content>
+                        </Toolbar>
                         <content>
                             <Page showHeader="false" showFooter="true">
                                 <content>
-                                    <Toolbar class="stickyToolbar">
-                                        <content>
-                                            <SearchField id="classSearch" liveChange="handleSearch2" placeholder="Class Name/ Class Desc" />
-                                            <!-- <Input id="idProdClas" width="250px" placeholder="Product" showValueHelp="true" valueHelpOnly="true" valueHelpRequest="ValueHelpForProdClas"/> -->
-                                            <!-- <Button id="idClr" type="Emphasized" class="reset2" text="Reset" press="onClearReset"></Button> -->
-                                            <!-- <ToolbarSpacer />
-                                                    <Button text="{i18n>downloadTemp}" class="downExcel" press="oDownloadClassesData"></Button>
-                                                    <u:FileUploader id="FileUploaderId" sameFilenameAllowed="true" buttonText="Upload" iconOnly="false" buttonOnly="true" visible="true" icon="sap-icon://upload" iconFirst="true" style="Emphasized" change="uploadData" /> -->
-                                        </content>
-                                    </Toolbar>
-                                    <Table id="classList" items="{path: '/results'}" growingScrollToLoad="true" mode="SingleSelectMaster" sticky="ColumnHeaders" rememberSelections="false">
-                                        <!-- <headerToolbar>
-                                           
-                                        </headerToolbar> -->
+
+                                    <Table id="classList" items="{path: '/results'}" class ="sapUiTableSCM" growingScrollToLoad="true" mode="SingleSelectMaster" sticky="ColumnHeaders" rememberSelections="false">
+
                                         <columns>
                                             <Column hAlign="Left" vAlign="Middle" visible="false">
                                                 <Text text="Class Num" />
@@ -86,8 +81,7 @@
                                 </content>
                                 <footer>
                                     <OverflowToolbar class="footer">
-                                        <u:FileUploader class="classBrowseButton" id="oSCMRelevent" sameFilenameAllowed="true" 
-                                        iconOnly="true" buttonOnly="true" visible="true" change="uploadData" />
+                                        <u:FileUploader class="classBrowseButton" id="oSCMRelevent" sameFilenameAllowed="true" iconOnly="true" buttonOnly="true" visible="true" change="uploadData" />
                                         <MenuButton id="idMenuSCM" type="Neutral" buttonMode="Split" useDefaultActionOnly="true" class="classOverlay" defaultAction="onPressBrowse" text="Upload" icon="sap-icon://upload">
                                             <menu>
                                                 <Menu>
@@ -107,19 +101,18 @@
 
                     <!-- <Prioritization Grouping> -->
                     <IconTabFilter text="Prioritization Grouping" key="PrioritizationGrouping">
+                        <SearchField liveChange="onGroupSearch" placeholder="Group Name" id="groupSearch"/>
                         <content>
                             <Page showHeader="false" showFooter="true">
                                 <content>
-                                    <Toolbar class="stickyToolbar">
-                                        <SearchField liveChange="onGroupSearch" placeholder="Group Name" id="groupSearch" />
+                                    <!-- <Toolbar class="stickyToolbar">
+                                        <SearchField liveChange="onGroupSearch" class="GroupingSearch" placeholder="Group Name" id="groupSearch" />
                                         <ToolbarSpacer ></ToolbarSpacer>
+                                    </Toolbar> -->
 
-                                      
-                                    </Toolbar>
-
-                                    <Table id="Group" mode="SingleSelectMaster" items="{ path: '/results',sorter:{path:'WEIGHTAGE'}}">
+                                    <Table id="Group" mode="SingleSelectMaster" class="sapUiTable" items="{ path: '/results',sorter:{path:'WEIGHTAGE'}}">
                                         <columns>
-                                            <Column>
+                                            <Column >
                                                 <Text text="Group Name" />
                                             </Column>
                                             <Column >
@@ -129,9 +122,7 @@
                                             <Column hAlign="Center">
                                                 <Text text="Actions" />
                                             </Column>
-                                            <!-- <Column>
-                                        <Text text="" />
-                                    </Column> -->
+
                                         </columns>
                                         <items>
                                             <ColumnListItem visible="{= ${GROUP_NAME} === '' ? false : true}">
@@ -159,27 +150,29 @@
                                             </menu>
                                         </MenuButton>
                                         <ToolbarSpacer/>
-                                          <Button text="Create"  class="right-button" type="Default" press="onGroupMaintenance" />
+                                        <Button text="Create" class="right-button" type="Default" press="onGroupMaintenance" />
                                     </OverflowToolbar>
                                 </footer>
 
                             </Page>
                         </content>
                     </IconTabFilter>
-                    
+
                     <!-- <Characteristic Prioritization> -->
                     <IconTabFilter text="Characteristic Prioritization" key="CharacteristicPriority">
+                        <Toolbar class="stickyToolbar">
+                            <SearchField liveChange="onPrimarySearch" placeholder="Characteristics Name" id="idPrimarySearch" />
+                            <ToolbarSpacer ></ToolbarSpacer>
+                            <Button id="idReset2" icon="sap-icon://reset" iconFirst="true" text="Reset" tooltip="It will Reload All Characteristics" type="Emphasized" press="onReset1" />
+                        </Toolbar>
                         <content>
                             <Page showHeader="false" showFooter="true">
+
                                 <content>
-                                    <Toolbar class="stickyToolbar">
-                                        <SearchField liveChange="onPrimarySearch" placeholder="Characteristics Name" id="idPrimarySearch" />
-                                        <ToolbarSpacer ></ToolbarSpacer>
-                                        <Button id="idReset2" icon="sap-icon://reset" iconFirst="true" text="Reset" tooltip="It will Reload All Characteristics" type="Emphasized" press="onReset1" />
-                                    </Toolbar>
+
                                     <!-- Added a container to control table scrolling -->
                                     <!-- <VBox height="100%" fitContainer="true"> -->
-                                    <Table id="Primarytable" growingScrollToLoad="true" mode="SingleSelectMaster" items="{ path: '/results', sorter:{path:'WEIGHTAGE', descending:true} }" updateFinished="onTableupdate">
+                                    <Table id="Primarytable" growingScrollToLoad="true" class="sapUiTableCP" mode="SingleSelectMaster" items="{ path: '/results', sorter:{path:'WEIGHTAGE', descending:true} }" updateFinished="onTableupdate">
                                         <columns>
                                             <Column hAlign="Center" visible="false">
                                                 <Text text="{i18n>charno}" />
@@ -229,10 +222,8 @@
                                 </content>
                                 <footer>
                                     <OverflowToolbar class="footer">
-                                        <u:FileUploader class="classBrowseButton" id="idoCharPrioritiz" sameFilenameAllowed="true" iconOnly="true"
-                                         buttonOnly="true" visible="true" change="oCharPrioritiz" />
-                                        <MenuButton id="idMenuCharPrior" type="Neutral" buttonMode="Split" useDefaultActionOnly="true" 
-                                        class="classOverlay" defaultAction="onPressBrowse" text="Upload" icon="sap-icon://upload">
+                                        <u:FileUploader class="classBrowseButton" id="idoCharPrioritiz" sameFilenameAllowed="true" iconOnly="true" buttonOnly="true" visible="true" change="oCharPrioritiz" />
+                                        <MenuButton id="idMenuCharPrior" type="Neutral" buttonMode="Split" useDefaultActionOnly="true" class="classOverlay" defaultAction="onPressBrowse" text="Upload" icon="sap-icon://upload">
                                             <menu>
                                                 <Menu>
                                                     <MenuItem text="{i18n>downloadTemp}" press="oCharPrioritizDownload"/>
@@ -251,23 +242,22 @@
 
                     <!-- <Partial Products Characteristics> -->
                     <IconTabFilter text="Partial Products Characteristics" key="PartialProducts">
+                        <Toolbar class="stickyToolbar">
+                            <content>
+                                <SearchField id="idPartialSearch" liveChange="onSearch" placeholder="Characteristic Name" />
+                                <ToolbarSpacer />
+                                <Button id="idShowSelected" text="Show Selected" press="handleShowSelect" />
+                            </content>
+                        </Toolbar>
                         <content>
                             <!-- <f2:DynamicPage>
                               
                                 <f2:content> -->
                             <Page showFooter="true" showHeader="false">
-                                <Toolbar class="stickyToolbar">
-                                    <content>
-                                        <SearchField id="idPartialSearch" liveChange="onSearch" placeholder="Characteristic Name" />
-                                        <ToolbarSpacer />
-                                        <Button id="idShowSelected" text="Show Selected" press="handleShowSelect" />
-                                    </content>
-                                </Toolbar>
-                                <Table id="prodList" items="{path: '/results'}"  sticky="ColumnHeaders" rememberSelections="true" mode="MultiSelect" selectionChange="onTableItemsSelect" 
-                            
-                                growingScrollToLoad="true" growing="true" growingThreshold="100" updateFinished="onTableScroll">
 
-                                
+                                <Table id="prodList" items="{path: '/results'}" class="sapUiTablePP" sticky="ColumnHeaders" rememberSelections="true" mode="MultiSelect" selectionChange="onTableItemsSelect" growingScrollToLoad="true" growing="true" growingThreshold="1000" updateFinished="onTableScroll">
+
+
                                     <!-- <headerToolbar>
                                       
                                     </headerToolbar> -->
@@ -300,8 +290,7 @@
 
                                 <footer>
                                     <OverflowToolbar class="footer">
-                                        <u:FileUploader class="classBrowseButton" id="idoPartialProd" 
-                                        sameFilenameAllowed="true" iconOnly="true" buttonOnly="true" visible="true" change="oPartialUpload" />
+                                        <u:FileUploader class="classBrowseButton" id="idoPartialProd" sameFilenameAllowed="true" iconOnly="true" buttonOnly="true" visible="true" change="oPartialUpload" />
                                         <MenuButton id="idMenuPartialProd" type="Neutral" buttonMode="Split" useDefaultActionOnly="true" class="classOverlay" defaultAction="onPressBrowse" text="Upload" icon="sap-icon://upload">
                                             <menu>
                                                 <Menu>
@@ -330,7 +319,7 @@
                                     <ToolbarSpacer ></ToolbarSpacer>
                                     <Button id="idReset3" icon="sap-icon://reset" iconFirst="true" text="Reset." type="Emphasized" press="onReset" />
                                 </Toolbar>
-                                <Table id="Primarytable2" mode="SingleSelectMaster" items="{ path: '/results2'}">
+                                <Table id="Primarytable2" class="sapUiTable" mode="SingleSelectMaster" items="{ path: '/results2'}">
                                     <columns>
                                         <Column visible="false">
                                             <Text text="{i18n>charno2}" />
@@ -357,16 +346,15 @@
                                                 <Text text="{CHAR_NAME}" />
                                                 <Text text="{CHAR_DESC}" />
                                                 <CheckBox selected="{= ${CHAR_TYPE} === 'P' ? true : false }" select="onIBPatbs_Checkbox"/>
-                                                <!-- <CheckBox  select="onIBPatbs_Checkbox"/> -->
+                                                <!-- <CheckBox select="onIBPatbs_Checkbox"/> -->
                                             </cells>
                                         </ColumnListItem>
                                     </items>
                                 </Table>
-                              
+
                                 <footer>
                                     <OverflowToolbar class="footer">
-                                        <u:FileUploader class="classBrowseButton" id="idoAttribuets" sameFilenameAllowed="true" iconOnly="true" 
-                                        buttonOnly="true" visible="true" change="oAttributeUpload" />
+                                        <u:FileUploader class="classBrowseButton" id="idoAttribuets" sameFilenameAllowed="true" iconOnly="true" buttonOnly="true" visible="true" change="oAttributeUpload" />
                                         <MenuButton id="idMenuAttributes" type="Neutral" buttonMode="Split" useDefaultActionOnly="true" class="classOverlay" defaultAction="onPressBrowse" text="Upload" icon="sap-icon://upload">
                                             <menu>
                                                 <Menu>

@@ -198,4 +198,41 @@ div#container-vcpapp\.vcpcharacteristicsapps---Home--classSearch {
     box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.2); /* Optional: Shadow for visibility */
 }
 
+/* Add this custom CSS to your app */
+.sapUiTableSCM thead{
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background-color: white; /* Ensures background color to prevent overlap */
+}
+.SCMSearch {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background-color: white; /* Ensures background color to prevent overlap */
+}
+.sapUiTable thead{
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background-color: white; /* Ensures background color to prevent overlap */
+}
+
+.sapUiTableCP thead{
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background-color: white; /* Ensures background color to prevent overlap */
+}
+
+.sapUiTablePP thead {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background-color: white; /* Ensures background color to prevent overlap */
+}
+
+
+
+
 
