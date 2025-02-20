@@ -1143,9 +1143,9 @@ sap.ui.define([
             onGroupUploadValidation: function (oEv) {
                 var oProd = that.byId("idCommon").getValue();
                 that.getModel("BModel").callFunction("/getCharGroupWeightage", {
-                    urlParameters: {
-                        PRODUCT_ID: oProd
-                    },
+                    // urlParameters: {
+                    //     PRODUCT_ID: oProd
+                    // },
 
                     success: function (oData) {
                         var oData = JSON.parse(oData.getCharGroupWeightage)
@@ -2718,6 +2718,7 @@ sap.ui.define([
                 that.oLop.forEach(f => {
                     oFilters.push(new Filter('PRODUCT_ID', FilterOperator.EQ, f.PRODUCT_ID))
                 });
+                sap.ui.core.BusyIndicator.show();
                 this.getModel("BModel").read("/getUniqueHeader", {
                     filters: oFilters,
                     success: function (oData) {
@@ -2729,10 +2730,12 @@ sap.ui.define([
                             that.onGetDataExcelDown()
                         } else {
                             sap.m.MessageToast.show("All Products for the selected Location have Unique ID's")
+                            sap.ui.core.BusyIndicator.hide();
                         }
                     },
                     error: function () {
                         MessageToast.show("error");
+                        sap.ui.core.BusyIndicator.hide();
                     },
                 });
             },
@@ -2828,6 +2831,7 @@ sap.ui.define([
                 sap.ui.core.BusyIndicator.show({
                     text: "Processing data, please wait..."
                 });
+
                 this.getModel("BModel").callFunction("/getSecondaryChar", {
                     method: "GET",
                     urlParameters: {
@@ -2837,7 +2841,7 @@ sap.ui.define([
                     success: function (oData) {
                         sap.ui.core.BusyIndicator.hide();
                         if (oData.results.length === 0) {
-                            sap.m.MessageToast.show("All Products for the selected Location have Unique ID's")
+                            sap.m.MessageToast.show("No data download for selected products")
                             sap.ui.core.BusyIndicator.hide();
                         } else {
                             // Concatenate the new data into accumulatedData
@@ -2890,7 +2894,7 @@ sap.ui.define([
                     },
                     error: function () {
                         sap.ui.core.BusyIndicator.hide();
-                        MessageToast.show("Error occurred while fetching data for product: " + productId);
+                        MessageToast.show("Error occurred while fetching data for product:");
                     }
                     //     });
                 });
@@ -2970,8 +2974,6 @@ sap.ui.define([
             //         sap.m.MessageToast.show("Please select a Product");
             //     }
             // },
-
-
 
             oCharPrioritizDownload1: function () {
                 // var oPrimarytable = that.byId("Primarytable").getModel().getData().results,
@@ -3081,179 +3083,987 @@ sap.ui.define([
 
             },
 
+
             oCharPrioritizprocessExcelData: function (aData) {
+                var that = this;
                 var aHeaders = aData[0];
                 var aRows = aData.slice(1);
-                var resultArray1 = [];
-                var productSequenceMap = {};
+                var productDataMap = {}; // Store data grouped by PRODUCT_ID
+                var batchSizeLimit = 20000; // Max batch size
+                var allBatches = []; // Store all batches
 
+                // Grouping data by PRODUCT_ID
                 for (var i = 0; i < aRows.length; i++) {
                     var oObject = {};
                     aHeaders.forEach(function (sHeader, j) {
                         oObject[sHeader] = aRows[i][j];
                     });
 
-                    // checking in object all values must have valid data
                     var hasMandatoryFields = oObject.PRODUCT_ID && oObject.CHAR_NUM && oObject.CHAR_NAME &&
                         oObject.CHAR_DESC && oObject.CHAR_TYPE;
+                    var hasNonEmptyValue = Object.values(oObject).some(value => value !== null && value !== undefined && value !== '');
 
-                    var hasNonEmptyValue = Object.values(oObject).some(function (value) {
-                        return value !== null && value !== undefined && value !== '';
-                    });
-
-
-                    // Check if mandatory fields are valid
                     if (!hasMandatoryFields || !hasNonEmptyValue) {
                         sap.m.MessageToast.show("Error: All mandatory fields must be filled with valid data.");
                         sap.ui.core.BusyIndicator.hide();
                         return false;
                     }
 
-                    // verifying CHAR_TYPE Primary(p), Secondary(s) or not..
                     if (hasNonEmptyValue && oObject.CHAR_TYPE && oObject.CHAR_TYPE !== 'P' && oObject.CHAR_TYPE !== 'S') {
                         sap.m.MessageToast.show("Error: CHAR_TYPE must be either 'Primary(p)' or 'Secondary(s)'.");
                         sap.ui.core.BusyIndicator.hide();
                         return false;
                     }
 
-                    // verifying if any duplicate seq found
-                    if (hasNonEmptyValue) {
-                        var productId = oObject.PRODUCT_ID;
-                        var sequence = oObject.SEQUENCE;
-
-                        if (!productSequenceMap[productId]) {
-                            productSequenceMap[productId] = new Set();
-                        }
-                        if (productSequenceMap[productId].has(sequence)) {
-                            sap.m.MessageToast.show("Error: Duplicate sequence value for product: " + productId);
-                            sap.ui.core.BusyIndicator.hide();
-                            return false;
-                        }
-
-                        productSequenceMap[productId].add(sequence);
-                        resultArray1.push(oObject);
+                    var productId = oObject.PRODUCT_ID;
+                    if (!productDataMap[productId]) {
+                        productDataMap[productId] = [];
                     }
+                    productDataMap[productId].push(oObject);
                 }
 
-                that.oUploadclassData1 = resultArray1;
-                const confirmationMessage1 = `Would you like to update the products ?`;
-                if (that.oUploadclassData1.length > 0) {
-                    sap.ui.core.BusyIndicator.hide();
-                    sap.m.MessageBox.confirm(confirmationMessage1, {
-                        // "Are you sure you want to update the IBP Class?", {
-                        actions: [sap.m.MessageBox.Action.YES, sap.m.MessageBox.Action.NO],
-                        onClose: function (oAction) {
+                // Process data into batches ensuring total does not exceed 30K
+                var currentBatch = [];
+                var currentBatchSize = 0;
+                var allProductIds = Object.keys(productDataMap);
+                var batchProductIds = new Set();
+
+                for (var i = 0; i < allProductIds.length; i++) {
+                    var productId = allProductIds[i];
+                    var productData = productDataMap[productId];
+                    var productSize = productData.length;
+
+                    if (currentBatchSize + productSize > batchSizeLimit) {
+                        if (currentBatch.length > 0) {
+                            allBatches.push({ products: Array.from(batchProductIds), data: currentBatch });
+                        }
+                        currentBatch = [];
+                        currentBatchSize = 0;
+                        batchProductIds.clear();
+                    }
+
+                    currentBatch = currentBatch.concat(productData);
+                    currentBatchSize += productSize;
+                    batchProductIds.add(productId);
+                }
+
+                if (currentBatch.length > 0) {
+                    allBatches.push({ products: Array.from(batchProductIds), data: currentBatch });
+                }
+
+                // Function to upload batches recursively
+                function uploadBatch(batchIndex) {
+                    if (batchIndex >= allBatches.length) {
+                        sap.m.MessageToast.show("All data uploaded successfully.");
+                        return;
+                    }
+
+                    var batch = allBatches[batchIndex];
+                    var batchData = batch.data;
+
+
+                    sap.ui.core.BusyIndicator.show();
+                    that.getModel("BModel").callFunction("/changeToPrimaryNewMulti", {
+                        method: "GET",
+                        urlParameters: {
+                            CharData: JSON.stringify(batchData)
+                        },
+                        success: function () {
                             sap.ui.core.BusyIndicator.hide();
-                            if (oAction === sap.m.MessageBox.Action.YES) {
-                                // sap.ui.core.BusyIndicator.show();
-                                that.getModel("BModel").callFunction("/changeToPrimaryNewMulti", {
-                                    method: "GET",
-                                    urlParameters: {
-                                        CharData: JSON.stringify(that.oUploadclassData1)
-                                    },
-                                    success: function (oData) {
-                                        sap.ui.core.BusyIndicator.hide();
-                                        MessageToast.show("Data Uploaded Succesfully")
-                                        //   MessageBox.alert("Some products are already in prioritization. Remaining data uploaded successfully.")
-                                    },
-                                    error: function (oData) {
-                                        sap.ui.core.BusyIndicator.hide();
-                                        MessageToast.show("Failed to changes the update");
-                                    },
-                                });
-                            }
-                        }.bind(this)
+                            uploadBatch(batchIndex + 1);
+                        },
+                        error: function () {
+                            sap.ui.core.BusyIndicator.hide();
+                            MessageToast.show("Failed to upload batch.");
+                        }
                     });
-
-                } else {
-                    sap.ui.core.BusyIndicator.hide();
-                    MessageToast.show("There is no prioritized data from uploaded file.")
                 }
-                //    } 
 
-
-                // var Array1 = that.prodGroups(that.oUploadclassData1); // Excel Data
-                // var Array2 = that.prodGroups(that.oAllPrds);     // Overall Groups Data
-
-                // // that.nonPriority = [];
-
-                // const nonPrior = Array2.filter(ele =>
-                //     !ele.children.some(obj =>
-                //         obj.CHAR_TYPE === "P")
-
-                // )
-                // if (nonPrior.length > 0) {
-                //     that.nonPriority = Array1.filter(obj1 =>
-                //         nonPrior.some(obj2 => obj1.PRODUCT === obj2.PRODUCT)
-                //     )
-                // }
-
-                // that.nonPriorityPriorityObj = that.nonPriority.filter(ele =>
-                //     ele.children.some(obj =>
-                //         obj.CHAR_TYPE === "P")
-
-                // )
-                // if (that.nonPriorityPriorityObj.length > 0) {
-
-                //     that.oUploadclassData = [];
-                //     if (that.nonPriority.length > 0) {
-                //         that.nonPriority.forEach(ele => {
-                //             ele.children.forEach(ele2 => {
-                //                 if (ele2.CHAR_TYPE === "P") {
-                //                     ele2.GROUP_NAME = "";
-                //                     ele2.WEIGHTAGE = 1;
-                //                 }
-                //                 else {
-                //                     ele2.GROUP_NAME = "";
-                //                     ele2.WEIGHTAGE = -1;
-                //                 }
-                //             })
-                //         })
-
-                //         that.nonPriority.forEach(ele => {
-                //             var pData = ele.children
-                //                 .filter((el) => el.CHAR_TYPE === "P")
-                //                 .sort((a, b) => a.SEQUENCE - b.SEQUENCE);
-
-
-                //             var sData = ele.children
-                //                 .filter((el) => el.CHAR_TYPE === "S")
-                //                 .sort((a, b) => a.SEQUENCE - b.SEQUENCE);
-
-                //             var classData = [...pData, ...sData];
-
-                //             classData.forEach((item, index) => {
-                //                 item.SEQUENCE = index + 1;
-                //             });
-                //             that.oUploadclassData.push(...classData);
-
-                //         })
-                //     }
-
-                //     if (that.oUploadclassData.length > 0) {
-
-                //         that.getModel("BModel").callFunction("/changeToPrimaryNewMulti", {
-                //             method: "GET",
-                //             urlParameters: {
-                //                 CharData: JSON.stringify(that.oUploadclassData)
-                //             },
-                //             success: function (oData) {
-                //                 sap.ui.core.BusyIndicator.hide();
-                //                 // that.onPressUpdate();
-                //                 MessageBox.alert("Some products are already in prioritization. Remaining data uploaded successfully.")
-                //             },
-                //             error: function (oData) {
-                //                 sap.ui.core.BusyIndicator.hide();
-                //                 MessageToast.show("Failed to changes the update");
-                //             },
-                //         });
-
-                //     }
-                // } else {
-                //     sap.ui.core.BusyIndicator.hide();
-                //     MessageToast.show("There is no prioritized data from uploaded file.")
-                // }
+                uploadBatch(0); // Start uploading batches
             },
+
+
+            // oCharPrioritizprocessExcelData: function (aData) {
+            //     var that = this;
+            //     var aHeaders = aData[0];
+            //     var aRows = aData.slice(1);
+            //     var productDataMap = {}; // Store data grouped by PRODUCT_ID
+            //     var batchSizeLimit = 10; // Max batch size
+            //     var allBatches = []; // Store all batches
+            //     var progressDialog = sap.ui.getCore().byId("progressDialog");
+
+            //     // Check if the dialog already exists, if not, create a new one
+            //     if (!progressDialog) {
+            //         progressDialog = new sap.m.Dialog("progressDialog", {
+            //             title: "Uploading Data",
+            //             type: "Message",
+            //             content: [
+            //                 new sap.m.ProgressIndicator("progressBar", {
+            //                     width: "100%",
+            //                     percentValue: 0,
+            //                     showValue: true
+            //                 }),
+            //                 new sap.m.Text("batchInfoText", { text: "" }) // Text for batch info
+            //             ],
+            //             buttons: [
+            //                 new sap.m.Button({
+            //                     text: "Cancel",
+            //                     press: function () {
+            //                         progressDialog.close();
+            //                     }
+            //                 })
+            //             ]
+            //         });
+            //     }
+
+            //     // Grouping data by PRODUCT_ID
+            //     for (var i = 0; i < aRows.length; i++) {
+            //         var oObject = {};
+            //         aHeaders.forEach(function (sHeader, j) {
+            //             oObject[sHeader] = aRows[i][j];
+            //         });
+
+            //         var hasMandatoryFields = oObject.PRODUCT_ID && oObject.CHAR_NUM && oObject.CHAR_NAME &&
+            //             oObject.CHAR_DESC && oObject.CHAR_TYPE;
+            //         var hasNonEmptyValue = Object.values(oObject).some(value => value !== null && value !== undefined && value !== '');
+
+            //         if (!hasMandatoryFields || !hasNonEmptyValue) {
+            //             sap.m.MessageToast.show("Error: All mandatory fields must be filled with valid data.");
+            //             sap.ui.core.BusyIndicator.hide();
+            //             return false;
+            //         }
+
+            //         if (hasNonEmptyValue && oObject.CHAR_TYPE && oObject.CHAR_TYPE !== 'P' && oObject.CHAR_TYPE !== 'S') {
+            //             sap.m.MessageToast.show("Error: CHAR_TYPE must be either 'Primary(p)' or 'Secondary(s)'.");
+            //             sap.ui.core.BusyIndicator.hide();
+            //             return false;
+            //         }
+
+            //         var productId = oObject.PRODUCT_ID;
+            //         if (!productDataMap[productId]) {
+            //             productDataMap[productId] = [];
+            //         }
+            //         productDataMap[productId].push(oObject);
+            //     }
+
+            //     // Process data into batches ensuring total does not exceed 30K
+            //     var currentBatch = [];
+            //     var currentBatchSize = 0;
+            //     var allProductIds = Object.keys(productDataMap);
+            //     var batchProductIds = new Set();
+
+            //     for (var i = 0; i < allProductIds.length; i++) {
+            //         var productId = allProductIds[i];
+            //         var productData = productDataMap[productId];
+            //         var productSize = productData.length;
+
+            //         // If adding this product exceeds the batch limit, push current batch first
+            //         if (currentBatchSize + productSize > batchSizeLimit) {
+            //             if (currentBatch.length > 0) {
+            //                 allBatches.push({ products: Array.from(batchProductIds), data: currentBatch });
+            //             }
+            //             // Start a new batch
+            //             currentBatch = [];
+            //             currentBatchSize = 0;
+            //             batchProductIds.clear();
+            //         }
+
+            //         // Add product data to the current batch
+            //         currentBatch = currentBatch.concat(productData);
+            //         currentBatchSize += productSize;
+            //         batchProductIds.add(productId);
+            //     }
+
+            //     // Push the last batch if it has data
+            //     if (currentBatch.length > 0) {
+            //         allBatches.push({ products: Array.from(batchProductIds), data: currentBatch });
+            //     }
+
+            //     // Show Progress Dialog
+            //     progressDialog.open();
+            //     var totalBatches = allBatches.length;
+            //     var progressBar = sap.ui.getCore().byId("progressBar"); // Ensure single instance of ProgressIndicator
+            //     var batchInfoText = sap.ui.getCore().byId("batchInfoText"); // Text to display batch details
+
+            //     // Function to upload batches recursively
+            //     function uploadBatch(batchIndex) {
+            //         if (batchIndex >= totalBatches) {
+            //             progressDialog.close();
+            //             sap.m.MessageToast.show("All data uploaded successfully.");
+            //             return;
+            //         }
+
+            //         var batch = allBatches[batchIndex];
+            //         var batchData = batch.data;
+            //         var uniqueProducts = batch.products.length;
+            //         var totalRecords = batchData.length;
+
+            //         // Update batch info text
+            //         batchInfoText.setText("Uploading batch " + (batchIndex + 1) + " of " + totalBatches + 
+            //                               "\nProducts: " + (uniqueProducts + 1) + 
+            //                               " | Records: " + totalRecords);
+
+            //         sap.ui.core.BusyIndicator.show();
+            //         that.getModel("BModel").callFunction("/changeToPrimaryNewMulti", {
+            //             method: "GET",
+            //             urlParameters: {
+            //                 CharData: JSON.stringify(batchData)
+            //             },
+            //             success: function () {
+            //                 sap.ui.core.BusyIndicator.hide();
+
+            //                 // Update progress bar
+            //                 var progressValue = Math.round(((batchIndex + 1) / totalBatches) * 100);
+            //                 progressBar.setPercentValue(progressValue);
+
+            //                 uploadBatch(batchIndex + 1); // Upload next batch
+            //             },
+            //             error: function () {
+            //                 sap.ui.core.BusyIndicator.hide();
+            //                 progressDialog.close();
+            //                 MessageToast.show("Failed to upload batch.");
+            //             }
+            //         });
+            //     }
+
+            //     uploadBatch(0); // Start uploading batches
+            // },
+
+
+            // oCharPrioritizprocessExcelData: function (aData) {
+            //     var that = this;
+            //     var aHeaders = aData[0];
+            //     var aRows = aData.slice(1);
+            //     var productDataMap = {}; // Store data grouped by PRODUCT_ID
+            //     var batchSizeLimit = 30000; // Max batch size
+            //     var allBatches = []; // Store all batches
+            //     var progressDialog = sap.ui.getCore().byId("progressDialog");
+
+            //     // Check if the dialog already exists, if not, create a new one
+            //     if (!progressDialog) {
+            //         progressDialog = new sap.m.Dialog("progressDialog", {
+            //             title: "Uploading Data",
+            //             type: "Message",
+            //             content: [
+            //                 new sap.m.ProgressIndicator("progressBar", {
+            //                     width: "100%",
+            //                     percentValue: 0,
+            //                     showValue: true
+            //                 }),
+            //                 new sap.m.Text({ text: "Uploading..." })
+            //             ],
+            //             buttons: [
+            //                 new sap.m.Button({
+            //                     text: "Cancel",
+            //                     press: function () {
+            //                         progressDialog.close();
+            //                     }
+            //                 })
+            //             ]
+            //         });
+            //     }
+
+            //     // Grouping data by PRODUCT_ID
+            //     for (var i = 0; i < aRows.length; i++) {
+            //         var oObject = {};
+            //         aHeaders.forEach(function (sHeader, j) {
+            //             oObject[sHeader] = aRows[i][j];
+            //         });
+
+            //         var hasMandatoryFields = oObject.PRODUCT_ID && oObject.CHAR_NUM && oObject.CHAR_NAME &&
+            //             oObject.CHAR_DESC && oObject.CHAR_TYPE;
+            //         var hasNonEmptyValue = Object.values(oObject).some(value => value !== null && value !== undefined && value !== '');
+
+            //         if (!hasMandatoryFields || !hasNonEmptyValue) {
+            //             sap.m.MessageToast.show("Error: All mandatory fields must be filled with valid data.");
+            //             sap.ui.core.BusyIndicator.hide();
+            //             return false;
+            //         }
+
+            //         if (hasNonEmptyValue && oObject.CHAR_TYPE && oObject.CHAR_TYPE !== 'P' && oObject.CHAR_TYPE !== 'S') {
+            //             sap.m.MessageToast.show("Error: CHAR_TYPE must be either 'Primary(p)' or 'Secondary(s)'.");
+            //             sap.ui.core.BusyIndicator.hide();
+            //             return false;
+            //         }
+
+            //         var productId = oObject.PRODUCT_ID;
+            //         if (!productDataMap[productId]) {
+            //             productDataMap[productId] = [];
+            //         }
+            //         productDataMap[productId].push(oObject);
+            //     }
+
+            //     // Process data into batches ensuring total does not exceed 30K
+            //     var currentBatch = [];
+            //     var currentBatchSize = 0;
+            //     var allProductIds = Object.keys(productDataMap);
+
+            //     for (var i = 0; i < allProductIds.length; i++) {
+            //         var productId = allProductIds[i];
+            //         var productData = productDataMap[productId];
+            //         var productSize = productData.length;
+
+            //         // If adding this product exceeds the batch limit, push current batch first
+            //         if (currentBatchSize + productSize > batchSizeLimit) {
+            //             if (currentBatch.length > 0) {
+            //                 allBatches.push(currentBatch);
+            //             }
+            //             // Start a new batch
+            //             currentBatch = [];
+            //             currentBatchSize = 0;
+            //         }
+
+            //         // Add product data to the current batch
+            //         currentBatch = currentBatch.concat(productData);
+            //         currentBatchSize += productSize;
+            //     }
+
+            //     // Push the last batch if it has data
+            //     if (currentBatch.length > 0) {
+            //         allBatches.push(currentBatch);
+            //     }
+
+            //     // Show Progress Dialog
+            //     progressDialog.open();
+            //     var totalBatches = allBatches.length;
+            //     var progressBar = sap.ui.getCore().byId("progressBar"); // Ensure single instance of ProgressIndicator
+
+            //     // Function to upload batches recursively
+            //     function uploadBatch(batchIndex) {
+            //         if (batchIndex >= totalBatches) {
+            //             progressDialog.close();
+            //             sap.m.MessageToast.show("All data uploaded successfully.");
+            //             return;
+            //         }
+
+            //         var batchData = allBatches[batchIndex];
+
+            //         sap.ui.core.BusyIndicator.show();
+            //         that.getModel("BModel").callFunction("/changeToPrimaryNewMulti", {
+            //             method: "GET",
+            //             urlParameters: {
+            //                 CharData: JSON.stringify(batchData)
+            //             },
+            //             success: function () {
+            //                 sap.ui.core.BusyIndicator.hide();
+
+            //                 // Update progress bar
+            //                 var progressValue = Math.round(((batchIndex + 1) / totalBatches) * 100);
+            //                 progressBar.setPercentValue(progressValue);
+
+            //                 uploadBatch(batchIndex + 1); // Upload next batch
+            //             },
+            //             error: function () {
+            //                 sap.ui.core.BusyIndicator.hide();
+            //                 progressDialog.close();
+            //                 MessageToast.show("Failed to upload batch.");
+            //             }
+            //         });
+            //     }
+
+            //     uploadBatch(0); // Start uploading batches
+            // },
+
+
+            // oCharPrioritizprocessExcelData: function (aData) {
+            //     var that = this;
+            //     var aHeaders = aData[0];
+            //     var aRows = aData.slice(1);
+            //     var productDataMap = {}; // Store data grouped by PRODUCT_ID
+            //     var batchSizeLimit = 10; // Max batch size
+            //     var allBatches = []; // Store all batches
+            //     var progressDialog = new sap.m.Dialog({
+            //         title: "Uploading Data",
+            //         type: "Message",
+            //         content: [
+            //             new sap.m.ProgressIndicator({
+            //                 id: "uploadProgress",
+            //                 width: "100%",
+            //                 percentValue: 0,
+            //                 showValue: true
+            //             }),
+            //             new sap.m.Text({ text: "Uploading..." })
+            //         ],
+            //         buttons: [
+            //             new sap.m.Button({
+            //                 text: "Cancel",
+            //                 press: function () {
+            //                     progressDialog.close();
+            //                 }
+            //             })
+            //         ]
+            //     });
+
+            //     // Grouping data by PRODUCT_ID
+            //     for (var i = 0; i < aRows.length; i++) {
+            //         var oObject = {};
+            //         aHeaders.forEach(function (sHeader, j) {
+            //             oObject[sHeader] = aRows[i][j];
+            //         });
+
+            //         var hasMandatoryFields = oObject.PRODUCT_ID && oObject.CHAR_NUM && oObject.CHAR_NAME &&
+            //             oObject.CHAR_DESC && oObject.CHAR_TYPE;
+            //         var hasNonEmptyValue = Object.values(oObject).some(value => value !== null && value !== undefined && value !== '');
+
+            //         if (!hasMandatoryFields || !hasNonEmptyValue) {
+            //             sap.m.MessageToast.show("Error: All mandatory fields must be filled with valid data.");
+            //             sap.ui.core.BusyIndicator.hide();
+            //             return false;
+            //         }
+
+            //         if (hasNonEmptyValue && oObject.CHAR_TYPE && oObject.CHAR_TYPE !== 'P' && oObject.CHAR_TYPE !== 'S') {
+            //             sap.m.MessageToast.show("Error: CHAR_TYPE must be either 'Primary(p)' or 'Secondary(s)'.");
+            //             sap.ui.core.BusyIndicator.hide();
+            //             return false;
+            //         }
+
+            //         var productId = oObject.PRODUCT_ID;
+            //         if (!productDataMap[productId]) {
+            //             productDataMap[productId] = [];
+            //         }
+            //         productDataMap[productId].push(oObject);
+            //     }
+
+            //     // Process data into batches ensuring total does not exceed 30K
+            //     var currentBatch = [];
+            //     var currentBatchSize = 0;
+            //     var allProductIds = Object.keys(productDataMap);
+
+            //     for (var i = 0; i < allProductIds.length; i++) {
+            //         var productId = allProductIds[i];
+            //         var productData = productDataMap[productId];
+            //         var productSize = productData.length;
+
+            //         // If adding this product exceeds the batch limit, push current batch first
+            //         if (currentBatchSize + productSize > batchSizeLimit) {
+            //             if (currentBatch.length > 0) {
+            //                 allBatches.push(currentBatch);
+            //             }
+            //             // Start a new batch
+            //             currentBatch = [];
+            //             currentBatchSize = 0;
+            //         }
+
+            //         // Add product data to the current batch
+            //         currentBatch = currentBatch.concat(productData);
+            //         currentBatchSize += productSize;
+            //     }
+
+            //     // Push the last batch if it has data
+            //     if (currentBatch.length > 0) {
+            //         allBatches.push(currentBatch);
+            //     }
+
+            //     // Show Progress Dialog
+            //     progressDialog.open();
+            //     var totalBatches = allBatches.length;
+            //     var progressBar = sap.ui.getCore().byId("uploadProgress");
+
+            //     // Function to upload batches recursively
+            //     function uploadBatch(batchIndex) {
+            //         if (batchIndex >= totalBatches) {
+            //             progressDialog.close();
+            //             sap.m.MessageToast.show("All data uploaded successfully.");
+            //             return;
+            //         }
+
+            //         var batchData = allBatches[batchIndex];
+
+            //         sap.ui.core.BusyIndicator.show();
+            //         that.getModel("BModel").callFunction("/changeToPrimaryNewMulti", {
+            //             method: "GET",
+            //             urlParameters: {
+            //                 CharData: JSON.stringify(batchData)
+            //             },
+            //             success: function () {
+            //                 sap.ui.core.BusyIndicator.hide();
+
+            //                 // Update progress bar
+            //                 var progressValue = Math.round(((batchIndex + 1) / totalBatches) * 100);
+            //                 progressBar.setPercentValue(progressValue);
+
+            //                 uploadBatch(batchIndex + 1); // Upload next batch
+            //             },
+            //             error: function () {
+            //                 sap.ui.core.BusyIndicator.hide();
+            //                 progressDialog.close();
+            //                 MessageToast.show("Failed to upload batch.");
+            //             }
+            //         });
+            //     }
+
+            //     uploadBatch(0); // Start uploading batches
+            // },
+
+
+            // oCharPrioritizprocessExcelData: function (aData) {
+            //     var aHeaders = aData[0];
+            //     var aRows = aData.slice(1);
+            //     var productDataMap = {}; // Store data grouped by PRODUCT_ID
+            //     var batchSizeLimit = 10; // Max batch size
+            //     var allBatches = []; // Store all batches
+
+            //     // Grouping data by PRODUCT_ID
+            //     for (var i = 0; i < aRows.length; i++) {
+            //         var oObject = {};
+            //         aHeaders.forEach(function (sHeader, j) {
+            //             oObject[sHeader] = aRows[i][j];
+            //         });
+
+            //         var hasMandatoryFields = oObject.PRODUCT_ID && oObject.CHAR_NUM && oObject.CHAR_NAME &&
+            //             oObject.CHAR_DESC && oObject.CHAR_TYPE;
+            //         var hasNonEmptyValue = Object.values(oObject).some(value => value !== null && value !== undefined && value !== '');
+
+            //         if (!hasMandatoryFields || !hasNonEmptyValue) {
+            //             sap.m.MessageToast.show("Error: All mandatory fields must be filled with valid data.");
+            //             sap.ui.core.BusyIndicator.hide();
+            //             return false;
+            //         }
+
+            //         if (hasNonEmptyValue && oObject.CHAR_TYPE && oObject.CHAR_TYPE !== 'P' && oObject.CHAR_TYPE !== 'S') {
+            //             sap.m.MessageToast.show("Error: CHAR_TYPE must be either 'Primary(p)' or 'Secondary(s)'.");
+            //             sap.ui.core.BusyIndicator.hide();
+            //             return false;
+            //         }
+
+            //         var productId = oObject.PRODUCT_ID;
+            //         if (!productDataMap[productId]) {
+            //             productDataMap[productId] = [];
+            //         }
+            //         productDataMap[productId].push(oObject);
+            //     }
+
+            //     // Process data into batches ensuring total does not exceed 30K
+            //     var currentBatch = [];
+            //     var currentBatchSize = 0;
+            //     var allProductIds = Object.keys(productDataMap);
+
+            //     for (var i = 0; i < allProductIds.length; i++) {
+            //         var productId = allProductIds[i];
+            //         var productData = productDataMap[productId];
+            //         var productSize = productData.length;
+
+            //         // If adding this product exceeds the batch limit, push current batch first
+            //         if (currentBatchSize + productSize > batchSizeLimit) {
+            //             if (currentBatch.length > 0) {
+            //                 allBatches.push(currentBatch);
+            //             }
+            //             // Start a new batch
+            //             currentBatch = [];
+            //             currentBatchSize = 0;
+            //         }
+
+            //         // Add product data to the current batch
+            //         currentBatch = currentBatch.concat(productData);
+            //         currentBatchSize += productSize;
+            //     }
+
+            //     // Push the last batch if it has data
+            //     if (currentBatch.length > 0) {
+            //         allBatches.push(currentBatch);
+            //     }
+
+            //     // Function to upload batches recursively
+            //     function uploadBatch(batchIndex) {
+            //         if (batchIndex >= allBatches.length) {
+            //             sap.m.MessageToast.show("All data uploaded successfully.");
+            //             return;
+            //         }
+
+            //         var batchData = allBatches[batchIndex];
+
+            //         sap.ui.core.BusyIndicator.show();
+            //         that.getModel("BModel").callFunction("/changeToPrimaryNewMulti", {
+            //             method: "GET",
+            //             urlParameters: {
+            //                 CharData: JSON.stringify(batchData)
+            //             },
+            //             success: function () {
+            //                 sap.ui.core.BusyIndicator.hide();
+            //                 MessageToast.show("Batch uploaded successfully.");
+            //                 uploadBatch(batchIndex + 1); // Upload next batch
+            //             },
+            //             error: function () {
+            //                 sap.ui.core.BusyIndicator.hide();
+            //                 MessageToast.show("Failed to upload batch.");
+            //             }
+            //         });
+            //     }
+
+            //     uploadBatch(0); // Start uploading batches
+            // },
+
+
+            // oCharPrioritizprocessExcelData: function (aData) {
+            //     var aHeaders = aData[0];
+            //     var aRows = aData.slice(1);
+            //     var productDataMap = {}; // Store data grouped by PRODUCT_ID
+            //     var batchSizeLimit = 10 //30000; // Max batch size
+            //     var allBatches = []; // Store all batches
+
+            //     // Grouping data by PRODUCT_ID
+            //     for (var i = 0; i < aRows.length; i++) {
+            //         var oObject = {};
+            //         aHeaders.forEach(function (sHeader, j) {
+            //             oObject[sHeader] = aRows[i][j];
+            //         });
+
+            //         var hasMandatoryFields = oObject.PRODUCT_ID && oObject.CHAR_NUM && oObject.CHAR_NAME &&
+            //             oObject.CHAR_DESC && oObject.CHAR_TYPE;
+            //         var hasNonEmptyValue = Object.values(oObject).some(value => value !== null && value !== undefined && value !== '');
+
+            //         if (!hasMandatoryFields || !hasNonEmptyValue) {
+            //             sap.m.MessageToast.show("Error: All mandatory fields must be filled with valid data.");
+            //             sap.ui.core.BusyIndicator.hide();
+            //             return false;
+            //         }
+
+            //         if (hasNonEmptyValue && oObject.CHAR_TYPE && oObject.CHAR_TYPE !== 'P' && oObject.CHAR_TYPE !== 'S') {
+            //             sap.m.MessageToast.show("Error: CHAR_TYPE must be either 'Primary(p)' or 'Secondary(s)'.");
+            //             sap.ui.core.BusyIndicator.hide();
+            //             return false;
+            //         }
+
+            //         var productId = oObject.PRODUCT_ID;
+            //         if (!productDataMap[productId]) {
+            //             productDataMap[productId] = [];
+            //         }
+            //         productDataMap[productId].push(oObject);
+            //     }
+
+            //     // Process data into batches ensuring total does not exceed 30K
+            //     var currentBatch = [];
+            //     var currentBatchSize = 0;
+            //     var allProductIds = Object.keys(productDataMap);
+
+            //     for (var i = 0; i < allProductIds.length; i++) {
+            //         var productId = allProductIds[i];
+            //         var productData = productDataMap[productId];
+            //         var productSize = productData.length;
+
+            //         if (currentBatchSize + productSize <= batchSizeLimit) {
+            //             // Add product data to the current batch
+            //             currentBatch = currentBatch.concat(productData);
+            //             currentBatchSize += productSize;
+            //         } else {
+            //             // Store current batch and start a new one
+            //             allBatches.push(currentBatch);
+            //             currentBatch = productData;
+            //             currentBatchSize = productSize;
+            //         }
+            //     }
+
+            //     // Push the last remaining batch
+            //     if (currentBatch.length > 0) {
+            //         allBatches.push(currentBatch);
+            //     }
+
+            //     // Function to upload batches recursively
+            //     function uploadBatch(batchIndex) {
+            //         if (batchIndex >= allBatches.length) {
+            //             sap.m.MessageToast.show("All data uploaded successfully.");
+            //             return;
+            //         }
+
+            //         var batchData = allBatches[batchIndex];
+
+            //         sap.ui.core.BusyIndicator.show();
+            //         that.getModel("BModel").callFunction("/changeToPrimaryNewMulti", {
+            //             method: "GET",
+            //             urlParameters: {
+            //                 CharData: JSON.stringify(batchData)
+            //             },
+            //             success: function () {
+            //                 sap.ui.core.BusyIndicator.hide();
+            //                 MessageToast.show("Batch uploaded successfully.");
+            //                 uploadBatch(batchIndex + 1); // Upload next batch
+            //             },
+            //             error: function () {
+            //                 sap.ui.core.BusyIndicator.hide();
+            //                 MessageToast.show("Failed to upload batch.");
+            //             }
+            //         });
+            //     }
+
+            //     uploadBatch(0); // Start uploading batches
+            // },
+
+
+            // oCharPrioritizprocessExcelData: function (aData) {
+            //     var aHeaders = aData[0];
+            //     var aRows = aData.slice(1);
+            //     var resultArray1 = [];
+            //     var productSequenceMap = {};
+
+            //     // Split Data into Objects
+            //     for (var i = 0; i < aRows.length; i++) {
+            //         var oObject = {};
+            //         aHeaders.forEach(function (sHeader, j) {
+            //             oObject[sHeader] = aRows[i][j];
+            //         });
+
+            //         var hasMandatoryFields = oObject.PRODUCT_ID && oObject.CHAR_NUM && oObject.CHAR_NAME &&
+            //             oObject.CHAR_DESC && oObject.CHAR_TYPE;
+
+            //         var hasNonEmptyValue = Object.values(oObject).some(value => value !== null && value !== undefined && value !== '');
+
+            //         if (!hasMandatoryFields || !hasNonEmptyValue) {
+            //             sap.m.MessageToast.show("Error: All mandatory fields must be filled with valid data.");
+            //             sap.ui.core.BusyIndicator.hide();
+            //             return false;
+            //         }
+
+            //         if (hasNonEmptyValue && oObject.CHAR_TYPE && oObject.CHAR_TYPE !== 'P' && oObject.CHAR_TYPE !== 'S') {
+            //             sap.m.MessageToast.show("Error: CHAR_TYPE must be either 'Primary(P)' or 'Secondary(S)'.");
+            //             sap.ui.core.BusyIndicator.hide();
+            //             return false;
+            //         }
+
+            //         var productId = oObject.PRODUCT_ID;
+            //         var sequence = oObject.SEQUENCE;
+
+            //         if (!productSequenceMap[productId]) {
+            //             productSequenceMap[productId] = new Set();
+            //         }
+            //         if (productSequenceMap[productId].has(sequence)) {
+            //             sap.m.MessageToast.show("Error: Duplicate sequence value for product: " + productId);
+            //             sap.ui.core.BusyIndicator.hide();
+            //             return false;
+            //         }
+
+            //         productSequenceMap[productId].add(sequence);
+            //         resultArray1.push(oObject);
+            //     }
+
+            //     that.oUploadclassData1 = resultArray1;
+
+            //     if (that.oUploadclassData1.length === 0) {
+            //         sap.ui.core.BusyIndicator.hide();
+            //         MessageToast.show("There is no prioritized data from uploaded file.");
+            //         return;
+            //     }
+
+            //     const confirmationMessage1 = `Would you like to update the products?`;
+            //     sap.m.MessageBox.confirm(confirmationMessage1, {
+            //         actions: [sap.m.MessageBox.Action.YES, sap.m.MessageBox.Action.NO],
+            //         onClose: function (oAction) {
+            //             sap.ui.core.BusyIndicator.hide();
+            //             if (oAction === sap.m.MessageBox.Action.YES) {
+            //                 sap.ui.core.BusyIndicator.show();
+            //                 that.processLargeDataBatch(that.oUploadclassData1, 10, 0);
+            //             }
+            //         }.bind(this)
+            //     });
+            // },
+
+            // /**
+            //  * Function to process large data in batches of 30,000 at a time.
+            //  * @param {Array} data - Full data array.
+            //  * @param {number} batchSize - Number of records per batch.
+            //  * @param {number} startIndex - Current processing index.
+            //  */
+            // processLargeDataBatch: function (data, batchSize, startIndex) {
+            //     var that = this;
+            //     var batch = data.slice(startIndex, startIndex + batchSize);
+
+            //     if (batch.length === 0) {
+            //         sap.ui.core.BusyIndicator.hide();
+            //         MessageToast.show("All data uploaded successfully.");
+            //         return;
+            //     }
+
+            //     that.getModel("BModel").callFunction("/changeToPrimaryNewMulti", {
+            //         method: "GET",
+            //         urlParameters: {
+            //             CharData: JSON.stringify(batch)
+            //         },
+            //         success: function () {
+            //             MessageToast.show(`Batch ${startIndex / batchSize + 1} uploaded successfully.`);
+            //             that.processLargeDataBatch(data, batchSize, startIndex + batchSize); // Process next batch
+            //         },
+            //         error: function () {
+            //             sap.ui.core.BusyIndicator.hide();
+            //             MessageToast.show("Failed to upload data.");
+            //         }
+            //     });
+            // },
+
+            // oCharPrioritizprocessExcelData: function (aData) {
+            //     var aHeaders = aData[0];
+            //     var aRows = aData.slice(1);
+            //     var resultArray1 = [];
+            //     var productSequenceMap = {};
+
+            //     for (var i = 0; i < aRows.length; i++) {
+            //         var oObject = {};
+            //         aHeaders.forEach(function (sHeader, j) {
+            //             oObject[sHeader] = aRows[i][j];
+            //         });
+
+            //         // checking in object all values must have valid data
+            //         var hasMandatoryFields = oObject.PRODUCT_ID && oObject.CHAR_NUM && oObject.CHAR_NAME &&
+            //             oObject.CHAR_DESC && oObject.CHAR_TYPE;
+
+            //         var hasNonEmptyValue = Object.values(oObject).some(function (value) {
+            //             return value !== null && value !== undefined && value !== '';
+            //         });
+
+
+            //         // Check if mandatory fields are valid
+            //         if (!hasMandatoryFields || !hasNonEmptyValue) {
+            //             sap.m.MessageToast.show("Error: All mandatory fields must be filled with valid data.");
+            //             sap.ui.core.BusyIndicator.hide();
+            //             return false;
+            //         }
+
+            //         // verifying CHAR_TYPE Primary(p), Secondary(s) or not..
+            //         if (hasNonEmptyValue && oObject.CHAR_TYPE && oObject.CHAR_TYPE !== 'P' && oObject.CHAR_TYPE !== 'S') {
+            //             sap.m.MessageToast.show("Error: CHAR_TYPE must be either 'Primary(p)' or 'Secondary(s)'.");
+            //             sap.ui.core.BusyIndicator.hide();
+            //             return false;
+            //         }
+
+            //         // verifying if any duplicate seq found
+            //         if (hasNonEmptyValue) {
+            //             var productId = oObject.PRODUCT_ID;
+            //             var sequence = oObject.SEQUENCE;
+
+            //             if (!productSequenceMap[productId]) {
+            //                 productSequenceMap[productId] = new Set();
+            //             }
+            //             if (productSequenceMap[productId].has(sequence)) {
+            //                 sap.m.MessageToast.show("Error: Duplicate sequence value for product: " + productId);
+            //                 sap.ui.core.BusyIndicator.hide();
+            //                 return false;
+            //             }
+
+            //             productSequenceMap[productId].add(sequence);
+            //             resultArray1.push(oObject);
+            //         }
+            //     }
+
+            //     that.oUploadclassData1 = resultArray1;
+            //     const confirmationMessage1 = `Would you like to update the products ?`;
+            //     if (that.oUploadclassData1.length > 0) {
+            //         sap.ui.core.BusyIndicator.hide();
+            //         sap.m.MessageBox.confirm(confirmationMessage1, {
+            //             // "Are you sure you want to update the IBP Class?", {
+            //             actions: [sap.m.MessageBox.Action.YES, sap.m.MessageBox.Action.NO],
+            //             onClose: function (oAction) {
+            //                 sap.ui.core.BusyIndicator.hide();
+            //                 if (oAction === sap.m.MessageBox.Action.YES) {
+            //                     // sap.ui.core.BusyIndicator.show();
+            //                     that.getModel("BModel").callFunction("/changeToPrimaryNewMulti", {
+            //                         method: "GET",
+            //                         urlParameters: {
+            //                             CharData: JSON.stringify(that.oUploadclassData1)
+            //                         },
+            //                         success: function (oData) {
+            //                             sap.ui.core.BusyIndicator.hide();
+            //                             MessageToast.show("Data Uploaded Succesfully")
+            //                             //   MessageBox.alert("Some products are already in prioritization. Remaining data uploaded successfully.")
+            //                         },
+            //                         error: function (oData) {
+            //                             sap.ui.core.BusyIndicator.hide();
+            //                             MessageToast.show("Failed to changes the update");
+            //                         },
+            //                     });
+            //                 }
+            //             }.bind(this)
+            //         });
+
+            //     } else {
+            //         sap.ui.core.BusyIndicator.hide();
+            //         MessageToast.show("There is no prioritized data from uploaded file.")
+            //     }
+            //     //    } 
+
+
+            //     // var Array1 = that.prodGroups(that.oUploadclassData1); // Excel Data
+            //     // var Array2 = that.prodGroups(that.oAllPrds);     // Overall Groups Data
+
+            //     // // that.nonPriority = [];
+
+            //     // const nonPrior = Array2.filter(ele =>
+            //     //     !ele.children.some(obj =>
+            //     //         obj.CHAR_TYPE === "P")
+
+            //     // )
+            //     // if (nonPrior.length > 0) {
+            //     //     that.nonPriority = Array1.filter(obj1 =>
+            //     //         nonPrior.some(obj2 => obj1.PRODUCT === obj2.PRODUCT)
+            //     //     )
+            //     // }
+
+            //     // that.nonPriorityPriorityObj = that.nonPriority.filter(ele =>
+            //     //     ele.children.some(obj =>
+            //     //         obj.CHAR_TYPE === "P")
+
+            //     // )
+            //     // if (that.nonPriorityPriorityObj.length > 0) {
+
+            //     //     that.oUploadclassData = [];
+            //     //     if (that.nonPriority.length > 0) {
+            //     //         that.nonPriority.forEach(ele => {
+            //     //             ele.children.forEach(ele2 => {
+            //     //                 if (ele2.CHAR_TYPE === "P") {
+            //     //                     ele2.GROUP_NAME = "";
+            //     //                     ele2.WEIGHTAGE = 1;
+            //     //                 }
+            //     //                 else {
+            //     //                     ele2.GROUP_NAME = "";
+            //     //                     ele2.WEIGHTAGE = -1;
+            //     //                 }
+            //     //             })
+            //     //         })
+
+            //     //         that.nonPriority.forEach(ele => {
+            //     //             var pData = ele.children
+            //     //                 .filter((el) => el.CHAR_TYPE === "P")
+            //     //                 .sort((a, b) => a.SEQUENCE - b.SEQUENCE);
+
+
+            //     //             var sData = ele.children
+            //     //                 .filter((el) => el.CHAR_TYPE === "S")
+            //     //                 .sort((a, b) => a.SEQUENCE - b.SEQUENCE);
+
+            //     //             var classData = [...pData, ...sData];
+
+            //     //             classData.forEach((item, index) => {
+            //     //                 item.SEQUENCE = index + 1;
+            //     //             });
+            //     //             that.oUploadclassData.push(...classData);
+
+            //     //         })
+            //     //     }
+
+            //     //     if (that.oUploadclassData.length > 0) {
+
+            //     //         that.getModel("BModel").callFunction("/changeToPrimaryNewMulti", {
+            //     //             method: "GET",
+            //     //             urlParameters: {
+            //     //                 CharData: JSON.stringify(that.oUploadclassData)
+            //     //             },
+            //     //             success: function (oData) {
+            //     //                 sap.ui.core.BusyIndicator.hide();
+            //     //                 // that.onPressUpdate();
+            //     //                 MessageBox.alert("Some products are already in prioritization. Remaining data uploaded successfully.")
+            //     //             },
+            //     //             error: function (oData) {
+            //     //                 sap.ui.core.BusyIndicator.hide();
+            //     //                 MessageToast.show("Failed to changes the update");
+            //     //             },
+            //     //         });
+
+            //     //     }
+            //     // } else {
+            //     //     sap.ui.core.BusyIndicator.hide();
+            //     //     MessageToast.show("There is no prioritized data from uploaded file.")
+            //     // }
+            // },
+
+
+
 
             prodGroups: function (val1) {
 
@@ -7128,7 +7938,7 @@ sap.ui.define([
                                 if (topCount == oData.results.length) {
                                     that.skip += parseInt(topCount);
                                     that.oclassTable = that.oclassTable.concat(oData.results);
-                                    fetchData(); // Recursive call to fetch next batch
+                                    fetchData();
                                 } else {
                                     that.skip = 0;
                                     that.oclassTable = that.oclassTable.concat(oData.results);
@@ -7137,13 +7947,13 @@ sap.ui.define([
                                     let aItems = that.removeDupScmrelevent(that.oclassTable, akeys);
                                     that.oSCMreleventData = aItems;
 
-                                    resolve(); // Resolve the Promise when all data is loaded
+                                    resolve();
                                 }
                             },
                             error: function (err) {
                                 sap.ui.core.BusyIndicator.hide();
                                 MessageToast.show("Error");
-                                reject(err); // Reject the Promise in case of an error
+                                reject(err);
                             }
                         });
                     }
