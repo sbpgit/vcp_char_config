@@ -4,191 +4,340 @@
     xmlns:smartfilterbar="sap.ui.comp.smartfilterbar"
     xmlns:dnd="sap.ui.core.dnd"
     xmlns:ux="sap.uxap"
+    xmlns:uxap="sap.uxap"
+    xmlns:layout="sap.ui.layout"
     xmlns:u="sap.ui.unified"
     xmlns:html="http://www.w3.org/1999/xhtml"
     xmlns:l="sap.ui.layout"
     xmlns:unified="sap.ui.unified"
-    xmlns:f="sap.ui.layout.form"
+    xmlns:f="sap.f"
     xmlns:mvc="sap.ui.core.mvc"
     xmlns="sap.m"
     xmlns:core="sap.ui.core"
     xmlns:m="sap.m" displayBlock="true">
-    <Page id="page">
-        <headerContent >
-            <Bar >
-                <contentLeft>
-                    <HBox  >
-                        <Label text="Configurable Product :" required="true" class="sapUiTinyMarginEnd"/>
-                        <Input id="idCommon" width="250px" placeholder="Configurable Product" showValueHelp="true" valueHelpOnly="true" valueHelpRequest="ValueHelpForProdClas" />
-                    </HBox>
-                    <HBox  >
-                        <Button id="idData" text="Go" type="Emphasized" press="onGo" />
-                        <Button id="idReset" text="Reset" type="Emphasized" press="onResetPress" class="sapUiTinyMarginBeginEnd" />
-                    </HBox>
-                    <Text class="sapUiLargeMarginBottom"></Text>
-                </contentLeft>
-            </Bar>
 
-        </headerContent>
-        <content>
-            <IconTabBar id="idIconTabBarFiori2" stretchContentHeight="true" class="sapUiResponsiveContentPadding" select="onTabSelect">
-                <items>
 
-                    <!-- <Class IBP Characteristics> -->
-                    <IconTabFilter text="SCM Relevant Class" key="ClassIBP">
-                        <Toolbar class="stickyToolbar">
-                            <content>
-                                <SearchField id="classSearch" class ="SCMSearch" liveChange="handleSearch2" placeholder="Class Name/ Class Desc" />
+    <f:DynamicPage id="page"  showFooter="true" headerExpanded="{/headerExpanded}" toggleHeaderOnTitleClick="{/titleClickable}">
 
-                            </content>
-                        </Toolbar>
-                        <content>
-                            <Page showHeader="false" showFooter="true">
+        <f:header>
+            <f:DynamicPageHeader pinnable="true">
+
+                <layout:HorizontalLayout class ="row2" allowWrapping="true">
+                    <layout:VerticalLayout>
+                        <VBox >
+                            <Label text="Configurable Product :" required="true" />
+                            <Input id="idCommon" placeholder="Configurable Product" showValueHelp="true" valueHelpOnly="true" valueHelpRequest="ValueHelpForProdClas" />
+                        </VBox>
+
+                    </layout:VerticalLayout>
+
+                    <layout:VerticalLayout>
+                        <VBox class="class1">
+                            <HBox>
+                                <Button id="idData" text="Go" type="Emphasized" press="onGo" />
+                                <Button id="idReset" text="Reset" type="Transparent" press="onResetPress" />
+                            </HBox>
+                        </VBox>
+                    </layout:VerticalLayout>
+                </layout:HorizontalLayout>
+            </f:DynamicPageHeader>
+        </f:header>
+        <!-- </html:div> -->
+        <f:content>
+                <!-- <content> -->
+                <IconTabBar id="idIconTabBarFiori2" stretchContentHeight="true" class="sapUiResponsiveContentPadding" select="onTabSelect">
+
+                    <items>
+                        <!-- <Class IBP Characteristics> -->
+                        <IconTabFilter text="SCM Relevant Class" key="ClassIBP">
+                            <Toolbar class="stickyToolbar">
                                 <content>
+                                    <SearchField id="classSearch" class ="SCMSearch" liveChange="handleSearch2" placeholder="Class Name/ Class Desc" />
 
-                                    <Table id="classList" items="{path: '/results'}" class ="sapUiTableSCM" growingScrollToLoad="true" mode="SingleSelectMaster" sticky="ColumnHeaders" rememberSelections="false">
-
-                                        <columns>
-                                            <Column hAlign="Left" vAlign="Middle" visible="false">
-                                                <Text text="Class Num" />
-                                            </Column>
-                                            <Column hAlign="Left" vAlign="Middle">
-                                                <Text text="Class Name" />
-                                            </Column>
-                                            <Column hAlign="Left" vAlign="Middle">
-                                                <Text text="Class Desc." />
-                                            </Column>
-
-                                            <Column hAlign="Left" vAlign="Middle">
-                                                <Text text="Class Type" />
-                                            </Column>
-                                            <Column hAlign="Left" vAlign="Middle">
-                                                <Text text="SCM Char." />
-                                            </Column>
-                                        </columns>
-                                        <items>
-                                            <ColumnListItem>
-                                                <cells>
-                                                    <Text text="{CLASS_NUM}" />
-                                                    <Text text="{CLASS_NAME}" />
-                                                    <Text text="{CLASS_DESC}" />
-                                                    <Text text="{CLASS_TYPE}" />
-                                                    <CheckBox selected="{IBPCHAR_CHK}" select="onClsSelect"/>
-                                                </cells>
-                                            </ColumnListItem>
-                                        </items>
-                                    </Table>
                                 </content>
-                                <footer>
-                                    <OverflowToolbar class="footer">
-                                        <u:FileUploader class="classBrowseButton" id="oSCMRelevent" sameFilenameAllowed="true" iconOnly="true" buttonOnly="true" visible="true" change="uploadData" />
-                                        <MenuButton id="idMenuSCM" type="Neutral" buttonMode="Split" useDefaultActionOnly="true" class="classOverlay" defaultAction="onPressBrowse" text="Upload" icon="sap-icon://upload">
-                                            <menu>
-                                                <Menu>
-                                                    <MenuItem text="{i18n>downloadTemp}" press="oDownloadClassesData"/>
-                                                </Menu>
-                                            </menu>
-                                        </MenuButton>
+                            </Toolbar>
+                            <content>
+                                <Page showHeader="false" showFooter="true">
+                                    <content>
 
-                                        <ToolbarSpacer/>
-                                        <Button id="idupdate" type='Emphasized' text="Update" press="onClassUpdate" />
+                                        <Table id="classList" items="{path: '/results'}" class ="sapUiTableSCM" growingScrollToLoad="true" mode="SingleSelectMaster" sticky="ColumnHeaders" rememberSelections="false">
 
-                                    </OverflowToolbar>
-                                </footer>
-                            </Page>
-                        </content>
-                    </IconTabFilter>
+                                            <columns>
+                                                <Column hAlign="Left" vAlign="Middle" visible="false">
+                                                    <Text text="Class Num" />
+                                                </Column>
+                                                <Column hAlign="Left" vAlign="Middle">
+                                                    <Text text="Class Name" />
+                                                </Column>
+                                                <Column hAlign="Left" vAlign="Middle">
+                                                    <Text text="Class Desc." />
+                                                </Column>
 
-                    <!-- <Prioritization Grouping> -->
-                    <IconTabFilter text="Prioritization Grouping" key="PrioritizationGrouping">
-                        <SearchField liveChange="onGroupSearch" placeholder="Group Name" id="groupSearch"/>
-                        <content>
-                            <Page showHeader="false" showFooter="true">
-                                <content>
-                                    <!-- <Toolbar class="stickyToolbar">
+                                                <Column hAlign="Left" vAlign="Middle">
+                                                    <Text text="Class Type" />
+                                                </Column>
+                                                <Column hAlign="Left" vAlign="Middle">
+                                                    <Text text="SCM Char." />
+                                                </Column>
+                                            </columns>
+                                            <items>
+                                                <ColumnListItem>
+                                                    <cells>
+                                                        <Text text="{CLASS_NUM}" />
+                                                        <Text text="{CLASS_NAME}" />
+                                                        <Text text="{CLASS_DESC}" />
+                                                        <Text text="{CLASS_TYPE}" />
+                                                        <CheckBox selected="{IBPCHAR_CHK}" select="onClsSelect"/>
+                                                    </cells>
+                                                </ColumnListItem>
+                                            </items>
+                                        </Table>
+                                    </content>
+                                    <footer>
+                                        <OverflowToolbar class="footer">
+                                            <u:FileUploader class="classBrowseButton" id="oSCMRelevent" sameFilenameAllowed="true" iconOnly="true" buttonOnly="true" visible="true" change="uploadData" />
+                                            <MenuButton id="idMenuSCM" type="Neutral" buttonMode="Split" useDefaultActionOnly="true" class="classOverlay" defaultAction="onPressBrowse" text="Upload" icon="sap-icon://upload">
+                                                <menu>
+                                                    <Menu>
+                                                        <MenuItem text="{i18n>downloadTemp}" press="oDownloadClassesData"/>
+                                                    </Menu>
+                                                </menu>
+                                            </MenuButton>
+
+                                            <ToolbarSpacer/>
+                                            <Button id="idupdate" type='Emphasized' text="Update" enabled="false" press="onClassUpdate" />
+
+                                        </OverflowToolbar>
+                                    </footer>
+                                </Page>
+                            </content>
+                        </IconTabFilter>
+
+                        <!-- <Prioritization Grouping> -->
+                        <IconTabFilter text="Prioritization Grouping" key="PrioritizationGrouping">
+                            <SearchField liveChange="onGroupSearch" placeholder="Group Name" id="groupSearch"/>
+                            <content>
+                                <Page showHeader="false" showFooter="true">
+                                    <content>
+                                        <!-- <Toolbar class="stickyToolbar">
                                         <SearchField liveChange="onGroupSearch" class="GroupingSearch" placeholder="Group Name" id="groupSearch" />
                                         <ToolbarSpacer ></ToolbarSpacer>
                                     </Toolbar> -->
 
-                                    <Table id="Group" mode="SingleSelectMaster" class="sapUiTable" items="{ path: '/results',sorter:{path:'WEIGHTAGE'}}">
+                                        <Table id="Group" mode="SingleSelectMaster" class="sapUiTable" items="{ path: '/results',sorter:{path:'WEIGHTAGE'}}">
+                                            <columns>
+                                                <Column >
+                                                    <Text text="Group Name" />
+                                                </Column>
+                                                <Column >
+                                                    <Text text="Weightage" />
+                                                </Column>
+
+                                                <Column hAlign="Center">
+                                                    <Text text="Actions" />
+                                                </Column>
+
+                                            </columns>
+                                            <items>
+                                                <ColumnListItem visible="{= ${GROUP_NAME} === '' ? false : true}">
+                                                    <cells >
+                                                        <Text text="{GROUP_NAME}" />
+                                                        <!-- <Text text="{WEIGHTAGE}" /> -->
+                                                        <Text text = "{WEIGHTAGE}" />
+                                                        <HBox justifyContent="Center">
+                                                            <Button icon="sap-icon://edit" class="sapUiSmallMarginEnd" type="Default" press="onGroupEditValidation"></Button>
+                                                            <Button icon="sap-icon://delete" class="right-button" type="Default" press="onGroupDeleteValidation"></Button>
+                                                        </HBox>
+                                                    </cells>
+                                                </ColumnListItem>
+                                            </items>
+                                        </Table>
+                                    </content>
+                                    <footer>
+                                        <OverflowToolbar class="footer">
+                                            <u:FileUploader class="classBrowseButton" change="onGroupUploadValidation" id="oGroupPrior" sameFilenameAllowed="true" iconOnly="true" buttonOnly="true" visible="true" />
+                                            <MenuButton id="idMenuGroup" type="Neutral" buttonMode="Split" useDefaultActionOnly="true" class="classOverlay" defaultAction="onPressBrowse" text="Upload" icon="sap-icon://upload">
+                                                <menu>
+                                                    <Menu>
+                                                        <MenuItem text="{i18n>downloadTemp}" press="oGroupDownload"/>
+                                                    </Menu>
+                                                </menu>
+                                            </MenuButton>
+                                            <ToolbarSpacer/>
+                                            <Button text="Create" class="right-button" type="Default" press="onGroupMaintenance" />
+                                        </OverflowToolbar>
+                                    </footer>
+
+                                </Page>
+                            </content>
+                        </IconTabFilter>
+
+                        <!-- <Characteristic Prioritization> -->
+                        <IconTabFilter text="Characteristic Prioritization" key="CharacteristicPriority">
+                            <Toolbar class="stickyToolbar">
+                                <SearchField liveChange="onPrimarySearch" placeholder="Characteristics Name" id="idPrimarySearch" />
+                                <ToolbarSpacer ></ToolbarSpacer>
+                                <Button id="idReset2" icon="sap-icon://reset" iconFirst="true" text="Reset" tooltip="It will Reload All Characteristics" type="Emphasized" press="onReset1" />
+                            </Toolbar>
+                            <content>
+                                <Page showHeader="false" showFooter="true">
+
+                                    <content>
+
+                                        <!-- Added a container to control table scrolling -->
+                                        <!-- <VBox height="100%" fitContainer="true"> -->
+                                        <Table id="Primarytable" growingScrollToLoad="true" class="sapUiTableCP" mode="SingleSelectMaster" items="{ path: '/results', sorter:{path:'WEIGHTAGE', descending:true} }" updateFinished="onTableupdate">
+                                            <columns>
+                                                <Column hAlign="Center" visible="false">
+                                                    <Text text="{i18n>charno}" />
+                                                </Column>
+                                                <Column>
+                                                    <Text text="Characteristics Name" />
+                                                </Column>
+                                                <Column>
+                                                    <Text text="Characteristics Description" />
+                                                </Column>
+                                                <Column >
+                                                    <Text text="Priority (Primary / Secondary)" />
+                                                </Column>
+
+                                                <Column visible="false">
+                                                    <Text text="{Char_Type}" />
+                                                </Column>
+                                            </columns>
+                                            <dragDropConfig>
+                                                <dnd:DragInfo groupName="selected2available" sourceAggregation="items" />
+                                                <dnd:DropInfo groupName="available2selected" targetAggregation="items" dropPosition="Between" drop="onDropSelectedProductsTable" />
+                                                <dnd:DragDropInfo sourceAggregation="items" targetAggregation="items" dropPosition="Between" drop="onDropSelectedProductsTable" />
+                                            </dragDropConfig>
+                                            <items>
+                                                <ColumnListItem>
+                                                    <cells>
+                                                        <Text text="{CHAR_NUM}" visible="false"/>
+                                                        <Text text="{CHAR_NAME}" />
+                                                        <Text text="{CHAR_DESC}" />
+
+                                                        <HBox>
+                                                            <CheckBox selected="{= ${CHAR_TYPE} === 'P' ? true : false }" select="onSectoPrim" />
+                                                            <!-- <CheckBox selected="{CHAR_TYPE}" select="onSectoPrim" /> -->
+                                                            <HBox visible = "{= ${CHAR_TYPE} === 'P' ? true : false }" width="150px">
+                                                                <Select change ="oItemChange" forceSelection="false" id="SelectOption" items="{ path: '/groupresults', sorter:{path:'WEIGHTAGE', descending:true},templateShareable: true}">
+                                                                    <!-- <core:Item key="{GROUP_NAME}" text="{= ${GROUP_NAME} + ' - ' + ${WEIGHTAGE} }"/> -->
+                                                                    <core:Item key="{GROUP_NAME}" text="{= ${GROUP_NAME} === '' ?  ${WEIGHTAGE} : ${GROUP_NAME} + ' - ' + ${WEIGHTAGE}  }"/>
+                                                                </Select>
+                                                            </HBox>
+                                                        </HBox>
+
+                                                        <Text text="{CHAR_TYPE}" visible="false"/>
+                                                    </cells>
+                                                </ColumnListItem>
+                                            </items>
+                                        </Table>
+                                    </content>
+                                    <footer>
+                                        <OverflowToolbar class="footer">
+                                            <u:FileUploader class="classBrowseButton" id="idoCharPrioritiz" sameFilenameAllowed="true" iconOnly="true" buttonOnly="true" visible="true" change="oCharPrioritiz" />
+                                            <MenuButton id="idMenuCharPrior" type="Neutral" buttonMode="Split" useDefaultActionOnly="true" class="classOverlay" defaultAction="onPressBrowse" text="Upload" icon="sap-icon://upload">
+                                                <menu>
+                                                    <Menu>
+                                                        <MenuItem text="{i18n>downloadTemp}" press="oCharPrioritizDownload"/>
+                                                    </Menu>
+                                                </menu>
+                                            </MenuButton>
+
+                                            <ToolbarSpacer/>
+                                            <Button id="idUpdate2" text="Update" iconFirst="true" type="Emphasized" press="oAllSave" />
+
+                                        </OverflowToolbar>
+                                    </footer>
+                                </Page>
+                            </content>
+                        </IconTabFilter>
+
+                        <!-- <Partial Products Characteristics> -->
+                        <IconTabFilter text="Partial Products Characteristics" key="PartialProducts">
+                            <Toolbar class="stickyToolbar">
+                                <content>
+                                    <SearchField id="idPartialSearch" liveChange="onSearch" placeholder="Characteristic Name" />
+                                    <ToolbarSpacer />
+                                    <Button id="idShowSelected" text="Show Selected" press="handleShowSelect" />
+                                </content>
+                            </Toolbar>
+                            <content>
+
+                                <Page showFooter="true" showHeader="false">
+
+                                    <Table id="prodList" items="{path: '/results'}" class="sapUiTablePP" sticky="ColumnHeaders" rememberSelections="true" mode="MultiSelect" selectionChange="onTableItemsSelect" growingScrollToLoad="true" growing="true" growingThreshold="1000" updateFinished="onTableScroll">
                                         <columns>
-                                            <Column >
-                                                <Text text="Group Name" />
+                                            <Column hAlign="Left" vAlign="Middle">
+                                                <Text text="Characteristic Name" />
                                             </Column>
-                                            <Column >
-                                                <Text text="Weightage" />
+                                            <Column hAlign="Left" vAlign="Middle" visible="false">
+                                                <Text text="Characteristic Value" />
                                             </Column>
-
-                                            <Column hAlign="Center">
-                                                <Text text="Actions" />
+                                            <Column hAlign="Left" vAlign="Middle" visible="false">
+                                                <Text text="Characteristic Number" />
                                             </Column>
-
+                                            <Column hAlign="Left" vAlign="Middle">
+                                                <Text text="Class Name" />
+                                            </Column>
                                         </columns>
                                         <items>
-                                            <ColumnListItem visible="{= ${GROUP_NAME} === '' ? false : true}">
-                                                <cells >
-                                                    <Text text="{GROUP_NAME}" />
-                                                    <!-- <Text text="{WEIGHTAGE}" /> -->
-                                                    <Text text = "{WEIGHTAGE}" />
-                                                    <HBox justifyContent="Center">
-                                                        <Button icon="sap-icon://edit" class="sapUiSmallMarginEnd" type="Default" press="onGroupEditValidation"></Button>
-                                                        <Button icon="sap-icon://delete" class="right-button" type="Default" press="onGroupDeleteValidation"></Button>
-                                                    </HBox>
+                                            <ColumnListItem id="_IDGenColumnListItem1" selected="{= ${selected} === 'true' ? true : false }">
+                                                <cells>
+                                                    <ObjectIdentifier title="{CHAR_DESC}" text="{CHAR_NAME}" />
+                                                    <ObjectIdentifier title="{CHAR_VALUE}" text="{CHARVAL_DESC}" />
+                                                    <ObjectIdentifier title="{CHAR_NUM}" text="{CHARVAL_NUM}" />
+                                                    <ObjectIdentifier title="{CLASS_DESC}" text="{CLASS_NAME}" />
+                                                    <Text text="{CLASS_NUM}" />
                                                 </cells>
                                             </ColumnListItem>
                                         </items>
                                     </Table>
-                                </content>
-                                <footer>
-                                    <OverflowToolbar class="footer">
-                                        <u:FileUploader class="classBrowseButton" change="onGroupUploadValidation" id="oGroupPrior" sameFilenameAllowed="true" iconOnly="true" buttonOnly="true" visible="true" />
-                                        <MenuButton id="idMenuGroup" type="Neutral" buttonMode="Split" useDefaultActionOnly="true" class="classOverlay" defaultAction="onPressBrowse" text="Upload" icon="sap-icon://upload">
-                                            <menu>
-                                                <Menu>
-                                                    <MenuItem text="{i18n>downloadTemp}" press="oGroupDownload"/>
-                                                </Menu>
-                                            </menu>
-                                        </MenuButton>
-                                        <ToolbarSpacer/>
-                                        <Button text="Create" class="right-button" type="Default" press="onGroupMaintenance" />
-                                    </OverflowToolbar>
-                                </footer>
 
-                            </Page>
-                        </content>
-                    </IconTabFilter>
+                                    <footer>
+                                        <OverflowToolbar class="footer">
+                                            <u:FileUploader class="classBrowseButton" id="idoPartialProd" sameFilenameAllowed="true" iconOnly="true" buttonOnly="true" visible="true" change="oPartialUpload" />
+                                            <MenuButton id="idMenuPartialProd" type="Neutral" buttonMode="Split" useDefaultActionOnly="true" class="classOverlay" defaultAction="onPressBrowse" text="Upload" icon="sap-icon://upload">
+                                                <menu>
+                                                    <Menu>
+                                                        <MenuItem text="{i18n>downloadTemp}" press="oPartiaDownload"/>
+                                                    </Menu>
+                                                </menu>
+                                            </MenuButton>
 
-                    <!-- <Characteristic Prioritization> -->
-                    <IconTabFilter text="Characteristic Prioritization" key="CharacteristicPriority">
-                        <Toolbar class="stickyToolbar">
-                            <SearchField liveChange="onPrimarySearch" placeholder="Characteristics Name" id="idPrimarySearch" />
-                            <ToolbarSpacer ></ToolbarSpacer>
-                            <Button id="idReset2" icon="sap-icon://reset" iconFirst="true" text="Reset" tooltip="It will Reload All Characteristics" type="Emphasized" press="onReset1" />
-                        </Toolbar>
-                        <content>
-                            <Page showHeader="false" showFooter="true">
+                                            <ToolbarSpacer/>
+                                            <Button id="idSaveBtn" text="Update" type="Emphasized" press="onSaveChar" enabled="true" />
 
-                                <content>
+                                        </OverflowToolbar>
+                                    </footer>
+                                </Page>
 
-                                    <!-- Added a container to control table scrolling -->
-                                    <!-- <VBox height="100%" fitContainer="true"> -->
-                                    <Table id="Primarytable" growingScrollToLoad="true" class="sapUiTableCP" mode="SingleSelectMaster" items="{ path: '/results', sorter:{path:'WEIGHTAGE', descending:true} }" updateFinished="onTableupdate">
+                            </content>
+                        </IconTabFilter>
+
+                        <!-- <IBP Attributes> -->
+                        <IconTabFilter text="SCM Attributes" key="IBPAttributes" visible="false">
+                            <content>
+                                <Page showFooter="true" showHeader="false">
+                                    <Toolbar class="stickyToolbar">
+                                        <SearchField liveChange="onPrimarySearch2" placeholder="Characteristics Name" id="idPrimarySearch2" />
+                                        <ToolbarSpacer ></ToolbarSpacer>
+                                        <Button id="idReset3" icon="sap-icon://reset" iconFirst="true" text="Reset." type="Emphasized" press="oSCMReset" />
+                                    </Toolbar>
+                                    <Table id="Primarytable2" class="sapUiTable" mode="SingleSelectMaster" items="{ path: '/results2'}">
                                         <columns>
-                                            <Column hAlign="Center" visible="false">
-                                                <Text text="{i18n>charno}" />
-                                            </Column>
-                                            <Column>
-                                                <Text text="Characteristics Name" />
-                                            </Column>
-                                            <Column>
-                                                <Text text="Characteristics Description" />
+                                            <Column visible="false">
+                                                <Text text="{i18n>charno2}" />
                                             </Column>
                                             <Column >
-                                                <Text text="Priority (Primary / Secondary)" />
+                                                <Text text="{i18n>charname2}" />
                                             </Column>
-
-                                            <Column visible="false">
-                                                <Text text="{Char_Type}" />
+                                            <Column >
+                                                <Text text="{i18n>chardesc2}" />
+                                            </Column>
+                                            <Column>
+                                                <Text text="SCM Attributes / All Characteristics" />
                                             </Column>
                                         </columns>
                                         <dragDropConfig>
@@ -199,415 +348,44 @@
                                         <items>
                                             <ColumnListItem>
                                                 <cells>
-                                                    <Text text="{CHAR_NUM}" visible="false"/>
+                                                    <Text text="{CHAR_NUM}" />
                                                     <Text text="{CHAR_NAME}" />
                                                     <Text text="{CHAR_DESC}" />
-
-                                                    <HBox>
-                                                        <CheckBox selected="{= ${CHAR_TYPE} === 'P' ? true : false }" select="onSectoPrim" />
-                                                        <!-- <CheckBox selected="{CHAR_TYPE}" select="onSectoPrim" /> -->
-                                                        <HBox visible = "{= ${CHAR_TYPE} === 'P' ? true : false }" width="150px">
-                                                            <Select change ="oItemChange" forceSelection="false" id="SelectOption" items="{ path: '/groupresults', sorter:{path:'WEIGHTAGE', descending:true},templateShareable: true}">
-                                                                <!-- <core:Item key="{GROUP_NAME}" text="{= ${GROUP_NAME} + ' - ' + ${WEIGHTAGE} }"/> -->
-                                                                <core:Item key="{GROUP_NAME}" text="{= ${GROUP_NAME} === '' ?  ${WEIGHTAGE} : ${GROUP_NAME} + ' - ' + ${WEIGHTAGE}  }"/>
-                                                            </Select>
-                                                        </HBox>
-                                                    </HBox>
-
-                                                    <Text text="{CHAR_TYPE}" visible="false"/>
+                                                    <CheckBox selected="{= ${CHAR_TYPE} === 'P' ? true : false }" select="onIBPatbs_Checkbox"/>
+                                                    <!-- <CheckBox select="onIBPatbs_Checkbox"/> -->
                                                 </cells>
                                             </ColumnListItem>
                                         </items>
                                     </Table>
-                                </content>
-                                <footer>
-                                    <OverflowToolbar class="footer">
-                                        <u:FileUploader class="classBrowseButton" id="idoCharPrioritiz" sameFilenameAllowed="true" 
-                                        iconOnly="true" buttonOnly="true" visible="true" change="oCharPrioritiz" />
-                                        <MenuButton id="idMenuCharPrior" type="Neutral" buttonMode="Split" useDefaultActionOnly="true" class="classOverlay" defaultAction="onPressBrowse" text="Upload" icon="sap-icon://upload">
-                                            <menu>
-                                                <Menu>
-                                                    <MenuItem text="{i18n>downloadTemp}" press="oCharPrioritizDownload"/>
-                                                </Menu>
-                                            </menu>
-                                        </MenuButton>
 
-                                        <ToolbarSpacer/>
-                                        <Button id="idUpdate2" text="Update" iconFirst="true" type="Emphasized" press="oAllSave" />
+                                    <footer>
+                                        <OverflowToolbar class="footer">
+                                            <u:FileUploader class="classBrowseButton" id="idoAttribuets" sameFilenameAllowed="true" iconOnly="true" buttonOnly="true" visible="true" change="oAttributeUpload" />
+                                            <MenuButton id="idMenuAttributes" type="Neutral" buttonMode="Split" useDefaultActionOnly="true" class="classOverlay" defaultAction="onPressBrowse" text="Upload" icon="sap-icon://upload">
+                                                <menu>
+                                                    <Menu>
+                                                        <MenuItem text="{i18n>downloadTemp}" press="oAttributeDownload"/>
+                                                    </Menu>
+                                                </menu>
+                                            </MenuButton>
 
-                                    </OverflowToolbar>
-                                </footer>
-                            </Page>
-                        </content>
-                    </IconTabFilter>
+                                            <ToolbarSpacer/>
+                                            <Button id="idUpdate3" visible="false" icon="sap-icon://cancel-maintenance" text="Update Char." type="Emphasized" press="onPressUpdate" />
+                                        </OverflowToolbar>
+                                    </footer>
 
-                    <!-- <Partial Products Characteristics> -->
-                    <IconTabFilter text="Partial Products Characteristics" key="PartialProducts">
-                        <Toolbar class="stickyToolbar">
-                            <content>
-                                <SearchField id="idPartialSearch" liveChange="onSearch" placeholder="Characteristic Name" />
-                                <ToolbarSpacer />
-                                <Button id="idShowSelected" text="Show Selected" press="handleShowSelect" />
+                                </Page>
+
                             </content>
-                        </Toolbar>
-                        <content>
-                            <!-- <f2:DynamicPage>
-                              
-                                <f2:content> -->
-                            <Page showFooter="true" showHeader="false">
+                        </IconTabFilter>
 
-                                <Table id="prodList" items="{path: '/results'}" class="sapUiTablePP" sticky="ColumnHeaders" rememberSelections="true" mode="MultiSelect" selectionChange="onTableItemsSelect" growingScrollToLoad="true" growing="true" growingThreshold="1000" updateFinished="onTableScroll">
+                    </items>
+                </IconTabBar>
+                <!-- </content> -->
 
-
-                                    <!-- <headerToolbar>
-                                      
-                                    </headerToolbar> -->
-                                    <columns>
-                                        <Column hAlign="Left" vAlign="Middle">
-                                            <Text text="Characteristic Name" />
-                                        </Column>
-                                        <Column hAlign="Left" vAlign="Middle" visible="false">
-                                            <Text text="Characteristic Value" />
-                                        </Column>
-                                        <Column hAlign="Left" vAlign="Middle" visible="false">
-                                            <Text text="Characteristic Number" />
-                                        </Column>
-                                        <Column hAlign="Left" vAlign="Middle">
-                                            <Text text="Class Name" />
-                                        </Column>
-                                    </columns>
-                                    <items>
-                                        <ColumnListItem id="_IDGenColumnListItem1" selected="{= ${selected} === 'true' ? true : false }">
-                                            <cells>
-                                                <ObjectIdentifier title="{CHAR_DESC}" text="{CHAR_NAME}" />
-                                                <ObjectIdentifier title="{CHAR_VALUE}" text="{CHARVAL_DESC}" />
-                                                <ObjectIdentifier title="{CHAR_NUM}" text="{CHARVAL_NUM}" />
-                                                <ObjectIdentifier title="{CLASS_DESC}" text="{CLASS_NAME}" />
-                                                <Text text="{CLASS_NUM}" />
-                                            </cells>
-                                        </ColumnListItem>
-                                    </items>
-                                </Table>
-
-                                <footer>
-                                    <OverflowToolbar class="footer">
-                                        <u:FileUploader class="classBrowseButton" id="idoPartialProd" sameFilenameAllowed="true" iconOnly="true" buttonOnly="true" visible="true" change="oPartialUpload" />
-                                        <MenuButton id="idMenuPartialProd" type="Neutral" buttonMode="Split" useDefaultActionOnly="true" class="classOverlay" defaultAction="onPressBrowse" text="Upload" icon="sap-icon://upload">
-                                            <menu>
-                                                <Menu>
-                                                    <MenuItem text="{i18n>downloadTemp}" press="oPartiaDownload"/>
-                                                </Menu>
-                                            </menu>
-                                        </MenuButton>
-
-                                        <ToolbarSpacer/>
-                                        <Button id="idSaveBtn" text="Update" type="Emphasized" press="onSaveChar" enabled="true" />
-
-                                    </OverflowToolbar>
-                                </footer>
-                            </Page>
-                            <!-- </f2:content>
-                            </f2:DynamicPage> -->
-                        </content>
-                    </IconTabFilter>
-
-                    <!-- <IBP Attributes> -->
-                    <IconTabFilter text="SCM Attributes" key="IBPAttributes" visible="false">
-                        <content>
-                            <Page showFooter="true" showHeader="false">
-                                <Toolbar class="stickyToolbar">
-                                    <SearchField liveChange="onPrimarySearch2" placeholder="Characteristics Name" id="idPrimarySearch2" />
-                                    <ToolbarSpacer ></ToolbarSpacer>
-                                    <Button id="idReset3" icon="sap-icon://reset" iconFirst="true" text="Reset." type="Emphasized" press="onReset" />
-                                </Toolbar>
-                                <Table id="Primarytable2" class="sapUiTable" mode="SingleSelectMaster" items="{ path: '/results2'}">
-                                    <columns>
-                                        <Column visible="false">
-                                            <Text text="{i18n>charno2}" />
-                                        </Column>
-                                        <Column >
-                                            <Text text="{i18n>charname2}" />
-                                        </Column>
-                                        <Column >
-                                            <Text text="{i18n>chardesc2}" />
-                                        </Column>
-                                        <Column>
-                                            <Text text="SCM Attributes / All Characteristics" />
-                                        </Column>
-                                    </columns>
-                                    <dragDropConfig>
-                                        <dnd:DragInfo groupName="selected2available" sourceAggregation="items" />
-                                        <dnd:DropInfo groupName="available2selected" targetAggregation="items" dropPosition="Between" drop="onDropSelectedProductsTable" />
-                                        <dnd:DragDropInfo sourceAggregation="items" targetAggregation="items" dropPosition="Between" drop="onDropSelectedProductsTable" />
-                                    </dragDropConfig>
-                                    <items>
-                                        <ColumnListItem>
-                                            <cells>
-                                                <Text text="{CHAR_NUM}" />
-                                                <Text text="{CHAR_NAME}" />
-                                                <Text text="{CHAR_DESC}" />
-                                                <CheckBox selected="{= ${CHAR_TYPE} === 'P' ? true : false }" select="onIBPatbs_Checkbox"/>
-                                                <!-- <CheckBox select="onIBPatbs_Checkbox"/> -->
-                                            </cells>
-                                        </ColumnListItem>
-                                    </items>
-                                </Table>
-
-                                <footer>
-                                    <OverflowToolbar class="footer">
-                                        <u:FileUploader class="classBrowseButton" id="idoAttribuets" sameFilenameAllowed="true" iconOnly="true" buttonOnly="true" visible="true" change="oAttributeUpload" />
-                                        <MenuButton id="idMenuAttributes" type="Neutral" buttonMode="Split" useDefaultActionOnly="true" class="classOverlay" defaultAction="onPressBrowse" text="Upload" icon="sap-icon://upload">
-                                            <menu>
-                                                <Menu>
-                                                    <MenuItem text="{i18n>downloadTemp}" press="oAttributeDownload"/>
-                                                </Menu>
-                                            </menu>
-                                        </MenuButton>
-
-                                        <ToolbarSpacer/>
-                                        <Button id="idUpdate3" visible="false" icon="sap-icon://cancel-maintenance" text="Update Char." type="Emphasized" press="onPressUpdate" />
-                                        <!-- <Button id="idReset3" icon="sap-icon://repost" text="Reload Char." type="Emphasized" press="onReset" /> -->
-
-                                    </OverflowToolbar>
-                                </footer>
-
-                            </Page>
-                            <!-- <Page title="{i18n>sCharTitle2}" titleAlignment="Center" showFooter="true">
-                                <layoutData>
-                                    <l:SplitterLayoutData resizable="false" size="50%" />
-                                </layoutData>
-                                <Toolbar>
-                                    <SearchField id="searchField2" width="100%" placeholder="Characteristics Name" enableSuggestions="true" liveChange="onCharSearch2" suggestionItems="{ path: '/results2'}">
-                                        <SuggestionItem text="{Char}" key="{Char}" />
-                                    </SearchField>
-                                </Toolbar>
-                                <Table id="Secondarytable2" mode="SingleSelectMaster" items="{ path: '/results2'}" itemPress="handleSelection">
-                                    <columns>
-                                        <Column hAlign="Center" visible="false">
-                                            <Text text="{i18n>charno2}" />
-                                        </Column>
-                                        <Column hAlign="Center">
-                                            <Text text="{i18n>charname2}" />
-                                        </Column>
-                                        <Column hAlign="Center" visible="false">
-                                            <Text text="{i18n>seq2}" />
-                                        </Column>
-                                        <Column hAlign="Center">
-                                            <Text text="{i18n>chardesc2}" />
-                                        </Column>
-                                    </columns>
-                                    <dragDropConfig>
-                                        <dnd:DragInfo groupName="selected2available" sourceAggregation="items" />
-                                        <dnd:DropInfo groupName="available2selected" targetAggregation="items" dropPosition="Between" drop="onDropSelectedProductsTable" />
-                                        <dnd:DragDropInfo sourceAggregation="items" targetAggregation="items" dropPosition="Between" drop="onDropSelectedProductsTable" />
-                                    </dragDropConfig>
-                                    <items>
-                                        <ColumnListItem type="Active">
-                                            <cells>
-                                                <Text text="{CHAR_NUM}" />
-                                                <Text text="{CHAR_NAME}" />
-                                                <Text text="{SEQUENCE}" />
-                                                <Text text="{CHAR_DESC}" />
-                                            </cells>
-                                        </ColumnListItem>
-                                    </items>
-                                </Table>
-                                <footer>
-                                    <OverflowToolbar class="footer">
-                                        <ToolbarSpacer />
-                                        <Button id="idUpdate3" visible="false" icon="sap-icon://cancel-maintenance" text="Update Char." type="Emphasized" press="onPressUpdate" />
-                                        <Button id="idReset3" icon="sap-icon://repost" text="Reload Char." type="Emphasized" press="onReset" />
-                                    </OverflowToolbar>
-                                </footer>
-                            </Page> -->
+      
+        </f:content>
 
 
-                            <!-- <l:Splitter id="homeScrSplitter2" orientation="Horizontal" height="500px" width="100%">
-                                <Page title="{i18n>pcharTitle2}" titleAlignment="Center">
-                                    <layoutData>
-                                        <l:SplitterLayoutData resizable="false" size="50%" />
-                                    </layoutData>
-                                    <content>
-                                        <Toolbar>
-                                            <SearchField liveChange="onPrimarySearch2" placeholder="Characteristics Name" id="idPrimarySearch2" />
-                                        </Toolbar>
-                                        <Table id="Primarytable2" mode="SingleSelectMaster" items="{ path: '/results2'}">
-                                            <columns>
-                                                <Column hAlign="Center" visible="false">
-                                                    <Text text="{i18n>charno2}" />
-                                                </Column>
-                                                <Column hAlign="Center">
-                                                    <Text text="{i18n>charname2}" />
-                                                </Column>
-                                                <Column hAlign="Center">
-                                                    <Text text="{i18n>chardesc2}" />
-                                                </Column>
-                                            </columns>
-                                            <dragDropConfig>
-                                                <dnd:DragInfo groupName="selected2available" sourceAggregation="items" />
-                                                <dnd:DropInfo groupName="available2selected" targetAggregation="items" dropPosition="Between" drop="onDropSelectedProductsTable" />
-                                                <dnd:DragDropInfo sourceAggregation="items" targetAggregation="items" dropPosition="Between" drop="onDropSelectedProductsTable" />
-                                            </dragDropConfig>
-                                            <items>
-                                                <ColumnListItem>
-                                                    <cells>
-                                                        <Text text="{CHAR_NUM}" />
-                                                        <Text text="{CHAR_NAME}" />
-                                                        <Text text="{CHAR_DESC}" />
-                                                    </cells>
-                                                </ColumnListItem>
-                                            </items>
-                                        </Table>
-                                    </content>
-                                </Page>
-                                <Page title="{i18n>sCharTitle2}" titleAlignment="Center" showFooter="true">
-                                    <layoutData>
-                                        <l:SplitterLayoutData resizable="false" size="50%" />
-                                    </layoutData>
-                                    <Toolbar>
-                                        <SearchField id="searchField2" width="100%" placeholder="Characteristics Name" enableSuggestions="true" liveChange="onCharSearch2" suggestionItems="{ path: '/results2'}">
-                                            <SuggestionItem text="{Char}" key="{Char}" />
-                                        </SearchField>
-                                    </Toolbar>
-                                    <Table id="Secondarytable2" mode="SingleSelectMaster" items="{ path: '/results2'}" itemPress="handleSelection">
-                                        <columns>
-                                            <Column hAlign="Center" visible="false">
-                                                <Text text="{i18n>charno2}" />
-                                            </Column>
-                                            <Column hAlign="Center">
-                                                <Text text="{i18n>charname2}" />
-                                            </Column>
-                                            <Column hAlign="Center" visible="false">
-                                                <Text text="{i18n>seq2}" />
-                                            </Column>
-                                            <Column hAlign="Center">
-                                                <Text text="{i18n>chardesc2}" />
-                                            </Column>
-                                        </columns>
-                                        <dragDropConfig>
-                                            <dnd:DragInfo groupName="selected2available" sourceAggregation="items" />
-                                            <dnd:DropInfo groupName="available2selected" targetAggregation="items" dropPosition="Between" drop="onDropSelectedProductsTable" />
-                                            <dnd:DragDropInfo sourceAggregation="items" targetAggregation="items" dropPosition="Between" drop="onDropSelectedProductsTable" />
-                                        </dragDropConfig>
-                                        <items>
-                                            <ColumnListItem type="Active">
-                                                <cells>
-                                                    <Text text="{CHAR_NUM}" />
-                                                    <Text text="{CHAR_NAME}" />
-                                                    <Text text="{SEQUENCE}" />
-                                                    <Text text="{CHAR_DESC}" />
-                                                </cells>
-                                            </ColumnListItem>
-                                        </items>
-                                    </Table>
-                                    <footer>
-                                        <OverflowToolbar class="footer">
-                                            <ToolbarSpacer />
-                                            <Button id="idUpdate3" visible="false" icon="sap-icon://cancel-maintenance" text="Update Char." type="Emphasized" press="onPressUpdate" />
-                                            <Button id="idReset3" icon="sap-icon://repost" text="Reload Char." type="Emphasized" press="onReset" />
-                                        </OverflowToolbar>
-                                    </footer>
-                                </Page>
-                            </l:Splitter> -->
-                        </content>
-                    </IconTabFilter>
-
-                    <!-- <IBP Attributes> -->
-                    <!-- <IconTabFilter text="IBP Attributes" key="IBPAttributes">
-                        
-                        <content>
-
-                            <l:Splitter id="homeScrSplitter2" orientation="Horizontal" height="500px" width="100%">
-                                <Page title="{i18n>pcharTitle2}" titleAlignment="Center">
-                                    <layoutData>
-                                        <l:SplitterLayoutData resizable="false" size="50%" />
-                                    </layoutData>
-                                    <content>
-                                        <Toolbar>
-                                            <SearchField liveChange="onPrimarySearch2" placeholder="Characteristics Name" id="idPrimarySearch2" />
-                                        </Toolbar>
-                                        <Table id="Primarytable2" mode="SingleSelectMaster" items="{ path: '/results2'}">
-                                            <columns>
-                                                <Column hAlign="Center" visible="false">
-                                                    <Text text="{i18n>charno2}" />
-                                                </Column>
-                                                <Column hAlign="Center">
-                                                    <Text text="{i18n>charname2}" />
-                                                </Column>
-                                                <Column hAlign="Center">
-                                                    <Text text="{i18n>chardesc2}" />
-                                                </Column>
-                                            </columns>
-                                            <dragDropConfig>
-                                                <dnd:DragInfo groupName="selected2available" sourceAggregation="items" />
-                                                <dnd:DropInfo groupName="available2selected" targetAggregation="items" dropPosition="Between" drop="onDropSelectedProductsTable" />
-                                                <dnd:DragDropInfo sourceAggregation="items" targetAggregation="items" dropPosition="Between" drop="onDropSelectedProductsTable" />
-                                            </dragDropConfig>
-                                            <items>
-                                                <ColumnListItem>
-                                                    <cells>
-                                                        <Text text="{CHAR_NUM}" />
-                                                        <Text text="{CHAR_NAME}" />
-                                                        <Text text="{CHAR_DESC}" />
-                                                    </cells>
-                                                </ColumnListItem>
-                                            </items>
-                                        </Table>
-                                    </content>
-                                </Page>
-                                <Page title="{i18n>sCharTitle2}" titleAlignment="Center" showFooter="true">
-                                    <layoutData>
-                                        <l:SplitterLayoutData resizable="false" size="50%" />
-                                    </layoutData>
-                                    <Toolbar>
-                                        <SearchField id="searchField2" width="100%" placeholder="Characteristics Name" enableSuggestions="true" liveChange="onCharSearch2" suggestionItems="{ path: '/results2'}">
-                                            <SuggestionItem text="{Char}" key="{Char}" />
-                                        </SearchField>
-                                    </Toolbar>
-                                    <Table id="Secondarytable2" mode="SingleSelectMaster" items="{ path: '/results2'}" itemPress="handleSelection">
-                                        <columns>
-                                            <Column hAlign="Center" visible="false">
-                                                <Text text="{i18n>charno2}" />
-                                            </Column>
-                                            <Column hAlign="Center">
-                                                <Text text="{i18n>charname2}" />
-                                            </Column>
-                                            <Column hAlign="Center" visible="false">
-                                                <Text text="{i18n>seq2}" />
-                                            </Column>
-                                            <Column hAlign="Center">
-                                                <Text text="{i18n>chardesc2}" />
-                                            </Column>
-                                        </columns>
-                                        <dragDropConfig>
-                                            <dnd:DragInfo groupName="selected2available" sourceAggregation="items" />
-                                            <dnd:DropInfo groupName="available2selected" targetAggregation="items" dropPosition="Between" drop="onDropSelectedProductsTable" />
-                                            <dnd:DragDropInfo sourceAggregation="items" targetAggregation="items" dropPosition="Between" drop="onDropSelectedProductsTable" />
-                                        </dragDropConfig>
-                                        <items>
-                                            <ColumnListItem type="Active">
-                                                <cells>
-                                                    <Text text="{CHAR_NUM}" />
-                                                    <Text text="{CHAR_NAME}" />
-                                                    <Text text="{SEQUENCE}" />
-                                                    <Text text="{CHAR_DESC}" />
-                                                </cells>
-                                            </ColumnListItem>
-                                        </items>
-                                    </Table>
-                                    <footer>
-                                        <OverflowToolbar class="footer">
-                                            <ToolbarSpacer />
-                                            <Button id="idUpdate3" visible="false" icon="sap-icon://cancel-maintenance" text="Update Char." type="Emphasized" press="onPressUpdate" />
-                                            <Button id="idReset3" icon="sap-icon://repost" text="Reload Char." type="Emphasized" press="onReset" />
-                                        </OverflowToolbar>
-                                    </footer>
-                                </Page>
-                            </l:Splitter>
-                        </content>
-                    </IconTabFilter> -->
-                </items>
-            </IconTabBar>
-        </content>
-    </Page>
+    </f:DynamicPage>
 </mvc:View>

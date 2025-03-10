@@ -232,6 +232,23 @@ div#container-vcpapp\.vcpcharacteristicsapps---Home--classSearch {
     background-color: white; /* Ensures background color to prevent overlap */
 }
 
+*{
+    scrollbar-width: thin;
+    /*"auto"or "thin"*/
+    scrollbar-color: #888 #f1f1f1;
+    /*thumb and track color*/
+}
+
+.label{
+    margin-top:15px !important;
+}
+.class1 {
+    margin-left: 20px;
+    margin-top: 23px;
+  }
+
+ 
+
 
 
 
