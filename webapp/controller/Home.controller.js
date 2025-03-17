@@ -3990,6 +3990,7 @@ sap.ui.define([
 
             },
 
+            // Service changed
             onSaveChar: function () {
                 var that = this;
                 //    that.getEnable();
