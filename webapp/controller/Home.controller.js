@@ -6527,9 +6527,9 @@ sap.ui.define([
                             if (aResults2[0].DELETE_CHK === "disabled") {
                                 that.byId("idReset3").setEnabled(false);
                             }
-                            // if(aResults4[0].UPDATE_CHK == "disabled"){
-                            //     that.byId("idUpdate").setEnabled(false);
-                            // }
+                            if(aResults2[0].UPDATE_CHK == "disabled"){
+                                that.byId("idUpdate").setEnabled(false);
+                            }
                         }
                         else {
                             //    that.byId("idReset3").setEnabled(false);
