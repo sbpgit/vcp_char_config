@@ -6497,7 +6497,7 @@ sap.ui.define([
 
             getEnable: function () {
                 var oModel = that.getOwnerComponent().getModel("BModel");
-                var vUser = "test" //that.getUser();
+                var vUser = that.getUser();
                 var oEntry = {
                     USERDATA: []
                 };
