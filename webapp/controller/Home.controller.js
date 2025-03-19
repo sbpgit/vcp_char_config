@@ -6513,12 +6513,12 @@ sap.ui.define([
                     },
                     success: function (oData) {
                         aResults2 = oData.results;
-                        var  aResults2 = [{
-                            "CREATE_CHK": "enabled",
-                            "UPDATE_CHK": "disabled",
-                            "DELETE_CHK": "enabled",
-                            "READ_CHK": "disabled"
-                        }]
+                        // var  aResults2 = [{
+                        //     "CREATE_CHK": "enabled",
+                        //     "UPDATE_CHK": "disabled",
+                        //     "DELETE_CHK": "enabled",
+                        //     "READ_CHK": "disabled"
+                        // }]
 
                         if (aResults2.length > 0) {
                             var isUserLoggedIn = true;
