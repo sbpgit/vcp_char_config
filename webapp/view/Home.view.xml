@@ -105,7 +105,7 @@
                                             </MenuButton>
 
                                             <ToolbarSpacer/>
-                                            <Button id="idupdate" type='Emphasized' text="Update" enabled="false" press="onClassUpdate" />
+                                            <Button id="idupdate" type='Emphasized' text="Update" enabled="true" press="onClassUpdate" />
 
                                         </OverflowToolbar>
                                     </footer>

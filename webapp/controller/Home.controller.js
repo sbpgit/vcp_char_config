@@ -6496,8 +6496,8 @@ sap.ui.define([
             },
 
             getEnable: function () {
-                var oModel = this.getOwnerComponent().getModel("BModel");
-                var vUser = "Testing" //this.getUser();
+                var oModel = that.getOwnerComponent().getModel("BModel");
+                var vUser = that.getUser();
                 var oEntry = {
                     USERDATA: []
                 };
@@ -6514,8 +6514,8 @@ sap.ui.define([
                     success: function (oData) {
                         aResults2 = oData.results;
                         // var  aResults4 = [{
-                        //     "CREATE_CHK": "disabled",
-                        //     "UPDATE_CHK": "disabled",
+                        //     "CREATE_CHK": "enabled",
+                        //     "UPDATE_CHK": "enabled",
                         //     "DELETE_CHK": "enabled",
                         //     "READ_CHK": "disabled"
                         // }]
@@ -6527,7 +6527,7 @@ sap.ui.define([
                             if (aResults2[0].DELETE_CHK === "disabled") {
                                 that.byId("idReset3").setEnabled(false);
                             }
-                            // if(aResults2[0].UPDATE_CHK == "disabled"){
+                            // if(aResults4[0].UPDATE_CHK == "disabled"){
                             //     that.byId("idUpdate").setEnabled(false);
                             // }
                         }
@@ -6906,6 +6906,7 @@ sap.ui.define([
                                 var temp = JSON.stringify(oData.results)
                                 that.clsResults = JSON.parse(temp);
                                 that.byId("classList").setModel(that.oModel);
+                             //   that.getEnable();
 
                                 that.releventCls = that.clsResults
                                 //   that.validation();
