@@ -6497,7 +6497,7 @@ sap.ui.define([
 
             getEnable: function () {
                 var oModel = that.getOwnerComponent().getModel("BModel");
-                var vUser = that.getUser();
+                var vUser = "test" //that.getUser();
                 var oEntry = {
                     USERDATA: []
                 };
@@ -6513,12 +6513,12 @@ sap.ui.define([
                     },
                     success: function (oData) {
                         aResults2 = oData.results;
-                        // var  aResults4 = [{
-                        //     "CREATE_CHK": "enabled",
-                        //     "UPDATE_CHK": "enabled",
-                        //     "DELETE_CHK": "enabled",
-                        //     "READ_CHK": "disabled"
-                        // }]
+                        var  aResults2 = [{
+                            "CREATE_CHK": "enabled",
+                            "UPDATE_CHK": "disabled",
+                            "DELETE_CHK": "enabled",
+                            "READ_CHK": "disabled"
+                        }]
 
                         if (aResults2.length > 0) {
                             var isUserLoggedIn = true;
@@ -6528,7 +6528,7 @@ sap.ui.define([
                                 that.byId("idReset3").setEnabled(false);
                             }
                             if(aResults2[0].UPDATE_CHK == "disabled"){
-                                that.byId("idUpdate").setEnabled(false);
+                                that.byId("idupdate").setEnabled(false);
                             }
                         }
                         else {
