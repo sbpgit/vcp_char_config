@@ -2203,47 +2203,47 @@ sap.ui.define([
             },
 
             // Relevent class check validation function
-            onClsSelect: function (oEvent) {
-                var oSeleItem = oEvent.getSource().getSelected()
-                var oSelObject = oEvent.getSource().getBindingContext().getObject()
-                //    if (oSelObject.IBPCHAR_CHK !== true) {
-                sap.ui.core.BusyIndicator.show();
-                var product = that.byId("idCommon").getValue();
+            // onClsSelect: function (oEvent) {
+            //     var oSeleItem = oEvent.getSource().getSelected()
+            //     var oSelObject = oEvent.getSource().getBindingContext().getObject()
+            //     //    if (oSelObject.IBPCHAR_CHK !== true) {
+            //     sap.ui.core.BusyIndicator.show();
+            //     var product = that.byId("idCommon").getValue();
 
-                let vIbpCheck = '';
-                if (oSelObject.IBPCHAR_CHK === true) {
-                    vIbpCheck = 'X';
-                }
+            //     let vIbpCheck = '';
+            //     if (oSelObject.IBPCHAR_CHK === true) {
+            //         vIbpCheck = 'X';
+            //     }
 
-                that.getModel("BModel").callFunction("/verifyIBPClass", {
-                    method: "GET",
-                    urlParameters: {
-                        PRODUCT_ID: product,
-                        CLASS_NUM: oSelObject.CLASS_NUM
-                    },
-                    success: function (oData) {
+            //     that.getModel("BModel").callFunction("/verifyIBPClass", {
+            //         method: "GET",
+            //         urlParameters: {
+            //             PRODUCT_ID: product,
+            //             CLASS_NUM: oSelObject.CLASS_NUM
+            //         },
+            //         success: function (oData) {
 
-                        if (oData.verifyIBPClass === "ERROR") {
-                            oEvent.getSource().setSelected(true)
-                            MessageBox.warning("Selected Class Characteristics are already assigned as Primary..Please go to Characteristic Prioritization to remove them ")
+            //             if (oData.verifyIBPClass === "ERROR") {
+            //                 oEvent.getSource().setSelected(true)
+            //                 MessageBox.warning("Selected Class Characteristics are already assigned as Primary. Please go to Characteristic Prioritization to remove them ")
 
-                            // that.onAfterRendering();
-                            that.onGo();
-                            sap.ui.core.BusyIndicator.hide();
+            //                 // that.onAfterRendering();
+            //                 that.onGo();
+            //                 sap.ui.core.BusyIndicator.hide();
 
-                        } else {
-                            sap.ui.core.BusyIndicator.hide();
-                        }
-                    },
-                    error: function (error) {
-                        sap.ui.core.BusyIndicator.hide();
-                        sap.m.MessageToast.show("Validation Failed");
-                        //  that.onBack();
-                    },
-                });
-                //     }
+            //             } else {
+            //                 sap.ui.core.BusyIndicator.hide();
+            //             }
+            //         },
+            //         error: function (error) {
+            //             sap.ui.core.BusyIndicator.hide();
+            //             sap.m.MessageToast.show("Validation Failed");
+            //             //  that.onBack();
+            //         },
+            //     });
+            //     //     }
 
-            },
+            // },
 
 
             oAllSave: function () {
@@ -6497,7 +6497,7 @@ sap.ui.define([
 
             getEnable: function () {
                 var oModel = that.getOwnerComponent().getModel("BModel");
-                var vUser = that.getUser();
+                var vUser = "Test" //that.getUser();
                 var oEntry = {
                     USERDATA: []
                 };
