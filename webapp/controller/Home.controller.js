@@ -2849,7 +2849,7 @@ sap.ui.define([
                     success: function (oData) {
                         sap.ui.core.BusyIndicator.hide();
                         if (oData.results.length === 0) {
-                            sap.m.MessageToast.show("No data download for selected Loation products")
+                            sap.m.MessageToast.show("No data download for selected Location products")
                             sap.ui.core.BusyIndicator.hide();
                         } else {
                             // Concatenate the new data into accumulatedData
@@ -2945,19 +2945,38 @@ sap.ui.define([
                                 let value = chunk[i][headers[j]];
 
                                 // Handle null or undefined values
+                                // if (value === null || value === undefined) {
+                                //     value = "";
+                                // }
+                                // // Handle strings with commas, quotes, or newlines by escaping
+                                // else if (typeof value === 'string') {
+
+                                //     if (value.includes(',') || value.includes('"') || value.includes('\n')) {
+
+                                //         value = value.replace(/"/g, '""');
+                                //         // Wrap in quotes
+                                //         value = `"${value}"`;
+                                //     }
+                                // }
+
+        
+
+                                // Handle null or undefined values
                                 if (value === null || value === undefined) {
                                     value = "";
                                 }
-                                // Handle strings with commas, quotes, or newlines by escaping
+                                // Preserve leading zeros for CHAR_NUM
+                                else if (headers[j] === "CHAR_NUM") {
+                                    value = '="' + value + '"';
+                                }
+                                // Escape values with special characters
                                 else if (typeof value === 'string') {
-
                                     if (value.includes(',') || value.includes('"') || value.includes('\n')) {
-
                                         value = value.replace(/"/g, '""');
-                                        // Wrap in quotes
                                         value = `"${value}"`;
                                     }
                                 }
+
 
                                 row.push(value);
                             }
@@ -3673,7 +3692,7 @@ sap.ui.define([
                         new Filter({
                             filters: [
                                 new Filter("CHAR_NAME", FilterOperator.Contains, sQuery),
-                              
+
                             ],
                             and: false,
                         })

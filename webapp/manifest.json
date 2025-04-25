@@ -124,14 +124,6 @@
       "JModel": {
         "dataSource": "Jobs",
         "preload": true
-      },
-      "oDataModel": {
-        "type": "sap.ui.model.json.JSONModel",
-        "uri": "model/downloaddata.json",
-        "settings": {
-            "defaultBindingMode": "TwoWay"
-        },
-        "preload": true
       }
     },
     "resources": {
