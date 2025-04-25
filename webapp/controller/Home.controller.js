@@ -2945,23 +2945,6 @@ sap.ui.define([
                                 let value = chunk[i][headers[j]];
 
                                 // Handle null or undefined values
-                                // if (value === null || value === undefined) {
-                                //     value = "";
-                                // }
-                                // // Handle strings with commas, quotes, or newlines by escaping
-                                // else if (typeof value === 'string') {
-
-                                //     if (value.includes(',') || value.includes('"') || value.includes('\n')) {
-
-                                //         value = value.replace(/"/g, '""');
-                                //         // Wrap in quotes
-                                //         value = `"${value}"`;
-                                //     }
-                                // }
-
-        
-
-                                // Handle null or undefined values
                                 if (value === null || value === undefined) {
                                     value = "";
                                 }
@@ -2976,7 +2959,6 @@ sap.ui.define([
                                         value = `"${value}"`;
                                     }
                                 }
-
 
                                 row.push(value);
                             }
