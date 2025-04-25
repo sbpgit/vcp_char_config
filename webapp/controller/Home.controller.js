@@ -56,6 +56,8 @@ sap.ui.define([
                 that.oListModel.setSizeLimit(5000);
                 this._oCore = sap.ui.getCore();
 
+
+
                 if (!this._valueHelpDialogLoc) {
                     this._valueHelpDialogLoc = sap.ui.xmlfragment(
                         "demo.vcpcharconfig.view.LocDialog",
@@ -2745,38 +2747,87 @@ sap.ui.define([
             },
 
             /* this function executes based on select location in Characteristics Prioritazation tab, 
-             and its called in handleSelection */
+             and function  called in handleSelection function */
+
+            // ForDownload1: function () {
+            //     var oFilters = [];
+            //     var arr = [];
+            //     // that.oLop = that.oAllLocations.filter(f => f.DEMAND_LOC == that.oSelect);
+            //     that.oLop = that.oAllLocations.filter(f => f.FACTORY_LOC == that.oSelect);
+            //     that.oLop.forEach(f => {
+            //         oFilters.push(new Filter('PRODUCT_ID', FilterOperator.EQ, f.PRODUCT_ID))
+            //     });
+
+            //     sap.ui.core.BusyIndicator.show();
+            //     this.getModel("BModel").read("/getUniqueHeader", {
+            //         filters: oFilters,
+            //         success: function (oData) {
+            //             that.oUniq = oData.results;
+            //             that.oLop = that.oLop.filter(item1 =>
+            //                 !that.oUniq.some(item2 => item2.PRODUCT_ID === item1.PRODUCT_ID)
+            //             );
+            //             if (that.oLop.length !== 0) {
+            //                 that.onGetDataExcelDown()
+            //             } else {
+            //                 sap.m.MessageToast.show("All Products for the selected Location have Unique ID's")
+            //                 sap.ui.core.BusyIndicator.hide();
+            //             }
+            //         },
+            //         error: function () {
+            //             MessageToast.show("error");
+            //             sap.ui.core.BusyIndicator.hide();
+            //         },
+            //     });
+            // },
+
             ForDownload: function () {
                 var oFilters = [];
                 var arr = [];
+                that.oCharprData = [];
                 // that.oLop = that.oAllLocations.filter(f => f.DEMAND_LOC == that.oSelect);
                 that.oLop = that.oAllLocations.filter(f => f.FACTORY_LOC == that.oSelect);
                 that.oLop.forEach(f => {
                     oFilters.push(new Filter('PRODUCT_ID', FilterOperator.EQ, f.PRODUCT_ID))
                 });
+                var topCount = that.oGModel.getProperty("/MaxCount");
                 sap.ui.core.BusyIndicator.show();
-                this.getModel("BModel").read("/getUniqueHeader", {
+                that.getModel("BModel").read("/getUniqueHeader", {
                     filters: oFilters,
+                    urlParameters: {
+                        "$skip": that.skip,
+                        "$top": topCount
+                    },
                     success: function (oData) {
-                        that.oUniq = oData.results;
-                        that.oLop = that.oLop.filter(item1 =>
-                            !that.oUniq.some(item2 => item2.PRODUCT_ID === item1.PRODUCT_ID)
-                        );
-                        if (that.oLop.length !== 0) {
-                            that.onGetDataExcelDown()
+                        sap.ui.core.BusyIndicator.hide();
+                        that.cFlag = ""
+                        if (topCount == oData.results.length) {
+                            that.skip += (topCount);
+                            that.oCharprData = that.oCharprData.concat(oData.results);
+                            that.ForDownload();
                         } else {
-                            sap.m.MessageToast.show("All Products for the selected Location have Unique ID's")
-                            sap.ui.core.BusyIndicator.hide();
+                            that.skip = 0;
+                            that.oCharprData = that.oCharprData.concat(oData.results);
+                            that.oLop = that.oLop.filter(item1 =>
+                                !that.oCharprData.some(item2 => item2.PRODUCT_ID === item1.PRODUCT_ID)
+                            );
+                            if (that.oLop.length !== 0) {
+                                that.onExportCharPriotData()
+                            } else {
+                                sap.m.MessageToast.show("All Products for the selected Location have Unique ID's")
+                                sap.ui.core.BusyIndicator.hide();
+                            }
                         }
                     },
-                    error: function () {
-                        MessageToast.show("error");
+                    error: function (oData, error) {
                         sap.ui.core.BusyIndicator.hide();
+                        MessageToast.show("Error While getting data");
                     },
+
                 });
             },
 
-            onGetDataExcelDown: function () {
+            /* Download data of Characteristic Prioritazation Data */
+            onExportCharPriotData: function () {
                 const sProd = that.oLop.map(product => product.PRODUCT_ID);
                 const oProds = []
                 if (sProd.length === 1) {
@@ -2798,53 +2849,51 @@ sap.ui.define([
                     success: function (oData) {
                         sap.ui.core.BusyIndicator.hide();
                         if (oData.results.length === 0) {
-                            sap.m.MessageToast.show("No data download for selected products")
+                            sap.m.MessageToast.show("No data download for selected Loation products")
                             sap.ui.core.BusyIndicator.hide();
                         } else {
                             // Concatenate the new data into accumulatedData
-                            accumulatedData.push(oData);
-                            //  accumulatedData = oData.results
+                            accumulatedData = oData.results
+                            //  accumulatedData.push(oData.results);
+                            var oDownloadData = accumulatedData.sort((a, b) => a.PRODUCT_ID.localeCompare(b.PRODUCT_ID));
                             var liLoc = [];
+                            // var oModel = that.getOwnerComponent().getModel("oDataModel");
+                            // accumulatedData = oModel.getData();
                             // Check if all requests are complete
-                            if (accumulatedData.length != sProd.length) {
-
-                                for (let i = 0; i < accumulatedData.length; i++) {
-                                    for (let n = 0; n < accumulatedData[i].results.length; n++) {
-                                        liLoc = liLoc.concat(accumulatedData[i].results[n]);
-                                    }
-                                }
-
+                            if (oDownloadData.length != sProd.length) {
+                                liLoc = oDownloadData.flatMap(item => item);
                                 that.oApData = liLoc
-                                sap.ui.core.BusyIndicator.hide();
+                                //Export csv formate
+                                that.downloadFastCSV(that.oApData, that.oSelect + ' Characteristic Prioritization.xlsx')
+                                // sap.ui.core.BusyIndicator.hide();
+                                // var exportToExcel = function () {
+                                //     var aCols = [
+                                //         { label: 'PRODUCT_ID', property: 'PRODUCT_ID', width: 30 },
+                                //         { label: 'CHAR_NAME', property: 'CHAR_NAME', width: 30 },
+                                //         { label: 'CHAR_DESC', property: 'CHAR_DESC', width: 30 },
+                                //         { label: 'CHAR_NUM', property: 'CHAR_NUM', width: 30 },
+                                //         { label: 'CHAR_TYPE', property: 'CHAR_TYPE', width: 30 },
+                                //         { label: 'SEQUENCE', property: 'SEQUENCE', width: 30 }
+                                //     ];
+                                //     var oSettings = {
+                                //         workbook: {
+                                //             columns: aCols,
+                                //         },
 
-                                var exportToExcel = function () {
-                                    var aCols = [
-                                        { label: 'PRODUCT_ID', property: 'PRODUCT_ID', width: 30 },
-                                        { label: 'CHAR_NAME', property: 'CHAR_NAME', width: 30 },
-                                        { label: 'CHAR_DESC', property: 'CHAR_DESC', width: 30 },
-                                        { label: 'CHAR_NUM', property: 'CHAR_NUM', width: 30 },
-                                        { label: 'CHAR_TYPE', property: 'CHAR_TYPE', width: 30 },
-                                        { label: 'SEQUENCE', property: 'SEQUENCE', width: 30 }
-                                    ];
-                                    var oSettings = {
-                                        workbook: {
-                                            columns: aCols,
-                                        },
+                                //         dataSource: that.oApData,
+                                //         fileName: that.oSelect + ' Characteristic Prioritization.xlsx',
+                                //         worker: true
+                                //     };
 
-                                        dataSource: that.oApData,
-                                        fileName: that.oSelect + ' Characteristic Prioritization.xlsx',
-                                        worker: true
-                                    };
-
-                                    var oSheet = new sap.ui.export.Spreadsheet(oSettings);
-                                    oSheet.build().then(function () {
-                                        sap.m.MessageToast.show('Succesfully download');
-                                    }).finally(function () {
-                                        oSheet.destroy();
-                                    });
-                                };
-                                // Call the export function to download the Excel file
-                                exportToExcel();
+                                //     var oSheet = new sap.ui.export.Spreadsheet(oSettings);
+                                //     oSheet.build().then(function () {
+                                //         sap.m.MessageToast.show('Succesfully download');
+                                //     }).finally(function () {
+                                //         oSheet.destroy();
+                                //     });
+                                // };
+                                // // Call the export function to download the Excel file
+                                // exportToExcel();
 
                             }
                         }
@@ -2856,6 +2905,110 @@ sap.ui.define([
                     //     });
                 });
 
+            },
+
+
+            downloadFastCSV: function (jsonData, fileName) {
+                sap.ui.core.BusyIndicator.hide();
+                try {
+                    if (jsonData.length === 0) {
+                        return false;
+                    }
+
+                    that.getView().setBusy(true);
+
+                    // Get headers from the first data object and remove metadata
+                    const sampleItem = { ...jsonData[0] };
+                    if (sampleItem.__metadata) delete sampleItem.__metadata;
+                    //  const headers = Object.keys(sampleItem);
+                    const headers = [
+                        'PRODUCT_ID',
+                        'CHAR_NAME',
+                        'CHAR_DESC',
+                        'CHAR_NUM',
+                        'CHAR_TYPE',
+                        'SEQUENCE'
+                    ];
+                    // Create CSV header row
+                    let csvContent = headers.join(",") + "\r\n";
+
+                    const chunkSize = 10000;
+                    let processedCount = 0;
+                    const processNextChunk = () => {
+                        const chunk = jsonData.slice(processedCount, processedCount + chunkSize);
+                        let chunkContent = '';
+
+                        // Process the current chunk
+                        for (let i = 0; i < chunk.length; i++) {
+                            const row = [];
+                            for (let j = 0; j < headers.length; j++) {
+                                let value = chunk[i][headers[j]];
+
+                                // Handle null or undefined values
+                                if (value === null || value === undefined) {
+                                    value = "";
+                                }
+                                // Handle strings with commas, quotes, or newlines by escaping
+                                else if (typeof value === 'string') {
+
+                                    if (value.includes(',') || value.includes('"') || value.includes('\n')) {
+
+                                        value = value.replace(/"/g, '""');
+                                        // Wrap in quotes
+                                        value = `"${value}"`;
+                                    }
+                                }
+
+                                row.push(value);
+                            }
+                            chunkContent += row.join(",") + "\r\n";
+                        }
+
+                        // Append this chunk's content to the CSV
+                        csvContent += chunkContent;
+
+                        processedCount += chunk.length;
+
+                        // Continue processing or finish
+                        if (processedCount < jsonData.length) {
+                            setTimeout(processNextChunk, 0); // Continue with next chunk
+                        } else {
+                            // All data processed, download the CSV file
+                            // Create Blob from the CSV string
+                            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+
+                            // Create download link
+                            const url = URL.createObjectURL(blob);
+                            const a = document.createElement('a');
+                            a.href = url;
+
+                            // Ensure the filename has .csv extension
+                            if (!fileName.toLowerCase().endsWith('.csv')) {
+                                fileName += '.csv';
+                            }
+                            a.download = fileName;
+
+                            document.body.appendChild(a);
+                            a.click();
+
+                            // Clean up
+                            setTimeout(() => {
+                                document.body.removeChild(a);
+                                URL.revokeObjectURL(url);
+                                that.getView().setBusy(false);
+                            }, 100);
+                        }
+                    };
+
+                    // Start processing
+                    setTimeout(processNextChunk, 0);
+
+                    return true;
+                } catch (error) {
+                    that.getView().setBusy(false);
+                    console.error("Error in downloadFastCSV:", error);
+                    return false;
+                }
             },
 
             // Upload functionality for Characteristic Prioritization tab
@@ -3363,8 +3516,6 @@ sap.ui.define([
             // },
 
 
-
-
             /**
            * This function is called when click on Value help on Input box.
            * In this function based in sId will open the dialogs.
@@ -3522,6 +3673,7 @@ sap.ui.define([
                         new Filter({
                             filters: [
                                 new Filter("CHAR_NAME", FilterOperator.Contains, sQuery),
+                              
                             ],
                             and: false,
                         })
@@ -4017,7 +4169,7 @@ sap.ui.define([
                     for (var i = 0; i < selectedItems.length; i++) {
                         let sChar = selectedItems[i].getCells()[0].getText(),
                             sClassName = selectedItems[i].getCells()[3].getText();
-                     //   that.loadArray = that.loadArray.map(({ selected, ...item }) => item);
+                        //   that.loadArray = that.loadArray.map(({ selected, ...item }) => item);
                         // that.loadArray.forEach(item => {
                         //     item.SELECTED = item.SELECTED === "true";
                         // });
@@ -6527,7 +6679,7 @@ sap.ui.define([
                             if (aResults2[0].DELETE_CHK === "disabled") {
                                 that.byId("idReset3").setEnabled(false);
                             }
-                            if(aResults2[0].UPDATE_CHK == "disabled"){
+                            if (aResults2[0].UPDATE_CHK == "disabled") {
                                 that.byId("idupdate").setEnabled(false);
                             }
                         }
@@ -6906,7 +7058,7 @@ sap.ui.define([
                                 var temp = JSON.stringify(oData.results)
                                 that.clsResults = JSON.parse(temp);
                                 that.byId("classList").setModel(that.oModel);
-                             //   that.getEnable();
+                                //   that.getEnable();
 
                                 that.releventCls = that.clsResults
                                 //   that.validation();

@@ -88,7 +88,7 @@
       "compact": true,
       "cozy": true
     },
- "models": {
+    "models": {
       "i18n": {
         "type": "sap.ui.model.resource.ResourceModel",
         "settings": {
@@ -98,10 +98,10 @@
       "oGModel": {
         "type": "sap.ui.model.json.JSONModel",
         "settings": {
-            "defaultBindingMode": "TwoWay"
+          "defaultBindingMode": "TwoWay"
         },
         "preload": true
-    },
+      },
       "BModel": {
         "dataSource": "mainService",
         "preload": true,
@@ -123,6 +123,14 @@
       },
       "JModel": {
         "dataSource": "Jobs",
+        "preload": true
+      },
+      "oDataModel": {
+        "type": "sap.ui.model.json.JSONModel",
+        "uri": "model/downloaddata.json",
+        "settings": {
+            "defaultBindingMode": "TwoWay"
+        },
         "preload": true
       }
     },
@@ -176,9 +184,9 @@
   },
   "sap.platform.cf": {
     "oAuthScopes": [
-        "$XSAPPNAME.User",
-        "$XSAPPNAME.admin"
+      "$XSAPPNAME.User",
+      "$XSAPPNAME.admin"
     ],
     "ui5VersionNumber": "1.122.2"
-}
+  }
 }

@@ -26,7 +26,7 @@
                     <layout:VerticalLayout>
                         <VBox >
                             <Label text="Configurable Product :" required="true" />
-                            <Input id="idCommon" placeholder="Configurable Product" showValueHelp="true" valueHelpOnly="true" valueHelpRequest="ValueHelpForProdClas" />
+                            <Input id="idCommon"  placeholder="Configurable Product" showValueHelp="true" valueHelpOnly="true" valueHelpRequest="ValueHelpForProdClas" />
                         </VBox>
 
                     </layout:VerticalLayout>
