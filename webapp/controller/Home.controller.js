@@ -2261,7 +2261,6 @@ sap.ui.define([
                     allData.some(obj2 => (obj1.CHAR_NUM === obj2.CHAR_NUM) && (obj1.CHAR_TYPE !== obj2.CHAR_TYPE))
                 );
                 ///// For Primary or Secondary Char Change in table...
-                // sap.ui.core.BusyIndicator.hide();
                 if (commonObjects.length > 0) {
                     MessageBox.confirm(" Active Planning Details exist for selected Product. Do you want to update the Primary Characteristics ?", {
                         actions: [MessageBox.Action.YES, MessageBox.Action.NO],
@@ -2277,6 +2276,7 @@ sap.ui.define([
                                     },
                                     success: function (oData) {
                                         sap.ui.core.BusyIndicator.hide();
+                                        sap.m.MessageToast.show("Successfully updated..")
                                         that.onPressUpdate();
                                     },
                                     error: function (oData) {
@@ -2292,40 +2292,310 @@ sap.ui.define([
                         },
                         dependentOn: this.getView()
                     });
-                } else {
-
-                    //// Group Changes in table...
+                }
+                /* when groups modified */
+                else {
                     const changeGroups = oInitialData.filter(obj1 =>
                         allData.some(obj2 => (obj1.CHAR_NUM === obj2.CHAR_NUM) && (obj1.GROUP_NAME !== obj2.GROUP_NAME))
                     );
                     if (changeGroups.length > 0) {
-                        const allData = that.oSeq
-                        sap.ui.core.BusyIndicator.show();
-                        that.getModel("BModel").callFunction("/changeToPrimaryNewMulti", {
-                            method: "GET",
-                            urlParameters: {
-                                CharData: JSON.stringify(allData)
-                            },
-                            success: function (oData) {
-                                that.charPrioritize = oData.results
-                                that.onGetData();
-                                sap.m.MessageToast.show("Groups successfully updated..")
-                                sap.ui.core.BusyIndicator.hide();
-                            },
-                            error: function (oData) {
-                                sap.ui.core.BusyIndicator.hide();
-                                MessageToast.show("Failed to changes the update");
+
+                        MessageBox.confirm(" Active Planning Details exist for selected Product. Do you want to update the Primary Characteristics ?", {
+                            actions: [MessageBox.Action.YES, MessageBox.Action.NO],
+                            emphasizedAction: MessageBox.Action.NO,
+                            onClose: function (sAction) {
+                                if (sAction === sap.m.MessageBox.Action.YES) {
+                                    const allData = that.oSeq
+                                    sap.ui.core.BusyIndicator.show();
+                                    that.getModel("BModel").callFunction("/changeToPrimaryNewMulti", {
+                                        method: "GET",
+                                        urlParameters: {
+                                            CharData: JSON.stringify(allData)
+                                        },
+                                        success: function (oData) {
+                                            that.charPrioritize = oData.results
+                                            
+                                            that.onPressUpdate()
+                                            sap.m.MessageToast.show("Groups successfully updated..")
+                                            sap.ui.core.BusyIndicator.hide();
+                                        },
+                                        error: function (oData) {
+                                            sap.ui.core.BusyIndicator.hide();
+                                            MessageToast.show("Failed to changes the update");
+                                        },
+                                    });
+                                }
+                                else {
+                                    that.onGetData();
+                                }
                             },
                         });
                     }
                     else {
-                        ///// no Changes in table..
-                        that.onGetData();
                         MessageToast.show("No Changes are Done...")
                     }
+
+
                 }
+             
 
             },
+
+            /**
+        * 
+        */
+            onPressUpdate: function (oEvent) {
+                //var oEntry = {};
+                // var sLoc = that.byId("idloc").getValue(),
+                var sProd = that.byId("idCommon").getValue();
+                if (sProd === "") {
+                    return MessageToast.show("Please select a Product");;
+                }
+                if (sProd !== "") {
+                    sap.ui.core.BusyIndicator.show();
+                    that.getModel("BModel").callFunction("/getSecondaryChar", {
+                        method: "GET",
+                        urlParameters: {
+                            FLAG: "U",
+                            // LOCATION_ID: sLoc,
+                            PRODUCT_ID: sProd
+                        },
+                        success: function (oData) {
+                            sap.ui.core.BusyIndicator.hide();
+                            that.oSeq = oData.results
+                            // that.oSecndData = [];
+                            that.oSecndData = addSorterField(oData);
+
+                            that.oPList = that.byId("Primarytable"),
+                                // that.oSList = that.byId("Secondarytable");
+
+                                that.primaryData = [],
+                                that.secData = [];
+
+                            function addSorterField(params) {
+                                let data = params.results;
+
+                                // Step 1: Add WEIGHTAGE property
+                                data.forEach(el => {
+                                    if (el.GROUP_NAME !== "" && el.GROUP_NAME !== null) {
+                                        el.WEIGHTAGE = parseFloat(el.WEIGHTAGE); //parseFloat(el.GROUP_NAME.split('-')[1]);
+                                    } else {
+                                        if (el.CHAR_TYPE === "P") {
+                                            el.GROUP_NAME = "";
+                                            el.WEIGHTAGE = 1;
+                                        } else {
+                                            el.GROUP_NAME = "";
+                                            el.WEIGHTAGE = -1;
+                                        }
+                                    }
+                                });
+
+                                return data;
+                            }
+
+                            // for (var i = 0; i < that.oSecndData.length; i++) {
+                            //     if (that.oSecndData[i].CHAR_TYPE === "P") {
+                            //         that.primaryData.push(that.oSecndData[i]);
+                            //     } else {
+                            //         that.primaryData.push(that.oSecndData[i]);
+                            //     }
+                            // }
+
+                            if (typeof (that.oSelectedItem) === "object") {
+                                that.primaryData.unshift(that.oSelectedItem)
+                            } else {
+                                //Nothing
+                            }
+
+                            that.finalpriData = [];
+                            that.finalpriData = that.primaryData.sort((a, b) => a.SEQUENCE - b.SEQUENCE);
+
+
+                            // that.finalSecData = [];
+                            // that.finalSecData = that.secData.sort((a, b) => a.SEQUENCE - b.SEQUENCE);
+
+
+                            that.oGModel = that.getModel("oGModel");
+                            if (that.finalSecData.length !== 0) {
+                                that.oGModel.setProperty("/secSeqSt", that.finalSecData[0].SEQUENCE);
+                            } else {
+                                that.oGModel.setProperty("/secSeqSt", 0);
+                            }
+
+                            that.PrimarylistModel.setData({
+                                results: that.finalpriData,
+                            });
+                            that.PrimarylistModel.setSizeLimit(5000);
+                            // that.oPList.setModel(null);
+                            that.oPList.setModel(that.PrimarylistModel);
+
+                            var UidFilModel = new sap.ui.model.json.JSONModel();
+
+                            UidFilModel.setData(null);
+                            setTimeout(function () {
+                                UidFilModel.setData({
+                                    groupresults: that.oGroupNames
+                                });
+
+                                that.byId("SelectOption").setModel(UidFilModel)
+                            }, 100)
+
+                            that.byId("SelectOption").getModel().refresh(true);
+                            that.oPList.getModel().refresh(true);
+
+                            var items = that.oPList.getItems();
+                            for (let i = 0; i < items.length; i++) {
+
+                                var data = that.finalpriData.filter(el => el.CHAR_NUM === items[i].getCells()[0].getBindingContext().getObject().CHAR_NUM);
+
+                                if (data.length > 0) {
+                                    items[i].getCells()[3].getItems()[1].getItems()[0].setSelectedKey(data[0].GROUP_NAME);
+                                }
+
+                            }
+
+                            try {
+                                that.purgePredictionModels(sProd);
+                            }
+                            catch (ex) {
+                                console.log(ex);
+                            }
+
+                        },
+                        error: function (oData, error) {
+                            sap.ui.core.BusyIndicator.hide();
+                            MessageToast.show("error");
+                        },
+                    });
+
+
+                }
+            },
+            //Creating job
+            purgePredictionModels: function (sProd) {
+                sap.ui.core.BusyIndicator.show();
+                that.getOwnerComponent().getModel("BModel").callFunction("/purgeTimeseriesModelsPredictions", {
+                    method: "GET",
+                    urlParameters: {
+                        PRODUCT_ID: sProd
+                    },
+                    success: function (x) {
+                        //create job here
+                        let ajobData = JSON.parse(x.purgeTimeseriesModelsPredictions)
+                        var aScheduleSEDT = that.getScheduleSEDT();
+                        var JobName = "PURGE_TIMESERIES_MODELS_PREDICTIONS" + new Date().getTime();
+                        var finalList = {
+                            name: JobName,
+                            description: JobName,
+                            action: encodeURIComponent("/pal/purgePredictionModels"),
+                            active: true,
+                            httpMethod: "POST",
+                            startTime: new Date(),
+                            endTime: new Date(new Date().setDate(new Date().getDate() + 1)),
+                            createdAt: aScheduleSEDT.djSdate,
+                            schedules: [{
+                                data: JSON.stringify({
+                                    vcRulesList: ajobData
+                                }),
+                                cron: '',
+                                time: aScheduleSEDT.oneTime,
+                                active: true,
+                                startTime: new Date(),
+                                endTime: new Date(new Date().setDate(new Date().getDate() + 1)),
+                            }]
+                        };
+                        that.getOwnerComponent().getModel("JModel").callFunction("/addJobCreation", {
+                            method: "GET",
+                            urlParameters: {
+                                jobDetails: JSON.stringify(finalList)
+                            },
+                            success: function (oData) {
+                                sap.m.MessageToast.show(oData.addJobCreation.jobId + ": Job Created");
+                                sap.ui.core.BusyIndicator.hide();
+                                // that.onGetData()
+                                // setTimeout(function () {
+                                // that.onGetData();
+
+                                that.CharPrior = [];
+                                that.prev = "";
+                                that.getModel("BModel").callFunction("/getCharGroupWeightage", {
+                                    urlParameters: {
+
+                                        PRODUCT_ID: sProd
+                                    },
+
+                                    // filters: [
+                                    //     new Filter("PRODUCT_ID", FilterOperator.EQ, that.byId("idCommon").getValue())
+                                    // ],
+                                    // sorters: [new sap.ui.model.Sorter("WEIGHTAGE", true)],
+
+                                    success: function (oData) {
+                                        var oData = JSON.parse(oData.getCharGroupWeightage)
+                                        const oFilData = oData.filter(item => item.CHAR_NUM !== null);
+                                        that.CharPrior = [];
+                                        that.CharPrior = oFilData;
+                                        that.charPrioritize = oFilData;
+                                        that.onGetData();
+                                    },
+                                    error: function (oData, error) {
+                                        sap.ui.core.BusyIndicator.hide();
+                                        MessageToast.show("error");
+                                    }
+                                })
+                                // }, 10)
+                            },
+                            error: function (_error) {
+                                sap.ui.core.BusyIndicator.hide();
+                                sap.m.MessageToast.show("Error While Creating Job!");
+                            },
+                        });
+                    },
+                    error: function (_x) {
+                        sap.ui.core.BusyIndicator.hide();
+                    },
+                });
+
+            },
+
+            getScheduleSEDT: function () {
+                var aScheduleSEDT = {};
+                var dDate = new Date();
+                // 07-09-2022-1                
+                var idSchTime = dDate.setSeconds(dDate.getSeconds() + 5);
+                // 07-09-2022-1
+                var idSETime = dDate.setHours(dDate.getHours() + 4);
+                idSchTime = new Date(idSchTime);
+                idSETime = new Date(idSETime);
+                //var onetime = idSchTime;
+                var djSdate = new Date(),
+                    djEdate = idSETime,
+                    dsSDate = new Date(),
+                    dsEDate = idSETime,
+                    tjStime,
+                    tjEtime,
+                    tsStime,
+                    tsEtime;
+
+                djSdate = djSdate.toISOString().split("T");
+                tjStime = djSdate[1].split(":");
+                djEdate = djEdate.toISOString().split("T");
+                tjEtime = djEdate[1].split(":");
+                dsSDate = dsSDate.toISOString().split("T");
+                tsStime = dsSDate[1].split(":");
+                dsEDate = dsEDate.toISOString().split("T");
+                tsEtime = dsEDate[1].split(":");
+
+                var dDate = new Date().toLocaleString().split(" ");
+                aScheduleSEDT.djSdate = djSdate[0] + " " + tjStime[0] + ":" + tjStime[1] + " " + "+0000";
+                aScheduleSEDT.djEdate = djEdate[0] + " " + tjEtime[0] + ":" + tjEtime[1] + " " + "+0000";
+                aScheduleSEDT.dsSDate = dsSDate[0] + " " + tsStime[0] + ":" + tsStime[1] + " " + "+0000";
+                aScheduleSEDT.dsEDate = dsEDate[0] + " " + tsEtime[0] + ":" + tsEtime[1] + " " + "+0000";
+                aScheduleSEDT.oneTime = idSchTime;
+
+                return aScheduleSEDT;
+
+            },
+
 
 
             onPrimarySearch: function (oEvent) {
@@ -2907,7 +3177,7 @@ sap.ui.define([
 
             },
 
-// download csv formate
+            // download csv formate
             downloadFastCSV: function (jsonData, fileName) {
                 sap.ui.core.BusyIndicator.hide();
                 try {
@@ -3750,136 +4020,7 @@ sap.ui.define([
                     this.byId("searchField2").suggest();
                 }
             },
-            /**
-             * 
-             */
-            onPressUpdate: function (oEvent) {
-                //var oEntry = {};
-                // var sLoc = that.byId("idloc").getValue(),
-                var sProd = that.byId("idCommon").getValue();
-                if (sProd === "") {
-                    return MessageToast.show("Please select a Product");;
-                }
-                if (sProd !== "") {
-                    sap.ui.core.BusyIndicator.show();
-                    that.getModel("BModel").callFunction("/getSecondaryChar", {
-                        method: "GET",
-                        urlParameters: {
-                            FLAG: "U",
-                            // LOCATION_ID: sLoc,
-                            PRODUCT_ID: sProd
-                        },
-                        success: function (oData) {
-                            sap.ui.core.BusyIndicator.hide();
-                            that.oSeq = oData.results
-                            // that.oSecndData = [];
-                            that.oSecndData = addSorterField(oData);
 
-                            that.oPList = that.byId("Primarytable"),
-                                // that.oSList = that.byId("Secondarytable");
-
-                                that.primaryData = [],
-                                that.secData = [];
-
-                            function addSorterField(params) {
-                                let data = params.results;
-
-                                // Step 1: Add WEIGHTAGE property
-                                data.forEach(el => {
-                                    if (el.GROUP_NAME !== "" && el.GROUP_NAME !== null) {
-                                        el.WEIGHTAGE = parseFloat(el.WEIGHTAGE); //parseFloat(el.GROUP_NAME.split('-')[1]);
-                                    } else {
-                                        if (el.CHAR_TYPE === "P") {
-                                            el.GROUP_NAME = "";
-                                            el.WEIGHTAGE = 1;
-                                        } else {
-                                            el.GROUP_NAME = "";
-                                            el.WEIGHTAGE = -1;
-                                        }
-                                    }
-                                });
-
-                                return data;
-                            }
-
-                            // for (var i = 0; i < that.oSecndData.length; i++) {
-                            //     if (that.oSecndData[i].CHAR_TYPE === "P") {
-                            //         that.primaryData.push(that.oSecndData[i]);
-                            //     } else {
-                            //         that.primaryData.push(that.oSecndData[i]);
-                            //     }
-                            // }
-
-                            if (typeof (that.oSelectedItem) === "object") {
-                                that.primaryData.unshift(that.oSelectedItem)
-                            } else {
-                                //Nothing
-                            }
-
-                            that.finalpriData = [];
-                            that.finalpriData = that.primaryData.sort((a, b) => a.SEQUENCE - b.SEQUENCE);
-
-
-                            // that.finalSecData = [];
-                            // that.finalSecData = that.secData.sort((a, b) => a.SEQUENCE - b.SEQUENCE);
-
-
-                            that.oGModel = that.getModel("oGModel");
-                            if (that.finalSecData.length !== 0) {
-                                that.oGModel.setProperty("/secSeqSt", that.finalSecData[0].SEQUENCE);
-                            } else {
-                                that.oGModel.setProperty("/secSeqSt", 0);
-                            }
-
-                            that.PrimarylistModel.setData({
-                                results: that.finalpriData,
-                            });
-                            that.PrimarylistModel.setSizeLimit(5000);
-                            // that.oPList.setModel(null);
-                            that.oPList.setModel(that.PrimarylistModel);
-
-                            var UidFilModel = new sap.ui.model.json.JSONModel();
-
-                            UidFilModel.setData(null);
-                            setTimeout(function () {
-                                UidFilModel.setData({
-                                    groupresults: that.oGroupNames
-                                });
-
-                                that.byId("SelectOption").setModel(UidFilModel)
-                            }, 100)
-
-                            that.byId("SelectOption").getModel().refresh(true);
-                            that.oPList.getModel().refresh(true);
-
-                            var items = that.oPList.getItems();
-                            for (let i = 0; i < items.length; i++) {
-
-                                var data = that.finalpriData.filter(el => el.CHAR_NUM === items[i].getCells()[0].getBindingContext().getObject().CHAR_NUM);
-
-                                if (data.length > 0) {
-                                    items[i].getCells()[3].getItems()[1].getItems()[0].setSelectedKey(data[0].GROUP_NAME);
-                                }
-
-                            }
-
-                            try {
-                                that.purgePredictionModels(sProd);
-                            }
-                            catch (ex) {
-                                console.log(ex);
-                            }
-
-                        },
-                        error: function (oData, error) {
-                            sap.ui.core.BusyIndicator.hide();
-                            MessageToast.show("error");
-                        },
-                    });
-
-
-                }
-            },
 
 
             onNavPress: function () {
@@ -3984,129 +4125,8 @@ sap.ui.define([
                 );
             },
 
-            //Creating job
-            purgePredictionModels: function (sProd) {
-                sap.ui.core.BusyIndicator.show();
-                that.getOwnerComponent().getModel("BModel").callFunction("/purgeTimeseriesModelsPredictions", {
-                    method: "GET",
-                    urlParameters: {
-                        PRODUCT_ID: sProd
-                    },
-                    success: function (x) {
-                        //create job here
-                        let ajobData = JSON.parse(x.purgeTimeseriesModelsPredictions)
-                        var aScheduleSEDT = that.getScheduleSEDT();
-                        var JobName = "PURGE_TIMESERIES_MODELS_PREDICTIONS" + new Date().getTime();
-                        var finalList = {
-                            name: JobName,
-                            description: JobName,
-                            action: encodeURIComponent("/pal/purgePredictionModels"),
-                            active: true,
-                            httpMethod: "POST",
-                            startTime: new Date(),
-                            endTime: new Date(new Date().setDate(new Date().getDate() + 1)),
-                            createdAt: aScheduleSEDT.djSdate,
-                            schedules: [{
-                                data: JSON.stringify({
-                                    vcRulesList: ajobData
-                                }),
-                                cron: '',
-                                time: aScheduleSEDT.oneTime,
-                                active: true,
-                                startTime: new Date(),
-                                endTime: new Date(new Date().setDate(new Date().getDate() + 1)),
-                            }]
-                        };
-                        that.getOwnerComponent().getModel("JModel").callFunction("/addJobCreation", {
-                            method: "GET",
-                            urlParameters: {
-                                jobDetails: JSON.stringify(finalList)
-                            },
-                            success: function (oData) {
-                                sap.m.MessageToast.show(oData.addJobCreation.jobId + ": Job Created");
-                                sap.ui.core.BusyIndicator.hide();
-                                // that.onGetData()
-                                // setTimeout(function () {
-                                // that.onGetData();
 
-                                that.CharPrior = [];
-                                that.prev = "";
-                                that.getModel("BModel").callFunction("/getCharGroupWeightage", {
-                                    urlParameters: {
 
-                                        PRODUCT_ID: sProd
-                                    },
-
-                                    // filters: [
-                                    //     new Filter("PRODUCT_ID", FilterOperator.EQ, that.byId("idCommon").getValue())
-                                    // ],
-                                    // sorters: [new sap.ui.model.Sorter("WEIGHTAGE", true)],
-
-                                    success: function (oData) {
-                                        var oData = JSON.parse(oData.getCharGroupWeightage)
-                                        const oFilData = oData.filter(item => item.CHAR_NUM !== null);
-                                        that.CharPrior = [];
-                                        that.CharPrior = oFilData;
-                                        that.charPrioritize = oFilData;
-                                        that.onGetData();
-                                    },
-                                    error: function (oData, error) {
-                                        sap.ui.core.BusyIndicator.hide();
-                                        MessageToast.show("error");
-                                    }
-                                })
-                                // }, 10)
-                            },
-                            error: function (_error) {
-                                sap.ui.core.BusyIndicator.hide();
-                                sap.m.MessageToast.show("Error While Creating Job!");
-                            },
-                        });
-                    },
-                    error: function (_x) {
-                        sap.ui.core.BusyIndicator.hide();
-                    },
-                });
-
-            },
-            getScheduleSEDT: function () {
-                var aScheduleSEDT = {};
-                var dDate = new Date();
-                // 07-09-2022-1                
-                var idSchTime = dDate.setSeconds(dDate.getSeconds() + 5);
-                // 07-09-2022-1
-                var idSETime = dDate.setHours(dDate.getHours() + 4);
-                idSchTime = new Date(idSchTime);
-                idSETime = new Date(idSETime);
-                //var onetime = idSchTime;
-                var djSdate = new Date(),
-                    djEdate = idSETime,
-                    dsSDate = new Date(),
-                    dsEDate = idSETime,
-                    tjStime,
-                    tjEtime,
-                    tsStime,
-                    tsEtime;
-
-                djSdate = djSdate.toISOString().split("T");
-                tjStime = djSdate[1].split(":");
-                djEdate = djEdate.toISOString().split("T");
-                tjEtime = djEdate[1].split(":");
-                dsSDate = dsSDate.toISOString().split("T");
-                tsStime = dsSDate[1].split(":");
-                dsEDate = dsEDate.toISOString().split("T");
-                tsEtime = dsEDate[1].split(":");
-
-                var dDate = new Date().toLocaleString().split(" ");
-                aScheduleSEDT.djSdate = djSdate[0] + " " + tjStime[0] + ":" + tjStime[1] + " " + "+0000";
-                aScheduleSEDT.djEdate = djEdate[0] + " " + tjEtime[0] + ":" + tjEtime[1] + " " + "+0000";
-                aScheduleSEDT.dsSDate = dsSDate[0] + " " + tsStime[0] + ":" + tsStime[1] + " " + "+0000";
-                aScheduleSEDT.dsEDate = dsEDate[0] + " " + tsEtime[0] + ":" + tsEtime[1] + " " + "+0000";
-                aScheduleSEDT.oneTime = idSchTime;
-
-                return aScheduleSEDT;
-
-            },
             //CLASS IBP CHARACTERISTICS//
 
 
