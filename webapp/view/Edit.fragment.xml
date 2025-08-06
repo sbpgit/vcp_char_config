@@ -4,11 +4,11 @@
         <VBox class="container">
             <HBox>
                 <Label text="Group Name :" class="configLabel" />
-                <Input id="oEdit" width="140px" required="true" />
+                <Input id="oEditCHACON" width="140px" required="true" />
             </HBox>
             <HBox>
                 <Label text="Weightage :" class="configLabel" />
-                <Input id="owedit" width="140px" required="true" type="Number" />
+                <Input id="oweditCHACON" width="140px" required="true" type="Number" />
             </HBox>
             <OverflowToolbar style="Clear">
                 <ToolbarSpacer ></ToolbarSpacer>

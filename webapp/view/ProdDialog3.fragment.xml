@@ -1,7 +1,25 @@
-<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core">
-	<SelectDialog id="c" title="{i18n>PrdId}" rememberSelections="false" search="handleSearch2" liveChange="handleSearch2"
-		confirm="handleSelection" cancel="handleClose2" multiSelect="false" contentWidth="320px" items="{/results2}" 
-        selectionChange="handleProdChange" growing="true" >
-		<StandardListItem title="{PRODUCT_ID}" description="{PROD_DESC}" type="Active"/>
-	</SelectDialog>
+<core:FragmentDefinition
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+>
+    <SelectDialog
+        id="cCHACON"
+        title="{i18n>PrdId}"
+        rememberSelections="false"
+        search="handleSearch2"
+        liveChange="handleSearch2"
+        confirm="handleSelection"
+        cancel="handleClose2"
+        multiSelect="false"
+        contentWidth="320px"
+        items="{/results2}"
+        selectionChange="handleProdChange"
+        growing="true"
+    >
+        <StandardListItem
+            title="{PRODUCT_ID}"
+            description="{PROD_DESC}"
+            type="Active"
+        />
+    </SelectDialog>
 </core:FragmentDefinition>

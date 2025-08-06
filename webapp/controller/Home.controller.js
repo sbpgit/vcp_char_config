@@ -136,7 +136,7 @@ sap.ui.define([
 
             },
             attachDragDrop2: function () {
-                var oListPrim = this.byId("Primarytable2");
+                var oListPrim = this.byId("Primarytable2CHACON");
                 // adding drag and drop with first list
                 oListPrim.addDragDropConfig(new DragInfo({
                     sourceAggregation: "items"
@@ -168,7 +168,7 @@ sap.ui.define([
                 // }
                 // if (that.byId("idPrimarySearch").getValue() !== "") {
 
-                //     var obj1 = that.byId("Primarytable").getItems()
+                //     var obj1 = that.byId("PrimarytableCHACON").getItems()
                 //     for (var j = 0; j < obj1.length; j++) {
                 //         results.push(obj1[j].getBindingContext().getObject())
                 //     }
@@ -235,7 +235,7 @@ sap.ui.define([
                             },
                             success: function (oData) {
                                 sap.ui.core.BusyIndicator.hide();
-                                that.byId("idPrimarySearch").setValue("");
+                                that.byId("idPrimarySearchCHACON").setValue("");
                                 that.onPrimarySearch();
                                 that.byId("searchField").setValue("");
                                 // that.onCharSearch();
@@ -254,7 +254,7 @@ sap.ui.define([
                         oDropModel.setData(oDropModelData);
 
                         if (oDropModelData.results[0].CHAR_TYPE === "P") {
-                            var aData = this.byId("Primarytable").getItems();
+                            var aData = this.byId("PrimarytableCHACON").getItems();
                         } else if (oDropModelData.results[0].CHAR_TYPE === "S") {
                             var aData = this.byId("Secondarytable").getItems();
                         }
@@ -325,7 +325,7 @@ sap.ui.define([
                                         },
                                         success: function (oData) {
                                             sap.ui.core.BusyIndicator.hide();
-                                            that.byId("idPrimarySearch").setValue("");
+                                            that.byId("idPrimarySearchCHACON").setValue("");
                                             that.onPrimarySearch();
                                             that.byId("searchField").setValue("");
                                             that.onGetData();
@@ -343,7 +343,7 @@ sap.ui.define([
                                     oDropModel.setData(oDropModelData);
 
                                     if (oDropModelData.results[0].CHAR_TYPE === "P") {
-                                        var aData = that.byId("Primarytable").getItems();
+                                        var aData = that.byId("PrimarytableCHACON").getItems();
                                     } else if (oDropModelData.results[0].CHAR_TYPE === "S") {
                                         var aData = that.byId("Secondarytable").getItems();
                                     }
@@ -364,12 +364,12 @@ sap.ui.define([
             /* Below function Called when Upload the excel sheet based on Id's */
             onPressBrowse: function (oEvent) {
                 var sId = oEvent.getSource();
-                if (sId.sId.includes("idMenuSCM")) {
-                    that.byId("oSCMRelevent").openFilePicker(oEvent);
-                    that.byId("oSCMRelevent").oBrowse.firePress(oEvent);
-                } else if (sId.sId.includes("idMenuGroup")) {
-                    that.byId("oGroupPrior").openFilePicker(oEvent);
-                    that.byId("oGroupPrior").oBrowse.firePress(oEvent);
+                if (sId.sId.includes("idMenuSCMCHACON")) {
+                    that.byId("oSCMReleventCHACON").openFilePicker(oEvent);
+                    that.byId("oSCMReleventCHACON").oBrowse.firePress(oEvent);
+                } else if (sId.sId.includes("idMenuGroupCHACON")) {
+                    that.byId("oGroupPriorCHACON").openFilePicker(oEvent);
+                    that.byId("oGroupPriorCHACON").oBrowse.firePress(oEvent);
                 }
                 else if (sId.sId.includes("idMenuCharPrior")) {
                     that.byId("idoCharPrioritiz").openFilePicker(oEvent);
@@ -379,9 +379,9 @@ sap.ui.define([
                     that.byId("idoPartialProd").openFilePicker(oEvent);
                     that.byId("idoPartialProd").oBrowse.firePress(oEvent);
                 }
-                else if (sId.sId.includes("idMenuAttributes")) {
-                    that.byId("idoAttribuets").openFilePicker(oEvent);
-                    that.byId("idoAttribuets").oBrowse.firePress(oEvent);
+                else if (sId.sId.includes("idMenuAttributesCHACON")) {
+                    that.byId("idoAttribuetsCHACON").openFilePicker(oEvent);
+                    that.byId("idoAttribuetsCHACON").oBrowse.firePress(oEvent);
                 }
 
             },
@@ -389,8 +389,8 @@ sap.ui.define([
             onAfterRendering: function () {
                 that.cFlag = ""
                 //   that.oPartialProduct = "Success"
-                that.byId("idMenuSCM")._getButtonControl()._getArrowButton().setIcon("sap-icon://slim-arrow-up");
-                that.byId("idMenuGroup")._getButtonControl()._getArrowButton().setIcon("sap-icon://slim-arrow-up");
+                that.byId("idMenuSCMCHACON")._getButtonControl()._getArrowButton().setIcon("sap-icon://slim-arrow-up");
+                that.byId("idMenuGroupCHACON")._getButtonControl()._getArrowButton().setIcon("sap-icon://slim-arrow-up");
                 that.byId("idMenuCharPrior")._getButtonControl()._getArrowButton().setIcon("sap-icon://slim-arrow-up");
                 that.byId("idMenuPartialProd")._getButtonControl()._getArrowButton().setIcon("sap-icon://slim-arrow-up");
                 that.allData = []
@@ -398,7 +398,7 @@ sap.ui.define([
                 that.oDropDown = []
                 // that.oSItemArr = []
                 that.oGModel = that.getModel("oGModel");
-                this.oProd = this.byId("idCommon");
+                this.oProd = this.byId("idCommonCHACON");
                 that._valueHelpDialogProd.setTitleAlignment("Center");
                 that.skip = 0;
                 this.oProdList = this._oCore.byId(
@@ -457,14 +457,14 @@ sap.ui.define([
                             that.skip = 0;
                             that.oclassIbp = that.oclassIbp.concat(oData.results);
 
-                            that.byId("classSearch").setValue("")
+                            that.byId("classSearchCHACON").setValue("")
                             let aItems = that.removeDuplicateforProdClas(that.oclassIbp, "PRODUCT_ID")
                             that.oUsePartialDownload = aItems
                             var aModel = new JSONModel()
                             aModel.setData({
                                 aItems: aItems
                             })
-                            sap.ui.getCore().byId("idClasProd").setModel(aModel)
+                            sap.ui.getCore().byId("idClasProdCHACON").setModel(aModel)
                         }
                         sap.ui.core.BusyIndicator.hide();
 
@@ -554,11 +554,11 @@ sap.ui.define([
             },
 
             checkValidation: function () {
-                if (that.byId("idCommon").getValue() !== "") {
+                if (that.byId("idCommonCHACON").getValue() !== "") {
 
                     if ((that.prev === "" || that.prev === "ClassIBP") && (that.prev !== that.sKey)) {
                         that.cReleventCls = [];
-                        that.byId("classList").getItems().forEach(x => {
+                        that.byId("classListCHACON").getItems().forEach(x => {
                             that.cReleventCls.push(x.getBindingContext().getObject())
                         })
 
@@ -629,7 +629,7 @@ sap.ui.define([
             },
 
             onGo: function () {
-                var oProd = that.byId("idCommon").getValue();
+                var oProd = that.byId("idCommonCHACON").getValue();
                 if (oProd.length === 0) {
                     MessageToast.show("Please select product..")
                     return false;
@@ -642,11 +642,11 @@ sap.ui.define([
                 }
                 else if (that.sKey === "CharacteristicPriority") {
 
-                    if (that.byId("idCommon").getValue() != "") {
+                    if (that.byId("idCommonCHACON").getValue() != "") {
 
                         that.oGroupView();
                         that.onResetPress();
-                        that.byId("idCommon").setValue(that.oItem);
+                        that.byId("idCommonCHACON").setValue(that.oItem);
                         setTimeout(function () {
 
                             that.CharPrior = [];
@@ -684,7 +684,7 @@ sap.ui.define([
             },
 
             onGroupEditValidation: function (oEv) {
-                var oProd = that.byId("idCommon").getValue();
+                var oProd = that.byId("idCommonCHACON").getValue();
                 var gSelect = oEv.getSource().getBindingContext().getObject();
                 this.getModel("BModel").callFunction("/getCharGroupWeightage", {
                     urlParameters: {
@@ -715,7 +715,7 @@ sap.ui.define([
 
             // oPening Group Fragment
             onGroupMaintenance: function (oEv) {
-                var prod = that.byId("idCommon").getValue();
+                var prod = that.byId("idCommonCHACON").getValue();
                 if (prod !== "") {
                     if (!this.groupDialog) {
                         this.groupDialog = sap.ui.xmlfragment(
@@ -724,14 +724,14 @@ sap.ui.define([
                         );
                         this.getView().addDependent(this.groupDialog);
                     }
-                    sap.ui.getCore().byId("oDlg").setTitle("Create Group Name")
-                    sap.ui.getCore().byId("gCreate").setVisible(true)
-                    sap.ui.getCore().byId("gEdit").setVisible(false)
-                    var oPrd = that.byId("idCommon").getValue();
-                    sap.ui.getCore().byId("oProduct").setValue(oPrd)
-                    sap.ui.getCore().byId("oGroupName").setValue("")
-                    sap.ui.getCore().byId("oGroupName").setEnabled(true);
-                    sap.ui.getCore().byId("oWeightage").setValue("")
+                    sap.ui.getCore().byId("oDlgCHACON").setTitle("Create Group Name")
+                    sap.ui.getCore().byId("gCreateCHACON").setVisible(true)
+                    sap.ui.getCore().byId("gEditCHACON").setVisible(false)
+                    var oPrd = that.byId("idCommonCHACON").getValue();
+                    sap.ui.getCore().byId("oProductCHACON").setValue(oPrd)
+                    sap.ui.getCore().byId("oGroupNameCHACON").setValue("")
+                    sap.ui.getCore().byId("oGroupNameCHACON").setEnabled(true);
+                    sap.ui.getCore().byId("oWeightageCHACON").setValue("")
 
                     that.groupDialog.open();
                 }
@@ -753,24 +753,24 @@ sap.ui.define([
                 }
 
                 if (typeof (gSelect) == "object") {
-                    sap.ui.getCore().byId("oDlg").setTitle("Update Group Weightage")
-                    sap.ui.getCore().byId("gCreate").setVisible(false)
-                    sap.ui.getCore().byId("gEdit").setVisible(true)
-                    // sap.ui.getCore().byId("oProduct").setVisible(false)
-                    sap.ui.getCore().byId("oProduct").setValue(that.byId("idCommon").getValue())
-                    sap.ui.getCore().byId("oGroupName").setValue(gSelect.GROUP_NAME)
-                    sap.ui.getCore().byId("oGroupName").setEnabled(false)
-                    sap.ui.getCore().byId("oWeightage").setValue(gSelect.WEIGHTAGE)
+                    sap.ui.getCore().byId("oDlgCHACON").setTitle("Update Group Weightage")
+                    sap.ui.getCore().byId("gCreateCHACON").setVisible(false)
+                    sap.ui.getCore().byId("gEditCHACON").setVisible(true)
+                    // sap.ui.getCore().byId("oProductCHACON").setVisible(false)
+                    sap.ui.getCore().byId("oProductCHACON").setValue(that.byId("idCommonCHACON").getValue())
+                    sap.ui.getCore().byId("oGroupNameCHACON").setValue(gSelect.GROUP_NAME)
+                    sap.ui.getCore().byId("oGroupNameCHACON").setEnabled(false)
+                    sap.ui.getCore().byId("oWeightageCHACON").setValue(gSelect.WEIGHTAGE)
                 } else {
 
-                    //   sap.ui.getCore().byId("oDlg").setTitle("Create Group Name")
-                    sap.ui.getCore().byId("gCreate").setVisible(true)
-                    sap.ui.getCore().byId("gEdit").setVisible(false)
-                    // sap.ui.getCore().byId("oProduct").setVisible(false)
-                    sap.ui.getCore().byId("oProduct").setValue(that.byId("idCommon").getValue())
-                    sap.ui.getCore().byId("oGroupName").setValue("")
-                    sap.ui.getCore().byId("oGroupName").setEnabled(true);
-                    sap.ui.getCore().byId("oWeightage").setValue("")
+                    //   sap.ui.getCore().byId("oDlgCHACON").setTitle("Create Group Name")
+                    sap.ui.getCore().byId("gCreateCHACON").setVisible(true)
+                    sap.ui.getCore().byId("gEditCHACON").setVisible(false)
+                    // sap.ui.getCore().byId("oProductCHACON").setVisible(false)
+                    sap.ui.getCore().byId("oProductCHACON").setValue(that.byId("idCommonCHACON").getValue())
+                    sap.ui.getCore().byId("oGroupNameCHACON").setValue("")
+                    sap.ui.getCore().byId("oGroupNameCHACON").setEnabled(true);
+                    sap.ui.getCore().byId("oWeightageCHACON").setValue("")
                 }
 
                 that.groupDialog.open();
@@ -778,9 +778,9 @@ sap.ui.define([
 
             onEdit: function (oEvent) {
                 //   var gSelect = oEvent.getSource().getBindingContext().getObject();
-                var oProd = that.byId("idCommon").getValue()
-                var GROUP_NAME = sap.ui.getCore().byId("oGroupName").getValue(),
-                    WEIGHTAGE = sap.ui.getCore().byId("oWeightage").getValue();
+                var oProd = that.byId("idCommonCHACON").getValue()
+                var GROUP_NAME = sap.ui.getCore().byId("oGroupNameCHACON").getValue(),
+                    WEIGHTAGE = sap.ui.getCore().byId("oWeightageCHACON").getValue();
                 if (WEIGHTAGE > 1) {
                     var customerGroupData = JSON.stringify([{
                         "PRODUCT_ID": oProd,
@@ -800,10 +800,10 @@ sap.ui.define([
                             that.oGroupView()
                             that.onGCancel();
                             that.groupDialog.close();
-                            sap.ui.getCore().byId("oGroupName").setValue("");
-                            sap.ui.getCore().byId("oWeightage").setValue("");
+                            sap.ui.getCore().byId("oGroupNameCHACON").setValue("");
+                            sap.ui.getCore().byId("oWeightageCHACON").setValue("");
                             that.onResetPress();
-                            that.byId("idCommon").setValue(oProd);
+                            that.byId("idCommonCHACON").setValue(oProd);
                         },
                         error: function (oData, error) {
                             MessageToast.show("error");
@@ -816,7 +816,7 @@ sap.ui.define([
             },
 
             oGroupDownload: function () {
-                var oGProduct = that.byId("idCommon").getValue();
+                var oGProduct = that.byId("idCommonCHACON").getValue();
                 if (!oGProduct) {
                     MessageToast.show("Select product for downlaod")
                     return false
@@ -909,7 +909,7 @@ sap.ui.define([
                     //  }
                 }
                 that.excData = oExcel
-                // var oProd = that.byId("idCommon").getValue();
+                // var oProd = that.byId("idCommonCHACON").getValue();
                 var oFinData = []
                 for (var i = 0; i < that.oGDel.length; i++) {
                     //      if (that.oGDel[i].PRODUCT_ID != undefined) {
@@ -1169,7 +1169,7 @@ sap.ui.define([
 
 
             // onGroupUploadValidation: function (oEv) {
-            //     var oProd = that.byId("idCommon").getValue();
+            //     var oProd = that.byId("idCommonCHACON").getValue();
             //     that.getModel("BModel").callFunction("/getCharGroupWeightage", {
             //         // urlParameters: {
             //         //     PRODUCT_ID: oProd
@@ -1476,9 +1476,9 @@ sap.ui.define([
 
             //Creating Groups
             onGroupCreate: function () {
-                var oProd = that.byId("idCommon").getValue();
-                var oGroupName = sap.ui.getCore().byId("oGroupName").getValue(),
-                    oWeightage = parseFloat(sap.ui.getCore().byId("oWeightage").getValue());
+                var oProd = that.byId("idCommonCHACON").getValue();
+                var oGroupName = sap.ui.getCore().byId("oGroupNameCHACON").getValue(),
+                    oWeightage = parseFloat(sap.ui.getCore().byId("oWeightageCHACON").getValue());
                 // if(that.gData.length === 0){
 
                 // }
@@ -1511,7 +1511,7 @@ sap.ui.define([
                             that.oGroupView()
                             that.onGCancel();
                             that.onResetPress();
-                            that.byId("idCommon").setValue(oProd);
+                            that.byId("idCommonCHACON").setValue(oProd);
 
                         },
                         error: function (oData, error) {
@@ -1524,7 +1524,7 @@ sap.ui.define([
 
             // Group Deleting Funtion
             onGroupDeleteValidation: function (oEv) {
-                var oProd = that.byId("idCommon").getValue();
+                var oProd = that.byId("idCommonCHACON").getValue();
                 if (oEv) {
                     var gSelect = []
                     gSelect.push(oEv.getSource().getBindingContext().getObject());
@@ -1567,7 +1567,7 @@ sap.ui.define([
 
             // Group Deleting Funtion
             onGroupDelete: function (oEvent) {
-                var oProd = that.byId("idCommon").getValue();
+                var oProd = that.byId("idCommonCHACON").getValue();
                 if (oEvent) {
                     var gSelect = []
                     gSelect.push(oEvent.getSource().getBindingContext().getObject());
@@ -1609,7 +1609,7 @@ sap.ui.define([
                                     that.oGroupView();
                                     sap.ui.core.BusyIndicator.hide();
                                     that.onResetPress();
-                                    that.byId("idCommon").setValue(oProd);
+                                    that.byId("idCommonCHACON").setValue(oProd);
                                     //   that.onAfterRendering();
                                 },
                                 error: function (oData) {
@@ -1630,8 +1630,8 @@ sap.ui.define([
 
             onGCancel: function () {
                 that.groupDialog.close();
-                sap.ui.getCore().byId("oGroupName").setValue("")
-                sap.ui.getCore().byId("oWeightage").setValue("")
+                sap.ui.getCore().byId("oGroupNameCHACON").setValue("")
+                sap.ui.getCore().byId("oWeightageCHACON").setValue("")
             },
 
             // After click by go data shown by this function
@@ -1641,7 +1641,7 @@ sap.ui.define([
                 UidFilModel.setData({
                     groupresults: that.oGroupNames
                 });
-                var oProduct = that.byId("idCommon").getValue();
+                var oProduct = that.byId("idCommonCHACON").getValue();
 
                 that.byId("SelectOption").setModel(UidFilModel);
                 sap.ui.core.BusyIndicator.show();
@@ -1663,7 +1663,7 @@ sap.ui.define([
                         aModel.setData({
                             results: oData.results
                         })
-                        that.byId("Group").setModel(aModel);
+                        that.byId("GroupCHACON").setModel(aModel);
 
                         // For group Dropdown function 
                         var UidFilModel = new sap.ui.model.json.JSONModel();
@@ -1690,7 +1690,7 @@ sap.ui.define([
                     // var sQuery = (oEvent.getParameter("value") || oEvent.getParameter("newValue")).toUpperCase();
                     var sQuery = (oEvent.getParameter("value") || oEvent.getParameter("newValue").toUpperCase())
                 } else {
-                    var sQuery = (that.byId("groupSearch").getValue()).toUpperCase();
+                    var sQuery = (that.byId("groupSearchCHACON").getValue()).toUpperCase();
                 }
                 //this.byId("idPrimarySearch").getValue(), // Fetch the search query
                 var oFilters = []; // Array to store filters
@@ -1707,7 +1707,7 @@ sap.ui.define([
                     results: filterData,
                 });
                 oGroupModel.setSizeLimit(5000);
-                that.byId("Group").setModel(oGroupModel);
+                that.byId("GroupCHACON").setModel(oGroupModel);
 
             },
 
@@ -1721,7 +1721,7 @@ sap.ui.define([
 
                 var sKey = oEv.getSource().getSelectedKey();
                 that.prev = that.sKey;
-                var cProd = that.byId("idCommon").getValue();
+                var cProd = that.byId("idCommonCHACON").getValue();
                 that.sKey = sKey;
 
                 try {
@@ -1731,7 +1731,7 @@ sap.ui.define([
                         //Loading SCM Relavent Class Data
                         if (sKey === "ClassIBP" || sKey === "") {
                             that.sKey = "ClassIBP";
-                            that.byId("idReset").setVisible(true);
+                            that.byId("idResetCHACON").setVisible(true);
                             if (cProd !== "") {
                                 that.loadIbp();
                                 // that.handleSearch2();
@@ -1768,7 +1768,7 @@ sap.ui.define([
                                         aModel.setData({
                                             results: oData.results
                                         })
-                                        that.byId("Group").setModel(aModel);
+                                        that.byId("GroupCHACON").setModel(aModel);
 
                                         // For group Dropdown function 
                                         var UidFilModel = new sap.ui.model.json.JSONModel();
@@ -1791,7 +1791,7 @@ sap.ui.define([
                             }
 
                             else {
-                                that.byId("Group").setModel(new JSONModel([]));
+                                that.byId("GroupCHACON").setModel(new JSONModel([]));
                             }
 
                         }
@@ -1799,24 +1799,24 @@ sap.ui.define([
                         //Loading Characteristic Prioritization data
                         else if (sKey === "CharacteristicPriority") {
 
-                            that.byId("idReset").setVisible(true);
+                            that.byId("idResetCHACON").setVisible(true);
                             that.sKey = sKey;
 
                             if (cProd !== "") {
                                 that.onGo()
                             }
                             else {
-                                that.byId("Primarytable").setModel(new JSONModel([]));
+                                that.byId("PrimarytableCHACON").setModel(new JSONModel([]));
                             }
                         }
                         //Loading PartialProducts data
                         else if (sKey === "PartialProducts") {
                             that.sKey = sKey;
-                            that.byId("idReset").setVisible(true);
-                            that.byId("idReset").setVisible(true);
+                            that.byId("idResetCHACON").setVisible(true);
+                            that.byId("idResetCHACON").setVisible(true);
                             if (cProd !== '') {
                                 that.onResetPress();
-                                that.byId("idCommon").setValue(that.oItem);
+                                that.byId("idCommonCHACON").setValue(that.oItem);
                                 setTimeout(() => {
                                     that.onGetData3();
                                 }, 10)
@@ -1831,12 +1831,12 @@ sap.ui.define([
                         else if (sKey === "IBPAttributes") {
                             that.sKey = sKey;
                             // that.byId("idReset").setVisible(false);
-                            that.byId("idReset").setVisible(true);
+                            that.byId("idResetCHACON").setVisible(true);
                             if (cProd !== '') {
                                 that.onGetData2();
                             }
                             else {
-                                that.byId("Primarytable2").setModel(new JSONModel([]));
+                                that.byId("Primarytable2CHACON").setModel(new JSONModel([]));
                                 // that.byId("Secondarytable2").setModel(new JSONModel([]));
                             }
                         }
@@ -1872,7 +1872,7 @@ sap.ui.define([
                                         that.prev = "ClassIBP"
                                     }
                                     that.sKey = that.prev;
-                                    that.byId("idIconTabBarFiori2").setSelectedKey(that.prev)
+                                    that.byId("idIconTabBarFiori2CHACON").setSelectedKey(that.prev)
                                 }
 
                             },
@@ -1891,11 +1891,11 @@ sap.ui.define([
             // When click on Go, this below function exists for Characteristic priortization app
             onGetData: function () {
                 //  console.log(new Date);
-                if (that.byId("idCommon").getValue() != "") {
-                    var sProd = that.byId("idCommon").getValue();
+                if (that.byId("idCommonCHACON").getValue() != "") {
+                    var sProd = that.byId("idCommonCHACON").getValue();
                 } else {
-                    var oPd = that.byId("idCommon").setValue(that.Product_Id);
-                    var sProd = that.byId("idCommon").getValue()
+                    var oPd = that.byId("idCommonCHACON").setValue(that.Product_Id);
+                    var sProd = that.byId("idCommonCHACON").getValue()
                 }
 
                 if (sProd !== "") {
@@ -1915,7 +1915,7 @@ sap.ui.define([
                             // that.oSecndData = [];
                             that.oSecndData = addSorterField(filteredData);
 
-                            that.oPList = that.byId("Primarytable"),
+                            that.oPList = that.byId("PrimarytableCHACON"),
                                 // that.oSList = that.byId("Secondarytable");
 
                                 that.primaryData = [],
@@ -2015,7 +2015,7 @@ sap.ui.define([
 
                 } else {
                     MessageToast.show("Please select a Product");
-                    that.byId("Primarytable").setModel(new JSONModel([]));
+                    that.byId("PrimarytableCHACON").setModel(new JSONModel([]));
                     sap.ui.core.BusyIndicator.hide();
                 }
             },
@@ -2107,7 +2107,7 @@ sap.ui.define([
                 that.byId("SelectOption").setModel(UidFilModel)
 
 
-                if (that.byId("idPrimarySearch").getValue() !== "") {
+                if (that.byId("idPrimarySearchCHACON").getValue() !== "") {
                     that.onPrimarySearch();
                 } else {
                     that.PrimarylistModel.setData({
@@ -2136,7 +2136,7 @@ sap.ui.define([
                         if (items[i].getCells()[0].getText() === oCheckbox.CHAR_NUM) {
                             items[i].setSelected(true)
                             break;
-                            //    that.byId("Primarytable").setSelectedItem(that.byId("Primarytable").getItems()[that.oPosition], true);
+                            //    that.byId("PrimarytableCHACON").setSelectedItem(that.byId("Primarytable").getItems()[that.oPosition], true);
                         }
                     }
                 }, 100)
@@ -2200,7 +2200,7 @@ sap.ui.define([
 
                 //    Set selected item in the table
                 if (that.oPosition !== undefined) {
-                    that.byId("Primarytable").setSelectedItem(that.byId("Primarytable").getItems()[that.oPosition], true);
+                    that.byId("PrimarytableCHACON").setSelectedItem(that.byId("PrimarytableCHACON").getItems()[that.oPosition], true);
                 }
             },
 
@@ -2210,7 +2210,7 @@ sap.ui.define([
             //     var oSelObject = oEvent.getSource().getBindingContext().getObject()
             //     //    if (oSelObject.IBPCHAR_CHK !== true) {
             //     sap.ui.core.BusyIndicator.show();
-            //     var product = that.byId("idCommon").getValue();
+            //     var product = that.byId("idCommonCHACON").getValue();
 
             //     let vIbpCheck = '';
             //     if (oSelObject.IBPCHAR_CHK === true) {
@@ -2249,7 +2249,7 @@ sap.ui.define([
 
 
             oAllSave: function () {
-                var product = that.byId("idCommon").getValue();
+                var product = that.byId("idCommonCHACON").getValue();
                 if (product.length === 0) {
                     MessageToast.show("No data for update..")
                     return false;
@@ -2347,7 +2347,7 @@ sap.ui.define([
             onPressUpdate: function (oEvent) {
                 //var oEntry = {};
                 // var sLoc = that.byId("idloc").getValue(),
-                var sProd = that.byId("idCommon").getValue();
+                var sProd = that.byId("idCommonCHACON").getValue();
                 if (sProd === "") {
                     return MessageToast.show("Please select a Product");;
                 }
@@ -2366,7 +2366,7 @@ sap.ui.define([
                             // that.oSecndData = [];
                             that.oSecndData = addSorterField(oData);
 
-                            that.oPList = that.byId("Primarytable"),
+                            that.oPList = that.byId("PrimarytableCHACON"),
                                 // that.oSList = that.byId("Secondarytable");
 
                                 that.primaryData = [],
@@ -2602,7 +2602,7 @@ sap.ui.define([
                 if (oEvent) {
                     var sQuery = (oEvent.getParameter("value") || oEvent.getParameter("newValue")).toUpperCase();
                 } else {
-                    var sQuery = (that.byId("idPrimarySearch").getValue()).toUpperCase();
+                    var sQuery = (that.byId("idPrimarySearchCHACON").getValue()).toUpperCase();
                 }
                 //this.byId("idPrimarySearch").getValue(), // Fetch the search query
                 var oFilters = []; // Array to store filters
@@ -2638,7 +2638,7 @@ sap.ui.define([
             //    Drag & Drop functions     //// ==== WORKING COMMENTS ====== >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>.  
 
             attachDragDrop: function () {
-                var oListPrim = this.byId("Primarytable");
+                var oListPrim = this.byId("PrimarytableCHACON");
                 // adding drag and drop with first list
                 oListPrim.addDragDropConfig(new DragInfo({
                     sourceAggregation: "items"
@@ -2669,9 +2669,9 @@ sap.ui.define([
                     oDropped = oInfo.getParameter("droppedControl"),
                     sInsertPosition = oInfo.getParameter("dropPosition");
 
-                if (that.byId("idPrimarySearch").getValue() !== "") {
+                if (that.byId("idPrimarySearchCHACON").getValue() !== "") {
 
-                    var obj1 = that.byId("Primarytable").getItems()
+                    var obj1 = that.byId("PrimarytableCHACON").getItems()
                     for (var j = 0; j < obj1.length; j++) {
                         results.push(obj1[j].getBindingContext().getObject())
                     }
@@ -2737,7 +2737,7 @@ sap.ui.define([
                             },
                             success: function (oData) {
                                 sap.ui.core.BusyIndicator.hide();
-                                that.byId("idPrimarySearch").setValue("");
+                                that.byId("idPrimarySearchCHACON").setValue("");
                                 that.onPrimarySearch();
                                 // that.byId("searchField").setValue("");
                                 // that.onCharSearch();
@@ -2756,7 +2756,7 @@ sap.ui.define([
                         oDropModel.setData(oDropModelData);
 
                         if (oDropModelData.results[0].CHAR_TYPE === "P") {
-                            var aData = this.byId("Primarytable").getItems();
+                            var aData = this.byId("PrimarytableCHACON").getItems();
                         } else if (oDropModelData.results[0].CHAR_TYPE === "S") {
                             var aData = this.byId("Secondarytable").getItems();
                         }
@@ -2827,7 +2827,7 @@ sap.ui.define([
                                         },
                                         success: function (oData) {
                                             sap.ui.core.BusyIndicator.hide();
-                                            that.byId("idPrimarySearch").setValue("");
+                                            that.byId("idPrimarySearchCHACON").setValue("");
                                             that.onPrimarySearch();
                                             that.byId("searchField").setValue("");
                                             that.onGetData();
@@ -2845,7 +2845,7 @@ sap.ui.define([
                                     oDropModel.setData(oDropModelData);
 
                                     if (oDropModelData.results[0].CHAR_TYPE === "P") {
-                                        var aData = that.byId("Primarytable").getItems();
+                                        var aData = that.byId("PrimarytableCHACON").getItems();
                                     } else if (oDropModelData.results[0].CHAR_TYPE === "S") {
                                         var aData = that.byId("Secondarytable").getItems();
                                     }
@@ -2878,7 +2878,7 @@ sap.ui.define([
                     var oEntry = {};
 
                     // oEntry.Location = that.byId("idloc").getValue();
-                    oEntry.product = that.byId("idCommon").getValue();
+                    oEntry.product = that.byId("idCommonCHACON").getValue();
                     oEntry.CharNo = data[i].getCells()[0].getText();
                     // oEntry.charName = data[i].getCells()[1].getText();
                     oEntry.SEQUENCE = seq + i;
@@ -2934,17 +2934,17 @@ sap.ui.define([
                     that.oSelectedLoc = oEvent.getParameter("selectedItems");
                     that.oSelect = that.oSelectedLoc[0].getTitle()
                     that.ForDownload();
-                } else if (sId.includes("oPartialLoc")) {
+                } else if (sId.includes("oPartialLocCHACON")) {
                     that.oSelectedLoc = oEvent.getParameter("selectedItems");
                     that.oSelect = that.oSelectedLoc[0].getTitle()
                     that.ForPartialDownload();
                 }
-                if (that.byId("idIconTabBarFiori2").mProperties.selectedKey == "") {
-                    that.byId("idIconTabBarFiori2").mProperties.selectedKey = "info"
+                if (that.byId("idIconTabBarFiori2CHACON").mProperties.selectedKey == "") {
+                    that.byId("idIconTabBarFiori2CHACON").mProperties.selectedKey = "info"
                 }
-                if (that.byId("idIconTabBarFiori2").mProperties.selectedKey == "info") {
+                if (that.byId("idIconTabBarFiori2CHACON").mProperties.selectedKey == "info") {
                     if (sId.includes("prod")) {
-                        this.oProd = that.byId("idCommon");
+                        this.oProd = that.byId("idCommonCHACON");
                         var aSelectedProd = oEvent.getParameter("selectedItems");
                         that.oProd.setValue(aSelectedProd[0].getTitle());
 
@@ -2955,9 +2955,9 @@ sap.ui.define([
 
                     }
                 }
-                else if (that.byId("idIconTabBarFiori2").mProperties.selectedKey == "notes") {
+                else if (that.byId("idIconTabBarFiori2CHACON").mProperties.selectedKey == "notes") {
                     if (sId.includes("prod")) {
-                        this.oProd = that.byId("idCommon");
+                        this.oProd = that.byId("idCommonCHACON");
                         var aSelectedProd = oEvent.getParameter("selectedItems");
                         that.oProd.setValue(aSelectedProd[0].getTitle());
 
@@ -2967,7 +2967,7 @@ sap.ui.define([
                         }
                     }
                 }
-                that.oLocList = sap.ui.getCore().byId("LocSlctListCPS");
+                that.oLocList = sap.ui.getCore().byId("LocSlctListCPSCHACON");
                 that.oLocList.getBinding("items").filter([]);
             },
 
@@ -2975,7 +2975,7 @@ sap.ui.define([
             // Download functionality for Characteristic Prioritization tab
             oCharPrioritizDownload: function () {
                 var topCount = that.oGModel.getProperty("/MaxCount");
-                that.oLocList = sap.ui.getCore().byId("LocSlctListCPS");
+                that.oLocList = sap.ui.getCore().byId("LocSlctListCPSCHACON");
 
                 if (!that.oLocList.getModel()) {
                     that._valueHelpDialogLoc.open();
@@ -3290,7 +3290,7 @@ sap.ui.define([
                 that.PrimarylistModel.setData({
                     results: temp,
                 });
-                that.oPList = that.byId("Primarytable");
+                that.oPList = that.byId("PrimarytableCHACON");
                 that.oPList.setModel(null);
                 that.oPList.setModel(that.PrimarylistModel);
 
@@ -3737,7 +3737,7 @@ sap.ui.define([
 
 
             //     //     var oEntry = {};
-            //     //     var oPrd = that.byId("idCommon").getValue()
+            //     //     var oPrd = that.byId("idCommonCHACON").getValue()
             //     //     if (oPrd != "") {
             //     //         oEntry.product = oPrd
             //     //     } else {
@@ -3828,7 +3828,7 @@ sap.ui.define([
                         that.oProdList.getBinding("items").filter([]);
                     }
                 }
-                that.oLocList = sap.ui.getCore().byId("LocSlctListCPS");
+                that.oLocList = sap.ui.getCore().byId("LocSlctListCPSCHACON");
                 //  that.oLocList.getBinding("items").filter([]);
             },
 
@@ -3858,7 +3858,7 @@ sap.ui.define([
                             })
                         );
                     }
-                    that.oLocList = sap.ui.getCore().byId("LocSlctListCPS")
+                    that.oLocList = sap.ui.getCore().byId("LocSlctListCPSCHACON")
                     that.oLocList.getBinding("items").filter(oFilters);
                     if (that.oLocList.getItems().length == 0) {
                         that.oLocList.setNoDataText("No Data");
@@ -3916,12 +3916,12 @@ sap.ui.define([
             //                     that.byId("idUpdate2").setEnabled(false);
             //                 }
             //                 if (aResults[0].DELETE_CHK === "disabled") {
-            //                     that.byId("idReset2").setEnabled(false);
+            //                     that.byId("idReset2CHACON").setEnabled(false);
             //                 }
             //             }
             //             else {
             //                 that.byId("idUpdate2").setEnabled(false);
-            //                 that.byId("idReset2").setEnabled(false);
+            //                 that.byId("idReset2CHACON").setEnabled(false);
             //             }
 
             //         },
@@ -3934,7 +3934,7 @@ sap.ui.define([
 
 
             onPrimarySearch12: function () {
-                var sQuery = that.byId("idPrimarySearch").getValue(),
+                var sQuery = that.byId("idPrimarySearchCHACON").getValue(),
                     oFilters = [];
                 // Check if search filter is to be applied
                 sQuery = sQuery ? sQuery.trim() : "";
@@ -3950,7 +3950,7 @@ sap.ui.define([
                         })
                     );
                 }
-                that.byId("Primarytable").getBinding("items").filter(oFilters);
+                that.byId("PrimarytableCHACON").getBinding("items").filter(oFilters);
 
 
             },
@@ -4011,11 +4011,11 @@ sap.ui.define([
                         // })
                     ], false)
                 ];
-                if (that.byId("idIconTabBarFiori2").mProperties.selectedKey == "info") {
+                if (that.byId("idIconTabBarFiori2CHACON").mProperties.selectedKey == "info") {
                     this.byId("searchField").getBinding("suggestionItems").filter(aFilters);
                     this.byId("searchField").suggest();
                 }
-                else if (that.byId("idIconTabBarFiori2").mProperties.selectedKey == "notes") {
+                else if (that.byId("idIconTabBarFiori2CHACON").mProperties.selectedKey == "notes") {
                     this.byId("searchField2").getBinding("suggestionItems").filter(aFilters);
                     this.byId("searchField2").suggest();
                 }
@@ -4050,7 +4050,7 @@ sap.ui.define([
                     actions: [sap.m.MessageBox.Action.YES, sap.m.MessageBox.Action.NO],
                     onClose: function (oAction) {
                         if (oAction === sap.m.MessageBox.Action.YES) {
-                            var sProd = that.byId("idCommon").getValue();
+                            var sProd = that.byId("idCommonCHACON").getValue();
                             that.oSelectedItem = "";
                             if (sProd !== "") {
                                 that.getModel("BModel").callFunction("/getSecondaryChar", {
@@ -4062,7 +4062,7 @@ sap.ui.define([
                                     },
                                     success: function (oData) {
                                         sap.ui.core.BusyIndicator.hide();
-                                        that.oPList = that.byId("Primarytable"),
+                                        that.oPList = that.byId("PrimarytableCHACON"),
                                             that.oSList = that.byId("Secondarytable");
 
                                         that.primaryData = [],
@@ -4142,7 +4142,7 @@ sap.ui.define([
                 var sId = oEvent.getParameter("id");
                 // }
                 // else{
-                //     var sQuery = that.byId("idCommon").getValue();
+                //     var sQuery = that.byId("idCommonCHACON").getValue();
                 // }
                 var oFilters = [];
                 // Check if search filter is to be applied
@@ -4159,7 +4159,7 @@ sap.ui.define([
                         })
                     );
                 }
-                that.byId("classList").getBinding("items").filter(oFilters);
+                that.byId("classListCHACON").getBinding("items").filter(oFilters);
 
             },
 
@@ -4292,7 +4292,7 @@ sap.ui.define([
             // Partial Product Characteristics app save functionality
             // onSaveChar: function () {
             //     var that = this;
-            //     var oProd = that.byId("idCommon").getValue();
+            //     var oProd = that.byId("idCommonCHACON").getValue();
             //     if (oProd.length === 0) {
             //         MessageToast.show("No data for update..")
             //         return false;
@@ -4435,7 +4435,7 @@ sap.ui.define([
                 that.oGModel.setProperty("/flag", "");
                 that.skip = 0;
                 that.byId("idPartialSearch").setValue();
-                var selectedItem = that.byId("idCommon").getValue();
+                var selectedItem = that.byId("idCommonCHACON").getValue();
                 if (selectedItem !== "") {
                     sap.ui.core.BusyIndicator.show();
 
@@ -4508,7 +4508,7 @@ sap.ui.define([
                 that.oGModel.setProperty("/flag", "");
                 that.skip = 0;
                 that.byId("idPartialSearch").setValue("");
-                var selectedItem = that.byId("idCommon").getValue();
+                var selectedItem = that.byId("idCommonCHACON").getValue();
                 if (selectedItem !== "") {
                     sap.ui.core.BusyIndicator.show();
 
@@ -4858,7 +4858,7 @@ sap.ui.define([
             //         //  availChar.SELECTED = isSelected; // Assign true or false
             //         availChar.SELECTED = isSelected.toString().toUpperCase();
             //     });
-            //     var oGProduct = that.byId("idCommon").getValue();
+            //     var oGProduct = that.byId("idCommonCHACON").getValue();
             //     if (!oGProduct) {
             //         MessageToast.show("Select product for downlaod")
             //         return false
@@ -5003,7 +5003,7 @@ sap.ui.define([
 
             oPartiaDownload: function () {
                 var topCount = that.oGModel.getProperty("/MaxCount");
-                that.oPartialLoclist = sap.ui.getCore().byId("oPartialLoc");
+                that.oPartialLoclist = sap.ui.getCore().byId("oPartialLocCHACON");
 
                 if (!that.oPartialLoclist.getModel()) {
                     that._valueHelpDialogPartialLoc.open();
@@ -5509,7 +5509,7 @@ sap.ui.define([
             },
 
             onResetPressIBP: function () {
-                that.byId("Primarytable2").setModel(new JSONModel([]));
+                that.byId("Primarytable2CHACON").setModel(new JSONModel([]));
                 sap.ui.core.BusyIndicator.show();
             },
 
@@ -5953,7 +5953,7 @@ sap.ui.define([
 
             loadSelectedData: function () {
                 // that.byId("prodInput2").setValue("");
-                var sProd = that.byId("idCommon").getValue();
+                var sProd = that.byId("idCommonCHACON").getValue();
 
                 var promise = new Promise((resolve, reject) => {
                     let arr = [];
@@ -6002,7 +6002,7 @@ sap.ui.define([
                     oDropContainer = oInfo.getSource().getParent();
                 if (that.byId("idPrimarySearch2").getValue() !== "") {
 
-                    var obj = that.byId("Primarytable2").getItems()
+                    var obj = that.byId("Primarytable2CHACON").getItems()
                     for (var i = 0; i < obj.length; i++) {
                         results2.push(obj[i].getBindingContext().getObject())
                     }
@@ -6028,7 +6028,7 @@ sap.ui.define([
 
                 var Flag = "";
                 if (oDragModelData.results2[0].CHAR_TYPE === "S") {
-                    var length = this.byId("Primarytable2").getItems().length;
+                    var length = this.byId("Primarytable2CHACON").getItems().length;
                     if (length >= 10) {
                         Flag = "X";
                     }
@@ -6111,7 +6111,7 @@ sap.ui.define([
                             });
                         } else {
                             oDropModel.setData(oDropModelData);
-                            var aData = this.byId("Primarytable2").setModel(oDropModel).getItems();
+                            var aData = this.byId("Primarytable2CHACON").setModel(oDropModel).getItems();
                             // if (oDropModelData.results2[0].CHAR_TYPE === "P") {
                             //     var aData = this.byId("Primarytable2").getItems();
                             // } else if (oDropModelData.results2[0].CHAR_TYPE === "S") {
@@ -6207,7 +6207,7 @@ sap.ui.define([
                                         });
                                     } else {
                                         oDropModel.setData(oDropModelData);
-                                        var aData = this.byId("Primarytable2").setModel(oDropModel).getItems();
+                                        var aData = this.byId("Primarytable2CHACON").setModel(oDropModel).getItems();
                                         // if (oDropModelData.results2[0].CHAR_TYPE === "P") {
                                         //     var aData = this.byId("Primarytable2").getItems();
                                         // } else if (oDropModelData.results2[0].CHAR_TYPE === "S") {
@@ -6294,7 +6294,7 @@ sap.ui.define([
                     onClose: function (oAction) {
                         if (oAction === sap.m.MessageBox.Action.YES) {
                             that.onGetData2();
-                            var sProd = that.byId("idCommon").getValue();
+                            var sProd = that.byId("idCommonCHACON").getValue();
                             that.oSelectedItem = "";
                             if (sProd !== "") {
                                 that.getModel("BModel").callFunction("/getPrimaryCharIBP", {
@@ -6306,8 +6306,8 @@ sap.ui.define([
                                     },
                                     success: function (oData) {
                                         sap.ui.core.BusyIndicator.hide();
-                                        that.oPList = that.byId("Primarytable2"),
-                                            that.oSList = that.byId("Primarytable2");
+                                        that.oPList = that.byId("Primarytable2CHACON"),
+                                            that.oSList = that.byId("Primarytable2CHACON");
 
                                         that.primaryData = [],
                                             that.secData = [];
@@ -6465,7 +6465,7 @@ sap.ui.define([
                         results2: oDropModelData,
                     });
                     that.PrimarylistModel.setSizeLimit(5000);
-                    that.byId("Primarytable2").setModel(that.PrimarylistModel)
+                    that.byId("Primarytable2CHACON").setModel(that.PrimarylistModel)
                     // oModel.setData
                     // // If drop container has no model, create a new JSONModel and set it
                     // var oNewDropModel = new sap.ui.model.json.JSONModel(oDropModelData);
@@ -6474,7 +6474,7 @@ sap.ui.define([
             },
 
             onSaveSeq2: function (index) {
-                var aData = this.byId("Primarytable2").getItems();
+                var aData = this.byId("Primarytable2CHACON").getItems();
                 that.count = aData.length;
                 // that.count = index + 2;
                 var successCount = 0;
@@ -6485,7 +6485,7 @@ sap.ui.define([
                     var oEntry = {};
 
                     // oEntry.Location = that.byId("idloc").getValue();
-                    oEntry.product = that.byId("idCommon").getValue();
+                    oEntry.product = that.byId("idCommonCHACON").getValue();
                     oEntry.CharNo = aData[i].getCells()[0].getText();
                     // oEntry.charName = aData[i].getCells()[1].getText();
                     oEntry.SEQUENCE = i + 1;
@@ -6547,7 +6547,7 @@ sap.ui.define([
                         })
                     );
                 }
-                that.byId("Primarytable2").getBinding("items").filter(oFilters);
+                that.byId("Primarytable2CHACON").getBinding("items").filter(oFilters);
 
             },
 
@@ -6575,7 +6575,7 @@ sap.ui.define([
             onPressUpdate2: function (oEvent) {
                 //var oEntry = {};
                 // var sLoc = that.byId("idloc").getValue(),
-                var sProd = that.byId("idCommon").getValue();
+                var sProd = that.byId("idCommonCHACON").getValue();
 
                 // if (sLoc !== "" && sProd !== "") {
                 var text = "Active Planning Details exist. Would you like to continue?";
@@ -6599,7 +6599,7 @@ sap.ui.define([
                                     success: function (oData) {
                                         sap.ui.core.BusyIndicator.hide();
                                         MessageToast.show("Updated Successfully");
-                                        that.oPList = that.byId("Primarytable2"),
+                                        that.oPList = that.byId("Primarytable2CHACON"),
                                             that.oSList = that.byId("Secondarytable2");
 
                                         that.primaryData = [],
@@ -6701,7 +6701,7 @@ sap.ui.define([
                                 that.byId("idReset3").setEnabled(false);
                             }
                             if (aResults2[0].UPDATE_CHK == "disabled") {
-                                that.byId("idupdate").setEnabled(false);
+                                that.byId("idupdateCHACON").setEnabled(false);
                             }
                         }
                         else {
@@ -6719,7 +6719,7 @@ sap.ui.define([
             handleValueHelp3: function (oEvent) {
                 var sId = oEvent.getParameter("id");
                 // Prod Dialog
-                if (sId.includes("idCommon")) {
+                if (sId.includes("idCommonCHACON")) {
                     // that.oProdList1.removeSelections();
                     that._valueHelpDialogProd2.open();
                     // Prod Desc Dialog
@@ -6744,7 +6744,7 @@ sap.ui.define([
 
             handleSelection3: function (oEvent) {
                 that.oItem = oEvent.getParameters().selectedItem.getTitle();
-                this.oProd3 = that.byId("idCommon");
+                this.oProd3 = that.byId("idCommonCHACON");
                 that.oProd3.setValue(that.oItem);
                 that.byId("idPartialSearch").setValue();
                 if (that.oProdList1.getBinding("items")) {
@@ -6782,29 +6782,29 @@ sap.ui.define([
                     that.loadArray = [];
                     that.byId("prodList").removeSelections();
                     that.byId("idPartialSearch").setValue("");
-                    that.byId("idCommon").setValue("");
+                    that.byId("idCommonCHACON").setValue("");
                     that.oListModel.setData({ results: [] });
                     that.byId("prodList").setModel(that.oListModel);
                     that.byId("idSaveBtn").setEnabled(true);
                 }
                 else if (that.sKey === "ClassIBP" || that.sKey === "") {
                     // that.onClearReset();
-                    that.byId("idCommon").setValue("");
-                    that.byId("classSearch").setValue("");
-                    that.byId("classList").setModel(new JSONModel([]));
+                    that.byId("idCommonCHACON").setValue("");
+                    that.byId("classSearchCHACON").setValue("");
+                    that.byId("classListCHACON").setModel(new JSONModel([]));
 
                 } else if (that.sKey === "CharacteristicPriority" || that.sKey === "") {
 
-                    that.byId("idCommon").setValue("");
-                    that.byId("idPrimarySearch").setValue("");
-                    that.byId("Primarytable").setModel(new JSONModel([]));
+                    that.byId("idCommonCHACON").setValue("");
+                    that.byId("idPrimarySearchCHACON").setValue("");
+                    that.byId("PrimarytableCHACON").setModel(new JSONModel([]));
 
                 } else {
-                    that.byId("idCommon").setValue("");
-                    that.byId("groupSearch").setValue("");
-                    that.byId("Primarytable2").setModel(new JSONModel([]));
-                    that.byId("Group").setModel(new JSONModel([]));
-                    that.byId("Primarytable").setModel(new JSONModel([]));
+                    that.byId("idCommonCHACON").setValue("");
+                    that.byId("groupSearchCHACON").setValue("");
+                    that.byId("Primarytable2CHACON").setModel(new JSONModel([]));
+                    that.byId("GroupCHACON").setModel(new JSONModel([]));
+                    that.byId("PrimarytableCHACON").setModel(new JSONModel([]));
                 }
             },
 
@@ -6923,10 +6923,10 @@ sap.ui.define([
                 setTimeout(() => {
                     this.valueHelpClasProdDialog.setBusy(false)
                 }, 1000)
-                sap.ui.getCore().byId("idClasProd").getBinding("items").filter([])
-                // sap.ui.getCore().byId("idClasProd").getAggregation("_dialog").getContent()[1].removeSelections()
-                // sap.ui.getCore().byId("idClasProd").getItems()[0].setSelected(true)
-                sap.ui.getCore().byId("idClasProd").clearSelection(true)
+                sap.ui.getCore().byId("idClasProdCHACON").getBinding("items").filter([])
+                // sap.ui.getCore().byId("idClasProdCHACON").getAggregation("_dialog").getContent()[1].removeSelections()
+                // sap.ui.getCore().byId("idClasProdCHACON").getItems()[0].setSelected(true)
+                sap.ui.getCore().byId("idClasProdCHACON").clearSelection(true)
 
             },
 
@@ -6938,7 +6938,7 @@ sap.ui.define([
                 // Check if search filter is to be applied
                 sQuery = sQuery ? sQuery.trim() : "";
                 // Product
-                if (sId.includes("idClasProd")) {
+                if (sId.includes("idClasProdCHACON")) {
                     if (sQuery !== "") {
                         oFilters.push(
                             new Filter({
@@ -6955,12 +6955,12 @@ sap.ui.define([
                     //  that.oProdList.getBinding("items").filter(oFilters);
 
 
-                    that.oProdList = sap.ui.getCore().byId("idClasProd")
+                    that.oProdList = sap.ui.getCore().byId("idClasProdCHACON")
                     that.oProdList.getBinding("items").filter(oFilters);
                     if (that.oProdList.getItems().length == 0) {
                         that.oProdList.setNoDataText("No Data");
                     }
-                    //    sap.ui.getCore().byId("idClasProd").getBinding("items").filter(oFilters);
+                    //    sap.ui.getCore().byId("idClasProdCHACON").getBinding("items").filter(oFilters);
 
                 }
             },
@@ -6973,10 +6973,10 @@ sap.ui.define([
                     that.oItem = oEvent.getParameters().selectedItem.getTitle()
                 }
                 else {
-                    that.oItem = that.byId("idCommon").getValue();
+                    that.oItem = that.byId("idCommonCHACON").getValue();
                 }
 
-                that.byId("idCommon").setValue(that.oItem)
+                that.byId("idCommonCHACON").setValue(that.oItem)
                 that.validation();
 
             },
@@ -6984,7 +6984,7 @@ sap.ui.define([
 
             /* /////////////////// SCM Relevent manual updating function starts ////////////////////////// */
             onClassUpdate: function () {
-                var aClassData = that.byId("classList").getItems();
+                var aClassData = that.byId("classListCHACON").getItems();
                 if (aClassData.length === 0) {
                     MessageToast.show("No data for update..")
                     return false;
@@ -6994,7 +6994,7 @@ sap.ui.define([
                 },
                     vRuleslist;
 
-                var product = that.byId("idCommon").getValue();
+                var product = that.byId("idCommonCHACON").getValue();
                 for (var i = 0; i < aClassData.length; i++) {
                     let vIbpCheck = '';
                     if (aClassData[i].getCells()[4].getSelected() === true) {
@@ -7043,8 +7043,8 @@ sap.ui.define([
                     results: [],
                 });
 
-                that.byId("classList").setModel(that.oModel);
-                var oItem = that.byId("idCommon").getValue(),
+                that.byId("classListCHACON").setModel(that.oModel);
+                var oItem = that.byId("idCommonCHACON").getValue(),
                     oFilters = [];
                 that.ocIbp = [];
                 var topCount = that.oGModel.getProperty("/MaxCount");
@@ -7070,7 +7070,7 @@ sap.ui.define([
                             } else {
                                 that.skip = 0;
                                 that.ocIbp = that.ocIbp.concat(oData.results);
-                                that.byId("classSearch").setValue("")
+                                that.byId("classSearchCHACON").setValue("")
                                 var oBinddata = that.removeDuplicateforProdClas(that.ocIbp, "CLASS_NAME")
                                 that.oModel.setData({
                                     results: oBinddata,
@@ -7078,7 +7078,7 @@ sap.ui.define([
                                 that.oModel.setSizeLimit(oData.results.length)
                                 var temp = JSON.stringify(oData.results)
                                 that.clsResults = JSON.parse(temp);
-                                that.byId("classList").setModel(that.oModel);
+                                that.byId("classListCHACON").setModel(that.oModel);
                                 //   that.getEnable();
 
                                 that.releventCls = that.clsResults
@@ -7154,7 +7154,7 @@ sap.ui.define([
             loadIbpClassCharacteristics: function () {
                 var that = this;
                 return new Promise(function (resolve, reject) {
-                    that.byId("classSearch").setValue("");
+                    that.byId("classSearchCHACON").setValue("");
                     that.oclassTable = [];
                     var topCount = that.oGModel.getProperty("/MaxCount");
 
@@ -7483,20 +7483,20 @@ sap.ui.define([
             /* //////////////////// SCM Relevent Upload functionality ends //////////////////////////////*/
 
             onClearReset: function () {
-                that.byId("idCommon").setValue("");
-                that.byId("classSearch").setValue("")
+                that.byId("idCommonCHACON").setValue("");
+                that.byId("classSearchCHACON").setValue("")
                 var aModel = new JSONModel()
                 aModel.setData({
                     results: that.forRest
                 })
                 aModel.setSizeLimit(that.forRest.length)
-                that.byId("classList").setModel(aModel)
+                that.byId("classListCHACON").setModel(aModel)
 
             },
 
             // Previous working functionalities 
             // oAttributeDownload: function () {
-            //     that.oPList = that.byId("Primarytable2");
+            //     that.oPList = that.byId("Primarytable2CHACON");
             //     that.oAttr
 
             //     that.ops.forEach(op => {
@@ -7519,7 +7519,7 @@ sap.ui.define([
             //         }
             //     });
 
-            //     var oGProduct = that.byId("idCommon").getValue();
+            //     var oGProduct = that.byId("idCommonCHACON").getValue();
             //     if (!oGProduct) {
             //         MessageToast.show("Select product for downlaod")
             //         return false

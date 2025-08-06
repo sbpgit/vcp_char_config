@@ -47,7 +47,7 @@
     padding-right: -70px !important;
 }
 
-#prodSlctListCPS-cancel{
+#prodSlctListCPSCHACON-cancel{
     position:sticky !important;
     
 }
@@ -58,7 +58,7 @@
    
 }
 
-#prodSlctListAP-cancel{
+#prodSlctListAPCHACON-cancel{
     position:sticky !important;
     
 }
@@ -148,7 +148,7 @@ div#__section0 {
     /* top: initial; */
     margin-top: -64px;
 }
-div#container-vcpapp\.vcpcharacteristicsapps---Home--classSearch {
+div#container-vcpapp\.vcpcharacteristicsapps---Home--classSearchCHACON {
     margin-right: 30px;
 }
 

@@ -1,24 +1,24 @@
 <core:FragmentDefinition xmlns="sap.m"
     xmlns:core="sap.ui.core">
-    <Dialog contentWidth="30%" id = "oDlg" title="Create Group Name">
+    <Dialog contentWidth="30%" id = "oDlgCHACON" title="Create Group Name">
         <VBox class="container">
           <HBox>
                 <Label text="Product :" class="configLabel" />
-                <Input id="oProduct" width="180px" required="true" enabled="false"  />
+                <Input id="oProductCHACON" width="180px" required="true" enabled="false"  />
             </HBox>
             <HBox>
                 <Label text="Group Name :" class="configLabel" />
-                <Input id="oGroupName" width="180px" required="true" />
+                <Input id="oGroupNameCHACON" width="180px" required="true" />
             </HBox>
             <HBox>
                 <Label text="Weightage :" class="configLabel" />
-                <Input id="oWeightage" width="180px" required="true" type="Number" />
+                <Input id="oWeightageCHACON" width="180px" required="true" type="Number" />
             </HBox>
             <OverflowToolbar style="Clear">
                 <ToolbarSpacer ></ToolbarSpacer>
 
-                <Button text="Create" id="gCreate" type="Emphasized" press="onGroupCreate" />
-                <Button text="Update" id="gEdit" visible="false" type ="Emphasized" press="onEdit" />
+                <Button text="Create" id="gCreateCHACON" type="Emphasized" press="onGroupCreate" />
+                <Button text="Update" id="gEditCHACON" visible="false" type ="Emphasized" press="onEdit" />
                 <ToolbarSeparator visible="false"></ToolbarSeparator>
                 <Button text="Cancel" type="Default" press="onGCancel" />
 
