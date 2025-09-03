@@ -7082,10 +7082,10 @@ sap.ui.define([
                                 that.ocIbp = that.ocIbp.concat(oData.results);
                                 that.byId("classSearchCHACON").setValue("")
                                 var oBinddata = that.removeDuplicateforProdClas(that.ocIbp, "CLASS_NAME")
+                                that.oModel.setSizeLimit(oBinddata.length)
                                 that.oModel.setData({
                                     results: oBinddata,
                                 });
-                                that.oModel.setSizeLimit(oData.results.length)
                                 var temp = JSON.stringify(oData.results)
                                 that.clsResults = JSON.parse(temp);
                                 that.byId("classListCHACON").setModel(that.oModel);
@@ -7599,8 +7599,8 @@ sap.ui.define([
                 var dData = [], uniqueName = [];
                 that.uniqueName = [];
                 sap.ui.core.BusyIndicator.show();
-                // var variantUser = this.getUser();
-                var variantUser = "pradeepkumardaka@sbpcorp.in";
+                var variantUser = this.getUser();
+                // var variantUser = "pradeepkumardaka@sbpcorp.in";
                 var appName = this.getOwnerComponent().getManifestEntry("/sap.app/id");
                 that.oGModel.setProperty("/UserId", variantUser);
                 // Define the filters
