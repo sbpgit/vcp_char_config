@@ -2285,7 +2285,7 @@ sap.ui.define([
                                     },
                                     success: function (oData) {
                                         sap.ui.core.BusyIndicator.hide();
-                                        sap.m.MessageToast.show("Successfully updated..")
+                                        sap.m.MessageToast.show("Prioritization successfully updated..")
                                         that.onPressUpdate();
                                     },
                                     error: function (oData) {
@@ -2325,7 +2325,7 @@ sap.ui.define([
                                             that.charPrioritize = oData.results
 
                                             that.onPressUpdate()
-                                            sap.m.MessageToast.show("Groups successfully updated..")
+                                            sap.m.MessageToast.show("Prioritization successfully updated..")
                                             sap.ui.core.BusyIndicator.hide();
                                         },
                                         error: function (oData) {
@@ -6681,7 +6681,7 @@ sap.ui.define([
 
             getEnable: function () {
                 var oModel = that.getOwnerComponent().getModel("BModel");
-                var vUser = "Test" //that.getUser();
+                var vUser = that.getUser();
                 var oEntry = {
                     USERDATA: []
                 };
@@ -6883,7 +6883,7 @@ sap.ui.define([
 
             getEnable1: function () {
                 var oModel = this.getOwnerComponent().getModel("BModel");
-                var vUser = "Testing" //this.getUser();
+                var vUser = this.getUser();
                 var oEntry = {
                     USERDATA: []
                 };
@@ -7605,7 +7605,7 @@ sap.ui.define([
                 var dData = [], uniqueName = [];
                 that.uniqueName = [];
                 sap.ui.core.BusyIndicator.show();
-                var variantUser = "Testing" //this.getUser();
+                var variantUser = this.getUser();
                 // var variantUser = "pradeepkumardaka@sbpcorp.in";
                 var appName = this.getOwnerComponent().getManifestEntry("/sap.app/id");
                 that.oGModel.setProperty("/UserId", variantUser);
