@@ -794,6 +794,7 @@ sap.ui.define([
                         "GROUP_NAME": GROUP_NAME,
                         "WEIGHTAGE": WEIGHTAGE
                     }])
+                    customerGroupData.USER = that.getUserDetails();
                     that.getOwnerComponent().getModel("BModel").callFunction("/modifyCustomerGroup", {
                         method: "GET",
                         urlParameters: {
@@ -1502,9 +1503,10 @@ sap.ui.define([
                         {
                             "PRODUCT_ID": oProd,
                             "GROUP_NAME": oGroupName,
-                            "WEIGHTAGE": oWeightage
+                            "WEIGHTAGE": oWeightage  
                         }
                     ])
+                    customerGroupData.USER = that.getUserDetails()
 
                     that.getOwnerComponent().getModel("BModel").callFunction("/modifyCustomerGroup", {
                         method: "GET",
@@ -3407,7 +3409,7 @@ sap.ui.define([
                     var batch = allBatches[batchIndex];
                     var batchData = batch.data;
 
-
+                    batchData.USER = that.getUserDetails()
                     sap.ui.core.BusyIndicator.show();
                     that.getModel("BModel").callFunction("/changeToPrimaryNewMulti", {
                         method: "GET",
@@ -4230,6 +4232,7 @@ sap.ui.define([
 
                 // Show a warning dialog if there are checked items
                 //    if (checkedItems.length > 0) {
+                finlData.USER = that.getUserDetails()
                 sap.m.MessageBox.warning("Partial Products Configuration has already been used in planning. Any modification would lead to discrepancies and needs reprocessing. Would you like to continue with the change?", {
                     title: "Warning",
                     actions: [sap.m.MessageBox.Action.YES, sap.m.MessageBox.Action.NO],
@@ -5360,6 +5363,7 @@ sap.ui.define([
                 } else {
                     finlData = that.oFinalPartialData
                 }
+                finlData.USER = that.getUserDetails()
                 sap.ui.core.BusyIndicator.show();
                 this.getOwnerComponent().getModel("BModel").callFunction("/getProductCharVal", {
                     method: "GET",
@@ -7020,6 +7024,7 @@ sap.ui.define([
                     };
                     oEntry.CLASSDATA.push(vRuleslist);
                 }
+                oEntry.USER = that.getUserDetails()
                 sap.ui.core.BusyIndicator.show();
                 that.getModel("BModel").callFunction("/updateIBPClass", {
                     method: "GET",
@@ -7459,6 +7464,7 @@ sap.ui.define([
                     var confirmationMessage = `Products have already existing active plan..`;
 
                 }
+                oEntry.USER = that.getUserDetails()
 
                 if (oEntry.CLASSDATA.length > 0) {
                     sap.m.MessageBox.confirm(confirmationMessage, {
@@ -7599,7 +7605,7 @@ sap.ui.define([
                 var dData = [], uniqueName = [];
                 that.uniqueName = [];
                 sap.ui.core.BusyIndicator.show();
-                var variantUser = this.getUser();
+                var variantUser = "Testing" //this.getUser();
                 // var variantUser = "pradeepkumardaka@sbpcorp.in";
                 var appName = this.getOwnerComponent().getManifestEntry("/sap.app/id");
                 that.oGModel.setProperty("/UserId", variantUser);
