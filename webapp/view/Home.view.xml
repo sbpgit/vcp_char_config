@@ -45,11 +45,17 @@
                         <VBox class="class1">
                             <HBox>
                                 <Button id="idDataCHACON" text="Go" type="Emphasized" press="onGo" />
-                                <Button id="idResetCHACON" text="Reset" type="Transparent" press="onResetPress" />
+                                <Button id="idResetCHACON" text="Reset" type="Transparent" press="onResetPress" />                               
                             </HBox>
+                           <Toolbar >
+                           <ToolbarSpacer >
+                           <Button class="classHdr" icon="sap-icon://sys-help" id="idNav3PRD" press="onNavPress" type="Emphasized" tooltip="Help Document"/>
+                           </ToolbarSpacer>
+                           </Toolbar>
                         </VBox>
                     </layout:VerticalLayout>
                 </layout:HorizontalLayout>
+                
             </f:DynamicPageHeader>
         </f:header>
         <!-- </html:div> -->
