@@ -6872,6 +6872,7 @@ sap.ui.define([
                 }
             },
 
+            // get Authentication user
             getUser: function () {
                 let vUser;
                 if (sap.ushell.Container) {

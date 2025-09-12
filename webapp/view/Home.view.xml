@@ -25,17 +25,7 @@
         headerExpanded="{/headerExpanded}"
         toggleHeaderOnTitleClick="{/titleClickable}"
     >
-        <f:DynamicPageTitle>
-            <f:actions>
-                <Button
-                    icon="sap-icon://sys-help"
-                    id="idNav3PRD"
-                    press="onNavPress"
-                    type="Emphasized"
-                    tooltip="Help Document"
-                />
-            </f:actions>
-        </f:DynamicPageTitle>
+    
 
         <f:header>
             <f:DynamicPageHeader pinnable="true">
@@ -812,7 +802,20 @@
                     </IconTabFilter>
                 </items>
             </IconTabBar>
+            
             <!-- </content> -->
         </f:content>
     </f:DynamicPage>
 </mvc:View>
+
+    <!-- <f:DynamicPageTitle>
+            <f:actions>
+                <Button
+                    icon="sap-icon://sys-help"
+                    id="idNav3PRD"
+                    press="onNavPress"
+                    type="Emphasized"
+                    tooltip="Help Document"
+                />
+            </f:actions>
+        </f:DynamicPageTitle> -->
