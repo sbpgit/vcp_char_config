@@ -1503,7 +1503,7 @@ sap.ui.define([
                         {
                             "PRODUCT_ID": oProd,
                             "GROUP_NAME": oGroupName,
-                            "WEIGHTAGE": oWeightage  
+                            "WEIGHTAGE": oWeightage
                         }
                     ])
                     // customerGroupData.USER = that.getUserDetails()
@@ -6986,10 +6986,10 @@ sap.ui.define([
                 else {
                     that.oItem = that.byId("idCommonCHACON").getValue();
                 }
-                
-                    if (that.oItem !== that.oGModel.getProperty("/defaultProduct")) {
-                        that.byId("idMatList123CHACON").setModified(true);
-                    }
+
+                if (that.oItem !== that.oGModel.getProperty("/defaultProduct")) {
+                    that.byId("idMatList123CHACON").setModified(true);
+                }
                 that.byId("idCommonCHACON").setValue(that.oItem)
                 that.validation();
 
@@ -8142,7 +8142,7 @@ sap.ui.define([
                 });
             },
             onNavPress: function () {
-if (sap.ushell && sap.ushell.Container && sap.ushell.Container.getService) {
+                if (sap.ushell && sap.ushell.Container && sap.ushell.Container.getService) {
                     var oCrossAppNavigator = sap.ushell.Container.getService("CrossApplicationNavigation");
                     // generate the Hash to display 
                     var hash = (oCrossAppNavigator && oCrossAppNavigator.hrefForExternal({
@@ -8152,7 +8152,7 @@ if (sap.ushell && sap.ushell.Container && sap.ushell.Container.getService) {
                         }
                     })) || "";
                     var oStorage = jQuery.sap.storage(jQuery.sap.storage.Type.local);
-                    oStorage.put("nodeId",75);
+                    oStorage.put("nodeId", 75);
                     //Generate a  URL for the second application
                     var url = window.location.href.split('#')[0] + hash;
                     //Navigate to second app

@@ -1,5 +1,7 @@
-<mvc:View xmlns:filterbar="sap.ui.comp.filterbar"
-    xmlns:f2="sap.f" controllerName="demo.vcpcharconfig.controller.Home"
+<mvc:View
+    xmlns:filterbar="sap.ui.comp.filterbar"
+    xmlns:f2="sap.f"
+    controllerName="demo.vcpcharconfig.controller.Home"
     xmlns:smarttable="sap.ui.comp.smarttable"
     xmlns:smartfilterbar="sap.ui.comp.smartfilterbar"
     xmlns:dnd="sap.ui.core.dnd"
@@ -14,394 +16,803 @@
     xmlns:mvc="sap.ui.core.mvc"
     xmlns="sap.m"
     xmlns:core="sap.ui.core"
-    xmlns:m="sap.m" displayBlock="true">
-
-
-    <f:DynamicPage id="pageCHACON"  showFooter="true" headerExpanded="{/headerExpanded}" toggleHeaderOnTitleClick="{/titleClickable}">
+    xmlns:m="sap.m"
+    displayBlock="true"
+>
+    <f:DynamicPage
+        id="pageCHACON"
+        showFooter="true"
+        headerExpanded="{/headerExpanded}"
+        toggleHeaderOnTitleClick="{/titleClickable}"
+    >
+        <f:DynamicPageTitle>
+            <f:actions>
+                <Button
+                    icon="sap-icon://sys-help"
+                    id="idNav3PRD"
+                    press="onNavPress"
+                    type="Emphasized"
+                    tooltip="Help Document"
+                />
+            </f:actions>
+        </f:DynamicPageTitle>
 
         <f:header>
             <f:DynamicPageHeader pinnable="true">
-<HBox>
-							<m:VariantManagement id="idMatList123CHACON" select="handleSelectPress" save="onCreate"	manage="onManage" supportFavorites="false" 
-							showFooter="true"	popoverTitle="My Views" items="{path: '/items12'}" creationAllowed="true" 
-							supportPublic="true" supportApplyAutomatically="false" manageCancel="onManageCancel" cancel="onNameCancel" visible="true" >
-							<items>
-							<m:VariantItem key="{VARIANTID}" text="{VARIANTNAME}"  author="{USER}" visible="true" 
-							remove="{path:'REMOVE', formatter:'.formatter.formatRemove'}" sharing="{path:'SCOPE', formatter:'.formatter.formatScope'}"
-							changeable="{path:'CHANGE', formatter:'.formatter.formatChange'}" rename="false" enabled="{path:'ENABLE', formatter:'.formatter.formatEnable'}"/>
-								</items>
-						</m:VariantManagement>
-						</HBox>
-                <layout:HorizontalLayout class ="row2" allowWrapping="true">
-                    <layout:VerticalLayout>
-                        <VBox >
-                            <Label text="Configurable Product :" required="true" />
-                            <Input id="idCommonCHACON"  placeholder="Configurable Product" showValueHelp="true" valueHelpOnly="true" valueHelpRequest="ValueHelpForProdClas" />
-                        </VBox>
+                <HBox>
+                    <m:VariantManagement
+                        id="idMatList123CHACON"
+                        select="handleSelectPress"
+                        save="onCreate"
+                        manage="onManage"
+                        supportFavorites="false"
+                        showFooter="true"
+                        popoverTitle="My Views"
+                        items="{path: '/items12'}"
+                        creationAllowed="true"
+                        supportPublic="true"
+                        supportApplyAutomatically="false"
+                        manageCancel="onManageCancel"
+                        cancel="onNameCancel"
+                        visible="true"
+                    >
+                        <items>
+                            <m:VariantItem
+                                key="{VARIANTID}"
+                                text="{VARIANTNAME}"
+                                author="{USER}"
+                                visible="true"
+                                remove="{path:'REMOVE', formatter:'.formatter.formatRemove'}"
+                                sharing="{path:'SCOPE', formatter:'.formatter.formatScope'}"
+                                changeable="{path:'CHANGE', formatter:'.formatter.formatChange'}"
+                                rename="false"
+                                enabled="{path:'ENABLE', formatter:'.formatter.formatEnable'}"
+                            />
+                        </items>
+                    </m:VariantManagement>
+                </HBox>
 
+                <layout:HorizontalLayout
+                    class="row2"
+                    allowWrapping="true"
+                >
+                    <layout:VerticalLayout>
+                        <VBox>
+                            <Label
+                                text="Configurable Product :"
+                                required="true"
+                            />
+                            <Input
+                                id="idCommonCHACON"
+                                placeholder="Configurable Product"
+                                showValueHelp="true"
+                                valueHelpOnly="true"
+                                valueHelpRequest="ValueHelpForProdClas"
+                            />
+                        </VBox>
                     </layout:VerticalLayout>
 
                     <layout:VerticalLayout>
                         <VBox class="class1">
                             <HBox>
-                                <Button id="idDataCHACON" text="Go" type="Emphasized" press="onGo" />
-                                <Button id="idResetCHACON" text="Reset" type="Transparent" press="onResetPress" />                               
+                                <Button
+                                    id="idDataCHACON"
+                                    text="Go"
+                                    type="Emphasized"
+                                    press="onGo"
+                                />
+                                <Button
+                                    id="idResetCHACON"
+                                    text="Reset"
+                                    type="Transparent"
+                                    press="onResetPress"
+                                />
+                                <!-- <Button class="classHdr" icon="sap-icon://sys-help" id="idNav3CharCon" press="onNavPress" type="Emphasized" tooltip="Help Document"/>                            -->
                             </HBox>
-                           <Toolbar >
-                           <ToolbarSpacer >
-                           <Button class="classHdr" icon="sap-icon://sys-help" id="idNav3PRD" press="onNavPress" type="Emphasized" tooltip="Help Document"/>
-                           </ToolbarSpacer>
-                           </Toolbar>
                         </VBox>
                     </layout:VerticalLayout>
                 </layout:HorizontalLayout>
-                
             </f:DynamicPageHeader>
         </f:header>
         <!-- </html:div> -->
         <f:content>
-                <!-- <content> -->
-                <IconTabBar id="idIconTabBarFiori2CHACON" stretchContentHeight="true" class="sapUiResponsiveContentPadding" select="onTabSelect">
-
-                    <items>
-                        <!-- <Class IBP Characteristics> -->
-                        <IconTabFilter text="SCM Relevant Class" key="ClassIBP">
-                            <Toolbar class="stickyToolbar">
-                                <content>
-                                    <SearchField id="classSearchCHACON" class ="SCMSearch" liveChange="handleSearch2" placeholder="Class Name/ Class Desc" />
-
-                                </content>
-                            </Toolbar>
+            <!-- <content> -->
+            <IconTabBar
+                id="idIconTabBarFiori2CHACON"
+                stretchContentHeight="true"
+                class="sapUiResponsiveContentPadding"
+                select="onTabSelect"
+            >
+                <items>
+                    <!-- <Class IBP Characteristics> -->
+                    <IconTabFilter
+                        text="SCM Relevant Class"
+                        key="ClassIBP"
+                    >
+                        <Toolbar class="stickyToolbar">
                             <content>
-                                <Page showHeader="false" showFooter="true">
-                                    <content>
-
-                                        <Table id="classListCHACON" items="{path: '/results'}" class ="sapUiTableSCM" growingScrollToLoad="true" mode="SingleSelectMaster" sticky="ColumnHeaders" rememberSelections="false">
-
-                                            <columns>
-                                                <Column hAlign="Left" vAlign="Middle" visible="false">
-                                                    <Text text="Class Num" />
-                                                </Column>
-                                                <Column hAlign="Left" vAlign="Middle">
-                                                    <Text text="Class Name" />
-                                                </Column>
-                                                <Column hAlign="Left" vAlign="Middle">
-                                                    <Text text="Class Desc." />
-                                                </Column>
-
-                                                <Column hAlign="Left" vAlign="Middle">
-                                                    <Text text="Class Type" />
-                                                </Column>
-                                                <Column hAlign="Left" vAlign="Middle">
-                                                    <Text text="SCM Char." />
-                                                </Column>
-                                            </columns>
-                                            <items>
-                                                <ColumnListItem>
-                                                    <cells>
-                                                        <Text text="{CLASS_NUM}" />
-                                                        <Text text="{CLASS_NAME}" />
-                                                        <Text text="{CLASS_DESC}" />
-                                                        <Text text="{CLASS_TYPE}" />
-                                                        <CheckBox selected="{IBPCHAR_CHK}" select="onClsSelect"/>
-                                                    </cells>
-                                                </ColumnListItem>
-                                            </items>
-                                        </Table>
-                                    </content>
-                                    <footer>
-                                        <OverflowToolbar class="footer">
-                                            <u:FileUploader class="classBrowseButton" id="oSCMReleventCHACON" sameFilenameAllowed="true" iconOnly="true" buttonOnly="true" visible="true" change="uploadData" />
-                                            <MenuButton id="idMenuSCMCHACON" type="Neutral" buttonMode="Split" useDefaultActionOnly="true" class="classOverlay" defaultAction="onPressBrowse" text="Upload" icon="sap-icon://upload">
-                                                <menu>
-                                                    <Menu>
-                                                        <MenuItem text="{i18n>downloadTemp}" press="oDownloadClassesData"/>
-                                                    </Menu>
-                                                </menu>
-                                            </MenuButton>
-
-                                            <ToolbarSpacer/>
-                                            <Button id="idupdateCHACON" type='Emphasized' text="Update" enabled="true" press="onClassUpdate" />
-
-                                        </OverflowToolbar>
-                                    </footer>
-                                </Page>
+                                <SearchField
+                                    id="classSearchCHACON"
+                                    class="SCMSearch"
+                                    liveChange="handleSearch2"
+                                    placeholder="Class Name/ Class Desc"
+                                />
                             </content>
-                        </IconTabFilter>
+                        </Toolbar>
+                        <content>
+                            <Page
+                                showHeader="false"
+                                showFooter="true"
+                            >
+                                <content>
+                                    <Table
+                                        id="classListCHACON"
+                                        items="{path: '/results'}"
+                                        class="sapUiTableSCM"
+                                        growingScrollToLoad="true"
+                                        mode="SingleSelectMaster"
+                                        sticky="ColumnHeaders"
+                                        rememberSelections="false"
+                                    >
+                                        <columns>
+                                            <Column
+                                                hAlign="Left"
+                                                vAlign="Middle"
+                                                visible="false"
+                                            >
+                                                <Text text="Class Num" />
+                                            </Column>
+                                            <Column
+                                                hAlign="Left"
+                                                vAlign="Middle"
+                                            >
+                                                <Text text="Class Name" />
+                                            </Column>
+                                            <Column
+                                                hAlign="Left"
+                                                vAlign="Middle"
+                                            >
+                                                <Text text="Class Desc." />
+                                            </Column>
 
-                        <!-- <Prioritization Grouping> -->
-                        <IconTabFilter text="Prioritization Grouping" key="PrioritizationGrouping">
-                            <SearchField liveChange="onGroupSearch" placeholder="Group Name" id="groupSearchCHACON"/>
-                            <content>
-                                <Page showHeader="false" showFooter="true">
-                                    <content>
-                                        <!-- <Toolbar class="stickyToolbar">
+                                            <Column
+                                                hAlign="Left"
+                                                vAlign="Middle"
+                                            >
+                                                <Text text="Class Type" />
+                                            </Column>
+                                            <Column
+                                                hAlign="Left"
+                                                vAlign="Middle"
+                                            >
+                                                <Text text="SCM Char." />
+                                            </Column>
+                                        </columns>
+                                        <items>
+                                            <ColumnListItem>
+                                                <cells>
+                                                    <Text text="{CLASS_NUM}" />
+                                                    <Text text="{CLASS_NAME}" />
+                                                    <Text text="{CLASS_DESC}" />
+                                                    <Text text="{CLASS_TYPE}" />
+                                                    <CheckBox
+                                                        selected="{IBPCHAR_CHK}"
+                                                        select="onClsSelect"
+                                                    />
+                                                </cells>
+                                            </ColumnListItem>
+                                        </items>
+                                    </Table>
+                                </content>
+                                <footer>
+                                    <OverflowToolbar class="footer">
+                                        <u:FileUploader
+                                            class="classBrowseButton"
+                                            id="oSCMReleventCHACON"
+                                            sameFilenameAllowed="true"
+                                            iconOnly="true"
+                                            buttonOnly="true"
+                                            visible="true"
+                                            change="uploadData"
+                                        />
+                                        <MenuButton
+                                            id="idMenuSCMCHACON"
+                                            type="Neutral"
+                                            buttonMode="Split"
+                                            useDefaultActionOnly="true"
+                                            class="classOverlay"
+                                            defaultAction="onPressBrowse"
+                                            text="Upload"
+                                            icon="sap-icon://upload"
+                                        >
+                                            <menu>
+                                                <Menu>
+                                                    <MenuItem
+                                                        text="{i18n>downloadTemp}"
+                                                        press="oDownloadClassesData"
+                                                    />
+                                                </Menu>
+                                            </menu>
+                                        </MenuButton>
+
+                                        <ToolbarSpacer />
+                                        <Button
+                                            id="idupdateCHACON"
+                                            type='Emphasized'
+                                            text="Update"
+                                            enabled="true"
+                                            press="onClassUpdate"
+                                        />
+                                    </OverflowToolbar>
+                                </footer>
+                            </Page>
+                        </content>
+                    </IconTabFilter>
+
+                    <!-- <Prioritization Grouping> -->
+                    <IconTabFilter
+                        text="Prioritization Grouping"
+                        key="PrioritizationGrouping"
+                    >
+                        <SearchField
+                            liveChange="onGroupSearch"
+                            placeholder="Group Name"
+                            id="groupSearchCHACON"
+                        />
+                        <content>
+                            <Page
+                                showHeader="false"
+                                showFooter="true"
+                            >
+                                <content>
+                                    <!-- <Toolbar class="stickyToolbar">
                                         <SearchField liveChange="onGroupSearch" class="GroupingSearch" placeholder="Group Name" id="groupSearch" />
                                         <ToolbarSpacer ></ToolbarSpacer>
                                     </Toolbar> -->
 
-                                        <Table id="GroupCHACON" mode="SingleSelectMaster" class="sapUiTable" items="{ path: '/results',sorter:{path:'WEIGHTAGE'}}">
-                                            <columns>
-                                                <Column >
-                                                    <Text text="Group Name" />
-                                                </Column>
-                                                <Column >
-                                                    <Text text="Weightage" />
-                                                </Column>
-
-                                                <Column hAlign="Center">
-                                                    <Text text="Actions" />
-                                                </Column>
-
-                                            </columns>
-                                            <items>
-                                                <ColumnListItem visible="{= ${GROUP_NAME} === '' ? false : true}">
-                                                    <cells >
-                                                        <Text text="{GROUP_NAME}" />
-                                                        <!-- <Text text="{WEIGHTAGE}" /> -->
-                                                        <Text text = "{WEIGHTAGE}" />
-                                                        <HBox justifyContent="Center">
-                                                            <Button icon="sap-icon://edit" class="sapUiSmallMarginEnd" type="Default" press="onGroupEditValidation"></Button>
-                                                            <Button icon="sap-icon://delete" class="right-button" type="Default" press="onGroupDeleteValidation"></Button>
-                                                        </HBox>
-                                                    </cells>
-                                                </ColumnListItem>
-                                            </items>
-                                        </Table>
-                                    </content>
-                                    <footer>
-                                        <OverflowToolbar class="footer">
-                                            <u:FileUploader class="classBrowseButton" change="onGroupUploadValidation" id="oGroupPriorCHACON" sameFilenameAllowed="true" iconOnly="true" buttonOnly="true" visible="true" />
-                                            <MenuButton id="idMenuGroupCHACON" type="Neutral" buttonMode="Split" useDefaultActionOnly="true" class="classOverlay" defaultAction="onPressBrowse" text="Upload" icon="sap-icon://upload">
-                                                <menu>
-                                                    <Menu>
-                                                        <MenuItem text="{i18n>downloadTemp}" press="oGroupDownload"/>
-                                                    </Menu>
-                                                </menu>
-                                            </MenuButton>
-                                            <ToolbarSpacer/>
-                                            <Button text="Create" class="right-button" type="Default" press="onGroupMaintenance" />
-                                        </OverflowToolbar>
-                                    </footer>
-
-                                </Page>
-                            </content>
-                        </IconTabFilter>
-
-                        <!-- <Characteristic Prioritization> -->
-                        <IconTabFilter text="Characteristic Prioritization" key="CharacteristicPriority">
-                            <Toolbar class="stickyToolbar">
-                                <SearchField liveChange="onPrimarySearch" placeholder="Characteristics Name" id="idPrimarySearchCHACON" />
-                                <ToolbarSpacer ></ToolbarSpacer>
-                                <Button id="idReset2CHACON" icon="sap-icon://reset" iconFirst="true" text="Reset" tooltip="It will Reload All Characteristics" type="Emphasized" press="onReset1" />
-                            </Toolbar>
-                            <content>
-                                <Page showHeader="false" showFooter="true">
-
-                                    <content>
-
-                                        <!-- Added a container to control table scrolling -->
-                                        <!-- <VBox height="100%" fitContainer="true"> -->
-                                        <Table id="PrimarytableCHACON" growingScrollToLoad="true" class="sapUiTableCP" mode="SingleSelectMaster" items="{ path: '/results', sorter:{path:'WEIGHTAGE', descending:true} }" updateFinished="onTableupdate">
-                                            <columns>
-                                                <Column hAlign="Center" visible="false">
-                                                    <Text text="{i18n>charno}" />
-                                                </Column>
-                                                <Column minScreenWidth="Tablet" demandPopin="true">
-                                                    <Text text="Characteristics Name"  />
-                                                </Column>
-                                                <Column minScreenWidth="Tablet" demandPopin="true">
-                                                    <Text text="Characteristics Description"  />
-                                                </Column>
-                                                <Column minScreenWidth="Tablet" demandPopin="true">
-                                                    <Text text="Priority (Primary / Secondary)" />
-                                                </Column>
-
-                                                <Column visible="false">
-                                                    <Text text="{Char_Type}" />
-                                                </Column>
-                                            </columns>
-                                            <dragDropConfig>
-                                                <dnd:DragInfo groupName="selected2available" sourceAggregation="items" />
-                                                <dnd:DropInfo groupName="available2selected" targetAggregation="items" dropPosition="Between" drop="onDropSelectedProductsTable" />
-                                                <dnd:DragDropInfo sourceAggregation="items" targetAggregation="items" dropPosition="Between" drop="onDropSelectedProductsTable" />
-                                            </dragDropConfig>
-                                            <items>
-                                                <ColumnListItem>
-                                                    <cells>
-                                                        <Text text="{CHAR_NUM}" visible="false"/>
-                                                        <Text text="{CHAR_NAME}" />
-                                                        <Text text="{CHAR_DESC}" />
-
-                                                        <HBox>
-                                                            <CheckBox selected="{= ${CHAR_TYPE} === 'P' ? true : false }" select="onSectoPrim" />
-                                                            <!-- <CheckBox selected="{CHAR_TYPE}" select="onSectoPrim" /> -->
-                                                            <HBox visible = "{= ${CHAR_TYPE} === 'P' ? true : false }" width="150px">
-                                                                <Select change ="oItemChange" forceSelection="false" id="SelectOption" items="{ path: '/groupresults', sorter:{path:'WEIGHTAGE', descending:true},templateShareable: true}">
-                                                                    <!-- <core:Item key="{GROUP_NAME}" text="{= ${GROUP_NAME} + ' - ' + ${WEIGHTAGE} }"/> -->
-                                                                    <core:Item key="{GROUP_NAME}" text="{= ${GROUP_NAME} === '' ?  ${WEIGHTAGE} : ${GROUP_NAME} + ' - ' + ${WEIGHTAGE}  }"/>
-                                                                </Select>
-                                                            </HBox>
-                                                        </HBox>
-
-                                                        <Text text="{CHAR_TYPE}" visible="false"/>
-                                                    </cells>
-                                                </ColumnListItem>
-                                            </items>
-                                        </Table>
-                                    </content>
-                                    <footer>
-                                        <OverflowToolbar class="footer">
-                                            <u:FileUploader class="classBrowseButton" id="idoCharPrioritiz" sameFilenameAllowed="true" iconOnly="true" buttonOnly="true" visible="true" change="oCharPrioritiz" />
-                                            <MenuButton id="idMenuCharPrior" type="Neutral" buttonMode="Split" useDefaultActionOnly="true" class="classOverlay" defaultAction="onPressBrowse" text="Upload" icon="sap-icon://upload">
-                                                <menu>
-                                                    <Menu>
-                                                        <MenuItem text="{i18n>downloadTemp}" press="oCharPrioritizDownload"/>
-                                                    </Menu>
-                                                </menu>
-                                            </MenuButton>
-
-                                            <ToolbarSpacer/>
-                                            <Button id="idUpdate2" text="Update" iconFirst="true" type="Emphasized" press="oAllSave" />
-
-                                        </OverflowToolbar>
-                                    </footer>
-                                </Page>
-                            </content>
-                        </IconTabFilter>
-
-                        <!-- <Partial Products Characteristics> -->
-                        <IconTabFilter text="Partial Products Characteristics" key="PartialProducts">
-                            <Toolbar class="stickyToolbar">
-                                <content>
-                                    <SearchField id="idPartialSearch" liveChange="onSearch" placeholder="Characteristic Name" />
-                                    <ToolbarSpacer />
-                                    <Button id="idShowSelected" text="Show Selected" press="handleShowSelect" />
-                                </content>
-                            </Toolbar>
-                            <content>
-
-                                <Page showFooter="true" showHeader="false">
-
-                                    <Table id="prodList" items="{path: '/results'}" class="sapUiTablePP" sticky="ColumnHeaders" rememberSelections="true" mode="MultiSelect" selectionChange="onTableItemsSelect" growingScrollToLoad="true" growing="true" growingThreshold="1000" updateFinished="onTableScroll">
+                                    <Table
+                                        id="GroupCHACON"
+                                        mode="SingleSelectMaster"
+                                        class="sapUiTable"
+                                        items="{ path: '/results',sorter:{path:'WEIGHTAGE'}}"
+                                    >
                                         <columns>
-                                            <Column hAlign="Left" vAlign="Middle">
-                                                <Text text="Characteristic Name" />
+                                            <Column>
+                                                <Text text="Group Name" />
                                             </Column>
-                                            <Column hAlign="Left" vAlign="Middle" visible="false">
-                                                <Text text="Characteristic Value" />
+                                            <Column>
+                                                <Text text="Weightage" />
                                             </Column>
-                                            <Column hAlign="Left" vAlign="Middle" visible="false">
-                                                <Text text="Characteristic Number" />
-                                            </Column>
-                                            <Column hAlign="Left" vAlign="Middle">
-                                                <Text text="Class Name" />
+
+                                            <Column hAlign="Center">
+                                                <Text text="Actions" />
                                             </Column>
                                         </columns>
                                         <items>
-                                            <ColumnListItem id="_IDGenColumnListItem1" selected="{= ${selected} === 'true' ? true : false }">
+                                            <ColumnListItem
+                                                visible="{= ${GROUP_NAME} === '' ? false : true}"
+                                            >
                                                 <cells>
-                                                    <ObjectIdentifier title="{CHAR_DESC}" text="{CHAR_NAME}" />
-                                                    <ObjectIdentifier title="{CHAR_VALUE}" text="{CHARVAL_DESC}" />
-                                                    <ObjectIdentifier title="{CHAR_NUM}" text="{CHARVAL_NUM}" />
-                                                    <ObjectIdentifier title="{CLASS_DESC}" text="{CLASS_NAME}" />
-                                                    <Text text="{CLASS_NUM}" />
+                                                    <Text text="{GROUP_NAME}" />
+                                                    <!-- <Text text="{WEIGHTAGE}" /> -->
+                                                    <Text text="{WEIGHTAGE}" />
+                                                    <HBox
+                                                        justifyContent="Center"
+                                                    >
+                                                        <Button
+                                                            icon="sap-icon://edit"
+                                                            class="sapUiSmallMarginEnd"
+                                                            type="Default"
+                                                            press="onGroupEditValidation"
+                                                        />
+                                                        <Button
+                                                            icon="sap-icon://delete"
+                                                            class="right-button"
+                                                            type="Default"
+                                                            press="onGroupDeleteValidation"
+                                                        />
+                                                    </HBox>
                                                 </cells>
                                             </ColumnListItem>
                                         </items>
                                     </Table>
+                                </content>
+                                <footer>
+                                    <OverflowToolbar class="footer">
+                                        <u:FileUploader
+                                            class="classBrowseButton"
+                                            change="onGroupUploadValidation"
+                                            id="oGroupPriorCHACON"
+                                            sameFilenameAllowed="true"
+                                            iconOnly="true"
+                                            buttonOnly="true"
+                                            visible="true"
+                                        />
+                                        <MenuButton
+                                            id="idMenuGroupCHACON"
+                                            type="Neutral"
+                                            buttonMode="Split"
+                                            useDefaultActionOnly="true"
+                                            class="classOverlay"
+                                            defaultAction="onPressBrowse"
+                                            text="Upload"
+                                            icon="sap-icon://upload"
+                                        >
+                                            <menu>
+                                                <Menu>
+                                                    <MenuItem
+                                                        text="{i18n>downloadTemp}"
+                                                        press="oGroupDownload"
+                                                    />
+                                                </Menu>
+                                            </menu>
+                                        </MenuButton>
+                                        <ToolbarSpacer />
+                                        <Button
+                                            text="Create"
+                                            class="right-button"
+                                            type="Default"
+                                            press="onGroupMaintenance"
+                                        />
+                                    </OverflowToolbar>
+                                </footer>
+                            </Page>
+                        </content>
+                    </IconTabFilter>
 
-                                    <footer>
-                                        <OverflowToolbar class="footer">
-                                            <u:FileUploader class="classBrowseButton" id="idoPartialProd" sameFilenameAllowed="true" iconOnly="true" buttonOnly="true" visible="true" change="oPartialUpload" />
-                                            <MenuButton id="idMenuPartialProd" type="Neutral" buttonMode="Split" useDefaultActionOnly="true" class="classOverlay" defaultAction="onPressBrowse" text="Upload" icon="sap-icon://upload">
-                                                <menu>
-                                                    <Menu>
-                                                        <MenuItem text="{i18n>downloadTemp}" press="oPartiaDownload"/>
-                                                    </Menu>
-                                                </menu>
-                                            </MenuButton>
-
-                                            <ToolbarSpacer/>
-                                            <Button id="idSaveBtn" text="Update" type="Emphasized" press="onSaveChar" enabled="true" />
-
-                                        </OverflowToolbar>
-                                    </footer>
-                                </Page>
-
-                            </content>
-                        </IconTabFilter>
-
-                        <!-- <IBP Attributes> -->
-                        <IconTabFilter text="SCM Attributes" key="IBPAttributes" visible="false">
-                            <content>
-                                <Page showFooter="true" showHeader="false">
-                                    <Toolbar class="stickyToolbar">
-                                        <SearchField liveChange="onPrimarySearch2" placeholder="Characteristics Name" id="idPrimarySearch2" />
-                                        <ToolbarSpacer ></ToolbarSpacer>
-                                        <Button id="idReset3" icon="sap-icon://reset" iconFirst="true" text="Reset." type="Emphasized" press="oSCMReset" />
-                                    </Toolbar>
-                                    <Table id="Primarytable2CHACON" class="sapUiTable" mode="SingleSelectMaster" items="{ path: '/results2'}">
+                    <!-- <Characteristic Prioritization> -->
+                    <IconTabFilter
+                        text="Characteristic Prioritization"
+                        key="CharacteristicPriority"
+                    >
+                        <Toolbar class="stickyToolbar">
+                            <SearchField
+                                liveChange="onPrimarySearch"
+                                placeholder="Characteristics Name"
+                                id="idPrimarySearchCHACON"
+                            />
+                            <ToolbarSpacer />
+                            <Button
+                                id="idReset2CHACON"
+                                icon="sap-icon://reset"
+                                iconFirst="true"
+                                text="Reset"
+                                tooltip="It will Reload All Characteristics"
+                                type="Emphasized"
+                                press="onReset1"
+                            />
+                        </Toolbar>
+                        <content>
+                            <Page
+                                showHeader="false"
+                                showFooter="true"
+                            >
+                                <content>
+                                    <!-- Added a container to control table scrolling -->
+                                    <!-- <VBox height="100%" fitContainer="true"> -->
+                                    <Table
+                                        id="PrimarytableCHACON"
+                                        growingScrollToLoad="true"
+                                        class="sapUiTableCP"
+                                        mode="SingleSelectMaster"
+                                        items="{ path: '/results', sorter:{path:'WEIGHTAGE', descending:true} }"
+                                        updateFinished="onTableupdate"
+                                    >
                                         <columns>
+                                            <Column
+                                                hAlign="Center"
+                                                visible="false"
+                                            >
+                                                <Text text="{i18n>charno}" />
+                                            </Column>
+                                            <Column
+                                                minScreenWidth="Tablet"
+                                                demandPopin="true"
+                                            >
+                                                <Text
+                                                    text="Characteristics Name"
+                                                />
+                                            </Column>
+                                            <Column
+                                                minScreenWidth="Tablet"
+                                                demandPopin="true"
+                                            >
+                                                <Text
+                                                    text="Characteristics Description"
+                                                />
+                                            </Column>
+                                            <Column
+                                                minScreenWidth="Tablet"
+                                                demandPopin="true"
+                                            >
+                                                <Text
+                                                    text="Priority (Primary / Secondary)"
+                                                />
+                                            </Column>
+
                                             <Column visible="false">
-                                                <Text text="{i18n>charno2}" />
-                                            </Column>
-                                            <Column >
-                                                <Text text="{i18n>charname2}" />
-                                            </Column>
-                                            <Column >
-                                                <Text text="{i18n>chardesc2}" />
-                                            </Column>
-                                            <Column>
-                                                <Text text="SCM Attributes / All Characteristics" />
+                                                <Text text="{Char_Type}" />
                                             </Column>
                                         </columns>
                                         <dragDropConfig>
-                                            <dnd:DragInfo groupName="selected2available" sourceAggregation="items" />
-                                            <dnd:DropInfo groupName="available2selected" targetAggregation="items" dropPosition="Between" drop="onDropSelectedProductsTable" />
-                                            <dnd:DragDropInfo sourceAggregation="items" targetAggregation="items" dropPosition="Between" drop="onDropSelectedProductsTable" />
+                                            <dnd:DragInfo
+                                                groupName="selected2available"
+                                                sourceAggregation="items"
+                                            />
+                                            <dnd:DropInfo
+                                                groupName="available2selected"
+                                                targetAggregation="items"
+                                                dropPosition="Between"
+                                                drop="onDropSelectedProductsTable"
+                                            />
+                                            <dnd:DragDropInfo
+                                                sourceAggregation="items"
+                                                targetAggregation="items"
+                                                dropPosition="Between"
+                                                drop="onDropSelectedProductsTable"
+                                            />
                                         </dragDropConfig>
                                         <items>
                                             <ColumnListItem>
                                                 <cells>
-                                                    <Text text="{CHAR_NUM}" />
+                                                    <Text
+                                                        text="{CHAR_NUM}"
+                                                        visible="false"
+                                                    />
                                                     <Text text="{CHAR_NAME}" />
                                                     <Text text="{CHAR_DESC}" />
-                                                    <CheckBox selected="{= ${CHAR_TYPE} === 'P' ? true : false }" select="onIBPatbs_Checkbox"/>
-                                                    <!-- <CheckBox select="onIBPatbs_Checkbox"/> -->
+
+                                                    <HBox>
+                                                        <CheckBox
+                                                            selected="{= ${CHAR_TYPE} === 'P' ? true : false }"
+                                                            select="onSectoPrim"
+                                                        />
+                                                        <!-- <CheckBox selected="{CHAR_TYPE}" select="onSectoPrim" /> -->
+                                                        <HBox
+                                                            visible="{= ${CHAR_TYPE} === 'P' ? true : false }"
+                                                            width="150px"
+                                                        >
+                                                            <Select
+                                                                change="oItemChange"
+                                                                forceSelection="false"
+                                                                id="SelectOption"
+                                                                items="{ path: '/groupresults', sorter:{path:'WEIGHTAGE', descending:true},templateShareable: true}"
+                                                            >
+                                                                <!-- <core:Item key="{GROUP_NAME}" text="{= ${GROUP_NAME} + ' - ' + ${WEIGHTAGE} }"/> -->
+                                                                <core:Item
+                                                                    key="{GROUP_NAME}"
+                                                                    text="{= ${GROUP_NAME} === '' ?  ${WEIGHTAGE} : ${GROUP_NAME} + ' - ' + ${WEIGHTAGE}  }"
+                                                                />
+                                                            </Select>
+                                                        </HBox>
+                                                    </HBox>
+
+                                                    <Text
+                                                        text="{CHAR_TYPE}"
+                                                        visible="false"
+                                                    />
                                                 </cells>
                                             </ColumnListItem>
                                         </items>
                                     </Table>
+                                </content>
+                                <footer>
+                                    <OverflowToolbar class="footer">
+                                        <u:FileUploader
+                                            class="classBrowseButton"
+                                            id="idoCharPrioritiz"
+                                            sameFilenameAllowed="true"
+                                            iconOnly="true"
+                                            buttonOnly="true"
+                                            visible="true"
+                                            change="oCharPrioritiz"
+                                        />
+                                        <MenuButton
+                                            id="idMenuCharPrior"
+                                            type="Neutral"
+                                            buttonMode="Split"
+                                            useDefaultActionOnly="true"
+                                            class="classOverlay"
+                                            defaultAction="onPressBrowse"
+                                            text="Upload"
+                                            icon="sap-icon://upload"
+                                        >
+                                            <menu>
+                                                <Menu>
+                                                    <MenuItem
+                                                        text="{i18n>downloadTemp}"
+                                                        press="oCharPrioritizDownload"
+                                                    />
+                                                </Menu>
+                                            </menu>
+                                        </MenuButton>
 
-                                    <footer>
-                                        <OverflowToolbar class="footer">
-                                            <u:FileUploader class="classBrowseButton" id="idoAttribuetsCHACON" sameFilenameAllowed="true" iconOnly="true" buttonOnly="true" visible="true" change="oAttributeUpload" />
-                                            <MenuButton id="idMenuAttributesCHACON" type="Neutral" buttonMode="Split" useDefaultActionOnly="true" class="classOverlay" defaultAction="onPressBrowse" text="Upload" icon="sap-icon://upload">
-                                                <menu>
-                                                    <Menu>
-                                                        <MenuItem text="{i18n>downloadTemp}" press="oAttributeDownload"/>
-                                                    </Menu>
-                                                </menu>
-                                            </MenuButton>
+                                        <ToolbarSpacer />
+                                        <Button
+                                            id="idUpdate2"
+                                            text="Update"
+                                            iconFirst="true"
+                                            type="Emphasized"
+                                            press="oAllSave"
+                                        />
+                                    </OverflowToolbar>
+                                </footer>
+                            </Page>
+                        </content>
+                    </IconTabFilter>
 
-                                            <ToolbarSpacer/>
-                                            <Button id="idUpdate3CHACON" visible="false" icon="sap-icon://cancel-maintenance" text="Update Char." type="Emphasized" press="onPressUpdate" />
-                                        </OverflowToolbar>
-                                    </footer>
-
-                                </Page>
-
+                    <!-- <Partial Products Characteristics> -->
+                    <IconTabFilter
+                        text="Partial Products Characteristics"
+                        key="PartialProducts"
+                    >
+                        <Toolbar class="stickyToolbar">
+                            <content>
+                                <SearchField
+                                    id="idPartialSearch"
+                                    liveChange="onSearch"
+                                    placeholder="Characteristic Name"
+                                />
+                                <ToolbarSpacer />
+                                <Button
+                                    id="idShowSelected"
+                                    text="Show Selected"
+                                    press="handleShowSelect"
+                                />
                             </content>
-                        </IconTabFilter>
+                        </Toolbar>
+                        <content>
+                            <Page
+                                showFooter="true"
+                                showHeader="false"
+                            >
+                                <Table
+                                    id="prodList"
+                                    items="{path: '/results'}"
+                                    class="sapUiTablePP"
+                                    sticky="ColumnHeaders"
+                                    rememberSelections="true"
+                                    mode="MultiSelect"
+                                    selectionChange="onTableItemsSelect"
+                                    growingScrollToLoad="true"
+                                    growing="true"
+                                    growingThreshold="1000"
+                                    updateFinished="onTableScroll"
+                                >
+                                    <columns>
+                                        <Column
+                                            hAlign="Left"
+                                            vAlign="Middle"
+                                        >
+                                            <Text text="Characteristic Name" />
+                                        </Column>
+                                        <Column
+                                            hAlign="Left"
+                                            vAlign="Middle"
+                                            visible="false"
+                                        >
+                                            <Text text="Characteristic Value" />
+                                        </Column>
+                                        <Column
+                                            hAlign="Left"
+                                            vAlign="Middle"
+                                            visible="false"
+                                        >
+                                            <Text
+                                                text="Characteristic Number"
+                                            />
+                                        </Column>
+                                        <Column
+                                            hAlign="Left"
+                                            vAlign="Middle"
+                                        >
+                                            <Text text="Class Name" />
+                                        </Column>
+                                    </columns>
+                                    <items>
+                                        <ColumnListItem
+                                            id="_IDGenColumnListItem1"
+                                            selected="{= ${selected} === 'true' ? true : false }"
+                                        >
+                                            <cells>
+                                                <ObjectIdentifier
+                                                    title="{CHAR_DESC}"
+                                                    text="{CHAR_NAME}"
+                                                />
+                                                <ObjectIdentifier
+                                                    title="{CHAR_VALUE}"
+                                                    text="{CHARVAL_DESC}"
+                                                />
+                                                <ObjectIdentifier
+                                                    title="{CHAR_NUM}"
+                                                    text="{CHARVAL_NUM}"
+                                                />
+                                                <ObjectIdentifier
+                                                    title="{CLASS_DESC}"
+                                                    text="{CLASS_NAME}"
+                                                />
+                                                <Text text="{CLASS_NUM}" />
+                                            </cells>
+                                        </ColumnListItem>
+                                    </items>
+                                </Table>
 
-                    </items>
-                </IconTabBar>
-                <!-- </content> -->
+                                <footer>
+                                    <OverflowToolbar class="footer">
+                                        <u:FileUploader
+                                            class="classBrowseButton"
+                                            id="idoPartialProd"
+                                            sameFilenameAllowed="true"
+                                            iconOnly="true"
+                                            buttonOnly="true"
+                                            visible="true"
+                                            change="oPartialUpload"
+                                        />
+                                        <MenuButton
+                                            id="idMenuPartialProd"
+                                            type="Neutral"
+                                            buttonMode="Split"
+                                            useDefaultActionOnly="true"
+                                            class="classOverlay"
+                                            defaultAction="onPressBrowse"
+                                            text="Upload"
+                                            icon="sap-icon://upload"
+                                        >
+                                            <menu>
+                                                <Menu>
+                                                    <MenuItem
+                                                        text="{i18n>downloadTemp}"
+                                                        press="oPartiaDownload"
+                                                    />
+                                                </Menu>
+                                            </menu>
+                                        </MenuButton>
 
-      
+                                        <ToolbarSpacer />
+                                        <Button
+                                            id="idSaveBtn"
+                                            text="Update"
+                                            type="Emphasized"
+                                            press="onSaveChar"
+                                            enabled="true"
+                                        />
+                                    </OverflowToolbar>
+                                </footer>
+                            </Page>
+                        </content>
+                    </IconTabFilter>
+
+                    <!-- <IBP Attributes> -->
+                    <IconTabFilter
+                        text="SCM Attributes"
+                        key="IBPAttributes"
+                        visible="false"
+                    >
+                        <content>
+                            <Page
+                                showFooter="true"
+                                showHeader="false"
+                            >
+                                <Toolbar class="stickyToolbar">
+                                    <SearchField
+                                        liveChange="onPrimarySearch2"
+                                        placeholder="Characteristics Name"
+                                        id="idPrimarySearch2"
+                                    />
+                                    <ToolbarSpacer />
+                                    <Button
+                                        id="idReset3"
+                                        icon="sap-icon://reset"
+                                        iconFirst="true"
+                                        text="Reset."
+                                        type="Emphasized"
+                                        press="oSCMReset"
+                                    />
+                                </Toolbar>
+                                <Table
+                                    id="Primarytable2CHACON"
+                                    class="sapUiTable"
+                                    mode="SingleSelectMaster"
+                                    items="{ path: '/results2'}"
+                                >
+                                    <columns>
+                                        <Column visible="false">
+                                            <Text text="{i18n>charno2}" />
+                                        </Column>
+                                        <Column>
+                                            <Text text="{i18n>charname2}" />
+                                        </Column>
+                                        <Column>
+                                            <Text text="{i18n>chardesc2}" />
+                                        </Column>
+                                        <Column>
+                                            <Text
+                                                text="SCM Attributes / All Characteristics"
+                                            />
+                                        </Column>
+                                    </columns>
+                                    <dragDropConfig>
+                                        <dnd:DragInfo
+                                            groupName="selected2available"
+                                            sourceAggregation="items"
+                                        />
+                                        <dnd:DropInfo
+                                            groupName="available2selected"
+                                            targetAggregation="items"
+                                            dropPosition="Between"
+                                            drop="onDropSelectedProductsTable"
+                                        />
+                                        <dnd:DragDropInfo
+                                            sourceAggregation="items"
+                                            targetAggregation="items"
+                                            dropPosition="Between"
+                                            drop="onDropSelectedProductsTable"
+                                        />
+                                    </dragDropConfig>
+                                    <items>
+                                        <ColumnListItem>
+                                            <cells>
+                                                <Text text="{CHAR_NUM}" />
+                                                <Text text="{CHAR_NAME}" />
+                                                <Text text="{CHAR_DESC}" />
+                                                <CheckBox
+                                                    selected="{= ${CHAR_TYPE} === 'P' ? true : false }"
+                                                    select="onIBPatbs_Checkbox"
+                                                />
+                                                <!-- <CheckBox select="onIBPatbs_Checkbox"/> -->
+                                            </cells>
+                                        </ColumnListItem>
+                                    </items>
+                                </Table>
+
+                                <footer>
+                                    <OverflowToolbar class="footer">
+                                        <u:FileUploader
+                                            class="classBrowseButton"
+                                            id="idoAttribuetsCHACON"
+                                            sameFilenameAllowed="true"
+                                            iconOnly="true"
+                                            buttonOnly="true"
+                                            visible="true"
+                                            change="oAttributeUpload"
+                                        />
+                                        <MenuButton
+                                            id="idMenuAttributesCHACON"
+                                            type="Neutral"
+                                            buttonMode="Split"
+                                            useDefaultActionOnly="true"
+                                            class="classOverlay"
+                                            defaultAction="onPressBrowse"
+                                            text="Upload"
+                                            icon="sap-icon://upload"
+                                        >
+                                            <menu>
+                                                <Menu>
+                                                    <MenuItem
+                                                        text="{i18n>downloadTemp}"
+                                                        press="oAttributeDownload"
+                                                    />
+                                                </Menu>
+                                            </menu>
+                                        </MenuButton>
+
+                                        <ToolbarSpacer />
+                                        <Button
+                                            id="idUpdate3CHACON"
+                                            visible="false"
+                                            icon="sap-icon://cancel-maintenance"
+                                            text="Update Char."
+                                            type="Emphasized"
+                                            press="onPressUpdate"
+                                        />
+                                    </OverflowToolbar>
+                                </footer>
+                            </Page>
+                        </content>
+                    </IconTabFilter>
+                </items>
+            </IconTabBar>
+            <!-- </content> -->
         </f:content>
-
-
     </f:DynamicPage>
 </mvc:View>
