@@ -794,7 +794,7 @@ sap.ui.define([
                         "GROUP_NAME": GROUP_NAME,
                         "WEIGHTAGE": WEIGHTAGE
                     }])
-                    customerGroupData.USER = that.getUserDetails();
+                    // customerGroupData.USER = that.getUserDetails();
                     that.getOwnerComponent().getModel("BModel").callFunction("/modifyCustomerGroup", {
                         method: "GET",
                         urlParameters: {
@@ -1506,7 +1506,7 @@ sap.ui.define([
                             "WEIGHTAGE": oWeightage  
                         }
                     ])
-                    customerGroupData.USER = that.getUserDetails()
+                    // customerGroupData.USER = that.getUserDetails()
 
                     that.getOwnerComponent().getModel("BModel").callFunction("/modifyCustomerGroup", {
                         method: "GET",
@@ -2260,7 +2260,7 @@ sap.ui.define([
             oAllSave: function () {
                 var product = that.byId("idCommonCHACON").getValue();
                 if (product.length === 0) {
-                    MessageToast.show("No data for update..")
+                    MessageToast.show("No data for update")
                     return false;
                 }
                 const oInitialData = that.CharPrior
@@ -2285,7 +2285,7 @@ sap.ui.define([
                                     },
                                     success: function (oData) {
                                         sap.ui.core.BusyIndicator.hide();
-                                        sap.m.MessageToast.show("Prioritization successfully updated..")
+                                        sap.m.MessageToast.show("Prioritization successfully updated")
                                         that.onPressUpdate();
                                     },
                                     error: function (oData) {
@@ -2325,7 +2325,7 @@ sap.ui.define([
                                             that.charPrioritize = oData.results
 
                                             that.onPressUpdate()
-                                            sap.m.MessageToast.show("Prioritization successfully updated..")
+                                            sap.m.MessageToast.show("Prioritization successfully updated")
                                             sap.ui.core.BusyIndicator.hide();
                                         },
                                         error: function (oData) {
@@ -2341,7 +2341,7 @@ sap.ui.define([
                         });
                     }
                     else {
-                        MessageToast.show("No Changes are Done...")
+                        MessageToast.show("No Changes are Done")
                     }
 
 
@@ -3409,7 +3409,7 @@ sap.ui.define([
                     var batch = allBatches[batchIndex];
                     var batchData = batch.data;
 
-                    batchData.USER = that.getUserDetails()
+                    // batchData.USER = that.getUserDetails()
                     sap.ui.core.BusyIndicator.show();
                     that.getModel("BModel").callFunction("/changeToPrimaryNewMulti", {
                         method: "GET",
@@ -4232,7 +4232,7 @@ sap.ui.define([
 
                 // Show a warning dialog if there are checked items
                 //    if (checkedItems.length > 0) {
-                finlData.USER = that.getUserDetails()
+                // finlData.USER = that.getUserDetails()
                 sap.m.MessageBox.warning("Partial Products Configuration has already been used in planning. Any modification would lead to discrepancies and needs reprocessing. Would you like to continue with the change?", {
                     title: "Warning",
                     actions: [sap.m.MessageBox.Action.YES, sap.m.MessageBox.Action.NO],
@@ -5363,7 +5363,7 @@ sap.ui.define([
                 } else {
                     finlData = that.oFinalPartialData
                 }
-                finlData.USER = that.getUserDetails()
+                // finlData.USER = that.getUserDetails()
                 sap.ui.core.BusyIndicator.show();
                 this.getOwnerComponent().getModel("BModel").callFunction("/getProductCharVal", {
                     method: "GET",
@@ -7024,7 +7024,7 @@ sap.ui.define([
                     };
                     oEntry.CLASSDATA.push(vRuleslist);
                 }
-                oEntry.USER = that.getUserDetails()
+                // oEntry.USER = that.getUserDetails()
                 sap.ui.core.BusyIndicator.show();
                 that.getModel("BModel").callFunction("/updateIBPClass", {
                     method: "GET",
@@ -7464,7 +7464,7 @@ sap.ui.define([
                     var confirmationMessage = `Products have already existing active plan..`;
 
                 }
-                oEntry.USER = that.getUserDetails()
+                // oEntry.USER = that.getUserDetails()
 
                 if (oEntry.CLASSDATA.length > 0) {
                     sap.m.MessageBox.confirm(confirmationMessage, {
