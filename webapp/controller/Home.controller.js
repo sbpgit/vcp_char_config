@@ -392,6 +392,7 @@ sap.ui.define([
 
             },
 
+            //onAfterRendering
             onAfterRendering: function () {
                 that.cFlag = ""
                 //   that.oPartialProduct = "Success"
