@@ -2328,7 +2328,7 @@ sap.ui.define([
                 }
                 const oInitialData = that.CharPrior
                 that.oSeq.forEach(function (obj) {
-                    obj.USER = "narendrakumark@sbpcorp.in";
+                    obj.USER = that.getUserDetails()
                 });
 
                 const allData = that.oSeq
@@ -6750,7 +6750,7 @@ sap.ui.define([
 
             getEnable: function () {
                 var oModel = that.getOwnerComponent().getModel("BModel");
-                var vUser = that.getUser();
+                var vUser = that.getUserDetails();
                 var oEntry = {
                     USERDATA: []
                 };
@@ -6948,18 +6948,18 @@ sap.ui.define([
             },
 
             // get Authentication user
-            getUser: function () {
-                let vUser;
-                if (sap.ushell.Container) {
-                    let email = sap.ushell.Container.getService("UserInfo").getUser().getEmail();
-                    vUser = (email) ? email : "";
-                }
-                return vUser;
-            },
+            // getUser: function () {
+            //     let vUser;
+            //     if (sap.ushell.Container) {
+            //         let email = sap.ushell.Container.getService("UserInfo").getUser().getEmail();
+            //         vUser = (email) ? email : "";
+            //     }
+            //     return vUser;
+            // },
 
             getEnable1: function () {
                 var oModel = this.getOwnerComponent().getModel("BModel");
-                var vUser = this.getUser();
+                var vUser = this.getUserDetails();
                 var oEntry = {
                     USERDATA: []
                 };
@@ -7098,7 +7098,7 @@ sap.ui.define([
                         CLASS_NUM: aClassData[i].getCells()[0].getText(),
                         IBPCHAR_CHK: vIbpCheck,
                         PRODUCT_ID: product,
-                        USER: "narendrakumark@sbpcorp.in" //that.getUserDetails()
+                        USER: that.getUserDetails()
                     };
                     oEntry.CLASSDATA.push(vRuleslist);
                 }
@@ -7719,7 +7719,7 @@ sap.ui.define([
                 var dData = [], uniqueName = [];
                 that.uniqueName = [];
                 sap.ui.core.BusyIndicator.show();
-                var variantUser = this.getUser();
+                var variantUser = this.getUserDetails();
                 // var variantUser = "pradeepkumardaka@sbpcorp.in";
                 var appName = this.getOwnerComponent().getManifestEntry("/sap.app/id");
                 that.oGModel.setProperty("/UserId", variantUser);
@@ -8082,7 +8082,7 @@ sap.ui.define([
                 var oDelted = {}, deletedArray = [], count = 0;
                 var totalVariantData = that.oGModel.getProperty("/VariantData");
                 var selected = oEvent.getParameters();
-                var variantUser = this.getUser();
+                var variantUser = this.getUserDetails();
                 // var variantUser = "pradeepkumardaka@sbpcorp.in";
                 if (selected.def) {
                     totalVariantData.filter(item1 => {
