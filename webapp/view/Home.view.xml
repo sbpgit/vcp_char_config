@@ -25,8 +25,6 @@
         headerExpanded="{/headerExpanded}"
         toggleHeaderOnTitleClick="{/titleClickable}"
     >
-    
-
         <f:header>
             <f:DynamicPageHeader pinnable="true">
                 <HBox>
@@ -127,6 +125,30 @@
                                     liveChange="handleSearch2"
                                     placeholder="Class Name/ Class Desc"
                                 />
+                                <HBox
+                                    justifyContent="End"
+                                    alignItems="End"
+                                    renderType="Bare"
+                                >
+                                    <Text
+                                        text="Changed By:"
+                                        class="sapUiSmallMarginEnd"
+                                    />
+                                    <Text
+                                        id="oChngByCHACON"
+                                        text="{CHANGED_BY}"
+                                        class="sapUiSmallMarginEnd"
+                                    />
+                                    <Text
+                                        text="Changed Time:"
+                                        class="sapUiSmallMarginEnd"
+                                    />
+                                    <Text
+                                        id="oChngTmCHACON"
+                                        text="{CHANGED_DATE}"
+                                        class="sapUiSmallMarginEnd"
+                                    />
+                                </HBox>
                             </content>
                         </Toolbar>
                         <content>
@@ -150,7 +172,7 @@
                                                 vAlign="Middle"
                                                 visible="false"
                                             >
-                                                <Text text="Class Num" />
+                                                <Text text="Class Num." />
                                             </Column>
                                             <Column
                                                 hAlign="Left"
@@ -177,6 +199,18 @@
                                             >
                                                 <Text text="SCM Char." />
                                             </Column>
+                                            <!-- <Column
+                                                hAlign="Left"
+                                                vAlign="Middle"
+                                            >
+                                                <Text text="Changed Time " />
+                                            </Column>
+                                            <Column
+                                                hAlign="Left"
+                                                vAlign="Middle"
+                                            >
+                                                <Text text="Changed By" />
+                                            </Column> -->
                                         </columns>
                                         <items>
                                             <ColumnListItem>
@@ -189,6 +223,10 @@
                                                         selected="{IBPCHAR_CHK}"
                                                         select="onClsSelect"
                                                     />
+                                                    <!-- <Text
+                                                        text="{CHANGED_DATE}"
+                                                    />
+                                                    <Text text="{CHANGED_BY}" /> -->
                                                 </cells>
                                             </ColumnListItem>
                                         </items>
@@ -274,8 +312,14 @@
                                                 <Text text="Weightage" />
                                             </Column>
 
-                                            <Column hAlign="Center">
+                                            <Column>
                                                 <Text text="Actions" />
+                                            </Column>
+                                            <Column>
+                                                <Text text="Changed By" />
+                                            </Column>
+                                            <Column>
+                                                <Text text="Changed Time " />
                                             </Column>
                                         </columns>
                                         <items>
@@ -286,9 +330,8 @@
                                                     <Text text="{GROUP_NAME}" />
                                                     <!-- <Text text="{WEIGHTAGE}" /> -->
                                                     <Text text="{WEIGHTAGE}" />
-                                                    <HBox
-                                                        justifyContent="Center"
-                                                    >
+
+                                                    <HBox>
                                                         <Button
                                                             icon="sap-icon://edit"
                                                             class="sapUiSmallMarginEnd"
@@ -302,6 +345,10 @@
                                                             press="onGroupDeleteValidation"
                                                         />
                                                     </HBox>
+                                                    <Text text="{CHANGED_BY}" />
+                                                    <Text
+                                                        text="{CHANGED_DATE}"
+                                                    />
                                                 </cells>
                                             </ColumnListItem>
                                         </items>
@@ -361,6 +408,30 @@
                                 placeholder="Characteristics Name"
                                 id="idPrimarySearchCHACON"
                             />
+                            <HBox
+                                justifyContent="End"
+                                alignItems="End"
+                                renderType="Bare"
+                            >
+                                <Text
+                                    text="Changed By:"
+                                    class="sapUiSmallMarginEnd"
+                                />
+                                <Text
+                                    id="oPriorChngByCHACON"
+                                    text="{CHANGED_BY}"
+                                    class="sapUiSmallMarginEnd"
+                                />
+                                <Text
+                                    text="Changed Date:"
+                                    class="sapUiSmallMarginEnd"
+                                />
+                                <Text
+                                    id="oPriorChngTmCHACON"
+                                    text="{CHANGED_DATE}  "
+                                    class="sapUiSmallMarginEnd"
+                                />
+                            </HBox>
                             <ToolbarSpacer />
                             <Button
                                 id="idReset2CHACON"
@@ -543,6 +614,30 @@
                                     liveChange="onSearch"
                                     placeholder="Characteristic Name"
                                 />
+                                  <HBox
+                                    justifyContent="End"
+                                    alignItems="End"
+                                    renderType="Bare"
+                                >
+                                    <Text
+                                        text="Changed By:"
+                                        class="sapUiSmallMarginEnd"
+                                    />
+                                    <Text
+                                        id="oPartChngByCHACON"
+                                        text="{CHANGED_BY}"
+                                        class="sapUiSmallMarginEnd"
+                                    />
+                                    <Text
+                                        text="Changed Time:"
+                                        class="sapUiSmallMarginEnd"
+                                    />
+                                    <Text
+                                        id="oPartChngTmCHACON"
+                                        text="{CHANGED_DATE}"
+                                        class="sapUiSmallMarginEnd"
+                                    />
+                                </HBox>
                                 <ToolbarSpacer />
                                 <Button
                                     id="idShowSelected"
@@ -802,13 +897,12 @@
                     </IconTabFilter>
                 </items>
             </IconTabBar>
-            
+
             <!-- </content> -->
         </f:content>
     </f:DynamicPage>
 </mvc:View>
-
-    <!-- <f:DynamicPageTitle>
+<!-- <f:DynamicPageTitle>
             <f:actions>
                 <Button
                     icon="sap-icon://sys-help"

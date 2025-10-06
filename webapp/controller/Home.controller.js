@@ -140,6 +140,7 @@ sap.ui.define([
                 //   that.getEnable1();
                 that.oGModel = that.getModel("oGModel");
 
+
             },
             attachDragDrop2: function () {
                 var oListPrim = this.byId("Primarytable2CHACON");
@@ -457,6 +458,7 @@ sap.ui.define([
                     success: function (oData) {
                         // sap.ui.core.BusyIndicator.show();
                         if (topCount == oData.results.length) {
+
                             that.skip += parseInt(topCount);
                             that.oclassIbp = that.oclassIbp.concat(oData.results);
                             that.loadDataforClas();
@@ -793,7 +795,8 @@ sap.ui.define([
                     var customerGroupData = JSON.stringify([{
                         "PRODUCT_ID": oProd,
                         "GROUP_NAME": GROUP_NAME,
-                        "WEIGHTAGE": WEIGHTAGE
+                        "WEIGHTAGE": WEIGHTAGE,
+                        "USER": that.getUserDetails()
                     }])
                     // customerGroupData.USER = that.getUserDetails();
                     that.getOwnerComponent().getModel("BModel").callFunction("/modifyCustomerGroup", {
@@ -1662,6 +1665,23 @@ sap.ui.define([
                     ],
 
                     success: function (oData) {
+                        oData.results.forEach(function (log) {
+                            if (log.CHANGED_DATE && log.CHANGED_TIME) {
+                                let date = new Date(log.CHANGED_DATE);
+
+                                date.setMilliseconds(date.getMilliseconds() + log.CHANGED_TIME.ms);
+
+                                // Format as YYYY-MM-DD HH:mm:ss
+                                let year = date.getFullYear();
+                                let month = String(date.getMonth() + 1).padStart(2, '0');
+                                let day = String(date.getDate()).padStart(2, '0');
+                                let hours = String(date.getHours()).padStart(2, '0');
+                                let minutes = String(date.getMinutes()).padStart(2, '0');
+                                let seconds = String(date.getSeconds()).padStart(2, '0');
+
+                                log.CHANGED_DATE = `${year}-${month}-${day} T ${hours}:${minutes}:${seconds}`;
+                            }
+                        });
                         that.cFlag = ""
                         sap.ui.core.BusyIndicator.hide();
                         that.gData = oData.results;
@@ -1755,6 +1775,23 @@ sap.ui.define([
                         else if (sKey === "PrioritizationGrouping") {
                             that.getOwnerComponent().getModel("BModel").read("/getCharacteristicGroups", {
                                 success: function (oData) {
+                                    oData.results.forEach(function (log) {
+                                        if (log.CHANGED_DATE && log.CHANGED_TIME) {
+                                            let date = new Date(log.CHANGED_DATE);
+
+                                            date.setMilliseconds(date.getMilliseconds() + log.CHANGED_TIME.ms);
+
+                                            // Format as YYYY-MM-DD HH:mm:ss
+                                            let year = date.getFullYear();
+                                            let month = String(date.getMonth() + 1).padStart(2, '0');
+                                            let day = String(date.getDate()).padStart(2, '0');
+                                            let hours = String(date.getHours()).padStart(2, '0');
+                                            let minutes = String(date.getMinutes()).padStart(2, '0');
+                                            let seconds = String(date.getSeconds()).padStart(2, '0');
+
+                                            log.CHANGED_DATE = `${year}-${month}-${day} T ${hours}:${minutes}:${seconds}`;
+                                        }
+                                    });
                                     that.oAllGrData = oData.results
                                 },
                                 error: function (oData, error) {
@@ -1769,6 +1806,23 @@ sap.ui.define([
                                         new Filter("PRODUCT_ID", FilterOperator.EQ, cProd)
                                     ],
                                     success: function (oData) {
+                                        oData.results.forEach(function (log) {
+                                            if (log.CHANGED_DATE && log.CHANGED_TIME) {
+                                                let date = new Date(log.CHANGED_DATE);
+
+                                                date.setMilliseconds(date.getMilliseconds() + log.CHANGED_TIME.ms);
+
+                                                // Format as YYYY-MM-DD HH:mm:ss
+                                                let year = date.getFullYear();
+                                                let month = String(date.getMonth() + 1).padStart(2, '0');
+                                                let day = String(date.getDate()).padStart(2, '0');
+                                                let hours = String(date.getHours()).padStart(2, '0');
+                                                let minutes = String(date.getMinutes()).padStart(2, '0');
+                                                let seconds = String(date.getSeconds()).padStart(2, '0');
+
+                                                log.CHANGED_DATE = `${year}-${month}-${day} T ${hours}:${minutes}:${seconds}`;
+                                            }
+                                        });
                                         that.gData = oData.results;
                                         that.oGroupNames = oData.results
                                         var aModel = new JSONModel();
@@ -1917,6 +1971,15 @@ sap.ui.define([
                         },
                         success: function (oData) {
                             var oData = JSON.parse(oData.getCharGroupWeightage)
+
+                            oData.forEach(obj => {
+                                obj.CHANGED_DATE = obj.CHANGED_DATE + " T " + obj.CHANGED_TIME; // merge date & time
+                                delete obj.CHANGED_TIME; // optional: remove CHANGED_TIME
+                            });
+
+                            that.byId("oPriorChngByCHACON").setText(oData[0].CHANGED_BY)
+                            that.byId("oPriorChngTmCHACON").setText(oData[0].CHANGED_DATE)
+                            // that.byId("oPriorChngTmCHACON").setText(oData[0].CHANGED_DATE + T + oData[0].CHANGED_DATE)
                             const filteredData = oData.filter(item => item.CHAR_NUM !== null);
                             that.oSeq = filteredData
                             that.cFlag = ""
@@ -2155,7 +2218,6 @@ sap.ui.define([
 
             },
 
-
             ///new
             oItemChange: function (oEvent) {
                 var oSelectedItem = oEvent.getSource().getParent().getBindingContext().getObject();
@@ -2265,11 +2327,16 @@ sap.ui.define([
                     return false;
                 }
                 const oInitialData = that.CharPrior
+                that.oSeq.forEach(function (obj) {
+                    obj.USER = "narendrakumark@sbpcorp.in";
+                });
+
                 const allData = that.oSeq
 
                 const commonObjects = oInitialData.filter(obj1 =>
                     allData.some(obj2 => (obj1.CHAR_NUM === obj2.CHAR_NUM) && (obj1.CHAR_TYPE !== obj2.CHAR_TYPE))
                 );
+
                 ///// For Primary or Secondary Char Change in table...
                 if (commonObjects.length > 0) {
                     MessageBox.confirm(" Active Planning Details exist for selected Product. Do you want to update the Primary Characteristics ?", {
@@ -2605,7 +2672,6 @@ sap.ui.define([
                 return aScheduleSEDT;
 
             },
-
 
 
             onPrimarySearch: function (oEvent) {
@@ -4233,7 +4299,7 @@ sap.ui.define([
 
                 // Show a warning dialog if there are checked items
                 //    if (checkedItems.length > 0) {
-                // finlData.USER = that.getUserDetails()
+                finlData.USER = that.getUserDetails()
                 sap.m.MessageBox.warning("Partial Products Configuration has already been used in planning. Any modification would lead to discrepancies and needs reprocessing. Would you like to continue with the change?", {
                     title: "Warning",
                     actions: [sap.m.MessageBox.Action.YES, sap.m.MessageBox.Action.NO],
@@ -4556,6 +4622,8 @@ sap.ui.define([
                                 that.productChar = ogetData;
                                 that.AvailChars = removeDuplicate(that.productChar, 'CHAR_NAME');
                                 that.oListModel.setData({ results: that.AvailChars });
+                                that.byId("oPartChngByCHACON").setText(that.AvailChars[0].CHANGED_BY)
+                                that.byId("oPartChngTmCHACON").setText(that.AvailChars[0].CHANGED_DATE)
                                 that.byId("prodList").setModel(that.oListModel);
 
                                 // Function to remove duplicates
@@ -6794,6 +6862,8 @@ sap.ui.define([
                     that.loadArray = [];
                     that.byId("prodList").removeSelections();
                     that.byId("idPartialSearch").setValue("");
+                    that.byId("oPartChngByCHACON").setText("")
+                    that.byId("oPartChngTmCHACON").setText("")
                     that.byId("idCommonCHACON").setValue("");
                     that.oListModel.setData({ results: [] });
                     that.byId("prodList").setModel(that.oListModel);
@@ -6801,6 +6871,8 @@ sap.ui.define([
                 }
                 else if (that.sKey === "ClassIBP" || that.sKey === "") {
                     // that.onClearReset();
+                    that.byId("oChngByCHACON").setText("")
+                    that.byId("oChngTmCHACON").setText("")
                     that.byId("idCommonCHACON").setValue("");
                     that.byId("classSearchCHACON").setValue("");
                     that.byId("classListCHACON").setModel(new JSONModel([]));
@@ -6808,6 +6880,8 @@ sap.ui.define([
                 } else if (that.sKey === "CharacteristicPriority" || that.sKey === "") {
 
                     that.byId("idCommonCHACON").setValue("");
+                    that.byId("oPriorChngByCHACON").setText("")
+                    that.byId("oPriorChngTmCHACON").setText("")
                     that.byId("idPrimarySearchCHACON").setValue("");
                     that.byId("PrimarytableCHACON").setModel(new JSONModel([]));
 
@@ -7007,6 +7081,7 @@ sap.ui.define([
                 }
                 var oEntry = {
                     CLASSDATA: [],
+
                 },
                     vRuleslist;
 
@@ -7022,7 +7097,8 @@ sap.ui.define([
                     vRuleslist = {
                         CLASS_NUM: aClassData[i].getCells()[0].getText(),
                         IBPCHAR_CHK: vIbpCheck,
-                        PRODUCT_ID: product
+                        PRODUCT_ID: product,
+                        USER: "narendrakumark@sbpcorp.in" //that.getUserDetails()
                     };
                     oEntry.CLASSDATA.push(vRuleslist);
                 }
@@ -7081,11 +7157,45 @@ sap.ui.define([
                             sap.ui.core.BusyIndicator.hide();
                             that.cFlag = ""
                             if (topCount == oData.results.length) {
+                                oData.results.forEach(function (log) {
+                                    if (log.CHANGED_DATE && log.CHANGED_TIME) {
+                                        let date = new Date(log.CHANGED_DATE);
+
+                                        date.setMilliseconds(date.getMilliseconds() + log.CHANGED_TIME.ms);
+
+                                        // Format as YYYY-MM-DD HH:mm:ss
+                                        let year = date.getFullYear();
+                                        let month = String(date.getMonth() + 1).padStart(2, '0');
+                                        let day = String(date.getDate()).padStart(2, '0');
+                                        let hours = String(date.getHours()).padStart(2, '0');
+                                        let minutes = String(date.getMinutes()).padStart(2, '0');
+                                        let seconds = String(date.getSeconds()).padStart(2, '0');
+
+                                        log.CHANGED_DATE = `${year}-${month}-${day} T ${hours}:${minutes}:${seconds}`;
+                                    }
+                                });
                                 that.skip += (topCount);
                                 that.ocIbp = that.ocIbp.concat(oData.results);
                                 that.loadIbp();
                             } else {
                                 that.skip = 0;
+                                oData.results.forEach(function (log) {
+                                    if (log.CHANGED_DATE && log.CHANGED_TIME) {
+                                        let date = new Date(log.CHANGED_DATE);
+
+                                        date.setMilliseconds(date.getMilliseconds() + log.CHANGED_TIME.ms);
+
+                                        // Format as YYYY-MM-DD HH:mm:ss
+                                        let year = date.getFullYear();
+                                        let month = String(date.getMonth() + 1).padStart(2, '0');
+                                        let day = String(date.getDate()).padStart(2, '0');
+                                        let hours = String(date.getHours()).padStart(2, '0');
+                                        let minutes = String(date.getMinutes()).padStart(2, '0');
+                                        let seconds = String(date.getSeconds()).padStart(2, '0');
+
+                                        log.CHANGED_DATE = `${year}-${month}-${day} T ${hours}:${minutes}:${seconds}`;
+                                    }
+                                });
                                 that.ocIbp = that.ocIbp.concat(oData.results);
                                 that.byId("classSearchCHACON").setValue("")
                                 var oBinddata = that.removeDuplicateforProdClas(that.ocIbp, "CLASS_NAME")
@@ -7093,6 +7203,8 @@ sap.ui.define([
                                 that.oModel.setData({
                                     results: oBinddata,
                                 });
+                                that.byId("oChngByCHACON").setText(oBinddata[0].CHANGED_BY)
+                                that.byId("oChngTmCHACON").setText(oBinddata[0].CHANGED_DATE)
                                 var temp = JSON.stringify(oData.results)
                                 that.clsResults = JSON.parse(temp);
                                 that.byId("classListCHACON").setModel(that.oModel);
