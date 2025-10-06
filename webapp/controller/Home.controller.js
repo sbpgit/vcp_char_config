@@ -798,7 +798,7 @@ sap.ui.define([
                         "WEIGHTAGE": WEIGHTAGE,
                         "USER": that.getUserDetails()
                     }])
-                    // customerGroupData.USER = that.getUserDetails();
+                  
                     that.getOwnerComponent().getModel("BModel").callFunction("/modifyCustomerGroup", {
                         method: "GET",
                         urlParameters: {
@@ -1510,7 +1510,7 @@ sap.ui.define([
                             "WEIGHTAGE": oWeightage
                         }
                     ])
-                    // customerGroupData.USER = that.getUserDetails()
+                    
 
                     that.getOwnerComponent().getModel("BModel").callFunction("/modifyCustomerGroup", {
                         method: "GET",
@@ -1972,6 +1972,37 @@ sap.ui.define([
                         success: function (oData) {
                             var oData = JSON.parse(oData.getCharGroupWeightage)
 
+                            // Adjust all dates and times
+                            // oData.forEach(obj => {
+                            //     let dateTimeStr = `${obj.CHANGED_DATE}T${obj.CHANGED_TIME}`;
+                            //     let d = new Date(dateTimeStr);
+                            //     let a = new Date(d.getTime() - d.getTimezoneOffset() * 60 * 1000);
+
+                            //     obj.CHANGED_DATE = a.toISOString().split('T')[0];   // YYYY-MM-DD
+                            //     obj.CHANGED_TIME = a.toTimeString().split(' ')[0];  // HH:MM:SS
+                            // });
+
+                            // console.log(oData);
+                            oData.forEach(obj => {
+                                if (obj.CHANGED_DATE && obj.CHANGED_TIME) {
+                                    let dateTimeStr = `${obj.CHANGED_DATE}T${obj.CHANGED_TIME}`;
+                                    let d = new Date(dateTimeStr);
+
+                                    if (!isNaN(d)) { // check if valid date
+                                        let a = new Date(d.getTime() - d.getTimezoneOffset() * 60 * 1000);
+
+                                        obj.CHANGED_DATE = a.toISOString().split('T')[0];   // YYYY-MM-DD
+                                        obj.CHANGED_TIME = a.toTimeString().split(' ')[0];  // HH:MM:SS
+                                    } else {
+                                        console.warn("Invalid date/time for object:", obj);
+                                    }
+                                } else {
+                                    console.warn("Missing CHANGED_DATE or CHANGED_TIME for object:", obj);
+                                }
+                            });
+
+
+
                             oData.forEach(obj => {
                                 obj.CHANGED_DATE = obj.CHANGED_DATE + " T " + obj.CHANGED_TIME; // merge date & time
                                 delete obj.CHANGED_TIME; // optional: remove CHANGED_TIME
@@ -2332,6 +2363,24 @@ sap.ui.define([
                 });
 
                 const allData = that.oSeq
+                // allData.forEach(obj => obj.CHANGED_DATE = "");
+
+                allData.forEach(obj => {
+                    const now = new Date();
+
+                    // Get date in YYYY-MM-DD
+                    const currentDate = now.toISOString().split("T")[0];
+
+                    // Get local time HH:mm:ss
+                    const currentTime = now.toLocaleTimeString("en-GB", { hour12: false });
+
+                    // Combine date + local time
+                    obj.CHANGED_DATE = currentDate + " " + currentTime;
+
+                    // Remove old CHANGED_TIME if exists
+                    delete obj.CHANGED_TIME;
+                });
+
 
                 const commonObjects = oInitialData.filter(obj1 =>
                     allData.some(obj2 => (obj1.CHAR_NUM === obj2.CHAR_NUM) && (obj1.CHAR_TYPE !== obj2.CHAR_TYPE))
@@ -4299,7 +4348,10 @@ sap.ui.define([
 
                 // Show a warning dialog if there are checked items
                 //    if (checkedItems.length > 0) {
-                finlData.USER = that.getUserDetails()
+               
+                finlData.forEach(obj => {
+                    obj.USER = that.getUserDetails() 
+                });
                 sap.m.MessageBox.warning("Partial Products Configuration has already been used in planning. Any modification would lead to discrepancies and needs reprocessing. Would you like to continue with the change?", {
                     title: "Warning",
                     actions: [sap.m.MessageBox.Action.YES, sap.m.MessageBox.Action.NO],
@@ -4608,6 +4660,30 @@ sap.ui.define([
                         },
                         success: function (oData) {
                             var ogetData = JSON.parse(oData.getProductCharVal);
+                                 ogetData.forEach(obj => {
+                                if (obj.CHANGED_DATE && obj.CHANGED_TIME) {
+                                    let dateTimeStr = `${obj.CHANGED_DATE}T${obj.CHANGED_TIME}`;
+                                    let d = new Date(dateTimeStr);
+
+                                    if (!isNaN(d)) { // check if valid date
+                                        let a = new Date(d.getTime() - d.getTimezoneOffset() * 60 * 1000);
+
+                                        obj.CHANGED_DATE = a.toISOString().split('T')[0];   // YYYY-MM-DD
+                                        obj.CHANGED_TIME = a.toTimeString().split(' ')[0];  // HH:MM:SS
+                                    } else {
+                                        console.warn("Invalid date/time for object:", obj);
+                                    }
+                                } else {
+                                    console.warn("Missing CHANGED_DATE or CHANGED_TIME for object:", obj);
+                                }
+                            });
+
+
+
+                            ogetData.forEach(obj => {
+                                obj.CHANGED_DATE = obj.CHANGED_DATE + " T " + obj.CHANGED_TIME; // merge date & time
+                                delete obj.CHANGED_TIME; // optional: remove CHANGED_TIME
+                            });
                             that.cFlag = "";
                             sap.ui.core.BusyIndicator.hide();
                             ogetData.forEach(el => {
@@ -5432,7 +5508,7 @@ sap.ui.define([
                 } else {
                     finlData = that.oFinalPartialData
                 }
-                // finlData.USER = that.getUserDetails()
+              
                 sap.ui.core.BusyIndicator.show();
                 this.getOwnerComponent().getModel("BModel").callFunction("/getProductCharVal", {
                     method: "GET",
@@ -7102,7 +7178,7 @@ sap.ui.define([
                     };
                     oEntry.CLASSDATA.push(vRuleslist);
                 }
-                // oEntry.USER = that.getUserDetails()
+              
                 sap.ui.core.BusyIndicator.show();
                 that.getModel("BModel").callFunction("/updateIBPClass", {
                     method: "GET",
@@ -7578,7 +7654,7 @@ sap.ui.define([
                     var confirmationMessage = `Products have already existing active plan..`;
 
                 }
-                // oEntry.USER = that.getUserDetails()
+             
 
                 if (oEntry.CLASSDATA.length > 0) {
                     sap.m.MessageBox.confirm(confirmationMessage, {

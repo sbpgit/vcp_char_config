@@ -131,8 +131,9 @@
                                     renderType="Bare"
                                 >
                                     <Text
+                                    
                                         text="Changed By:"
-                                        class="sapUiSmallMarginEnd"
+                                        class="sapUiSmallMarginEnd boldText"
                                     />
                                     <Text
                                         id="oChngByCHACON"
@@ -141,7 +142,7 @@
                                     />
                                     <Text
                                         text="Changed Time:"
-                                        class="sapUiSmallMarginEnd"
+                                        class="sapUiSmallMarginEnd boldText"
                                     />
                                     <Text
                                         id="oChngTmCHACON"
@@ -415,7 +416,7 @@
                             >
                                 <Text
                                     text="Changed By:"
-                                    class="sapUiSmallMarginEnd"
+                                    class="sapUiSmallMarginEnd boldText"
                                 />
                                 <Text
                                     id="oPriorChngByCHACON"
@@ -424,7 +425,7 @@
                                 />
                                 <Text
                                     text="Changed Date:"
-                                    class="sapUiSmallMarginEnd"
+                                    class="sapUiSmallMarginEnd boldText"
                                 />
                                 <Text
                                     id="oPriorChngTmCHACON"
@@ -621,7 +622,7 @@
                                 >
                                     <Text
                                         text="Changed By:"
-                                        class="sapUiSmallMarginEnd"
+                                        class="sapUiSmallMarginEnd boldText"
                                     />
                                     <Text
                                         id="oPartChngByCHACON"
@@ -630,7 +631,7 @@
                                     />
                                     <Text
                                         text="Changed Time:"
-                                        class="sapUiSmallMarginEnd"
+                                        class="sapUiSmallMarginEnd boldText"
                                     />
                                     <Text
                                         id="oPartChngTmCHACON"
