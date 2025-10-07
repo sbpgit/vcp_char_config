@@ -798,7 +798,7 @@ sap.ui.define([
                         "WEIGHTAGE": WEIGHTAGE,
                         "USER": that.getUserDetails()
                     }])
-                  
+
                     that.getOwnerComponent().getModel("BModel").callFunction("/modifyCustomerGroup", {
                         method: "GET",
                         urlParameters: {
@@ -1510,7 +1510,7 @@ sap.ui.define([
                             "WEIGHTAGE": oWeightage
                         }
                     ])
-                    
+
 
                     that.getOwnerComponent().getModel("BModel").callFunction("/modifyCustomerGroup", {
                         method: "GET",
@@ -1972,17 +1972,13 @@ sap.ui.define([
                         success: function (oData) {
                             var oData = JSON.parse(oData.getCharGroupWeightage)
 
-                            // Adjust all dates and times
-                            // oData.forEach(obj => {
-                            //     let dateTimeStr = `${obj.CHANGED_DATE}T${obj.CHANGED_TIME}`;
-                            //     let d = new Date(dateTimeStr);
-                            //     let a = new Date(d.getTime() - d.getTimezoneOffset() * 60 * 1000);
+                            oData.forEach(item => {
+                                item.CHANGED_BY = item.CHANGED_BY || "";
+                                item.CHANGED_DATE = item.CHANGED_DATE || "";
+                                item.CHANGED_TIME = item.CHANGED_TIME || "";
+                            });
 
-                            //     obj.CHANGED_DATE = a.toISOString().split('T')[0];   // YYYY-MM-DD
-                            //     obj.CHANGED_TIME = a.toTimeString().split(' ')[0];  // HH:MM:SS
-                            // });
 
-                            // console.log(oData);
                             oData.forEach(obj => {
                                 if (obj.CHANGED_DATE && obj.CHANGED_TIME) {
                                     let dateTimeStr = `${obj.CHANGED_DATE}T${obj.CHANGED_TIME}`;
@@ -2001,15 +1997,23 @@ sap.ui.define([
                                 }
                             });
 
-
-
                             oData.forEach(obj => {
-                                obj.CHANGED_DATE = obj.CHANGED_DATE + " T " + obj.CHANGED_TIME; // merge date & time
-                                delete obj.CHANGED_TIME; // optional: remove CHANGED_TIME
+                                const date = obj.CHANGED_DATE || "";
+                                const time = obj.CHANGED_TIME || "";
+
+                                obj.CHANGED_DATE = (date && time) ? `${date} T ${time}` : "";
+                                delete obj.CHANGED_TIME;
                             });
 
-                            that.byId("oPriorChngByCHACON").setText(oData[0].CHANGED_BY)
-                            that.byId("oPriorChngTmCHACON").setText(oData[0].CHANGED_DATE)
+
+                            // oData.forEach(obj => {
+                            //     obj.CHANGED_DATE = obj.CHANGED_DATE + " T " + obj.CHANGED_TIME; // merge date & time
+                            //     delete obj.CHANGED_TIME; // optional: remove CHANGED_TIME
+                            // });
+
+
+                            that.byId("oPriorChngByCHACON").setText(oData[0].CHANGED_BY || "");
+                            that.byId("oPriorChngTmCHACON").setText(oData[0].CHANGED_DATE ? oData[0].CHANGED_DATE : "");
                             // that.byId("oPriorChngTmCHACON").setText(oData[0].CHANGED_DATE + T + oData[0].CHANGED_DATE)
                             const filteredData = oData.filter(item => item.CHAR_NUM !== null);
                             that.oSeq = filteredData
@@ -4081,8 +4085,6 @@ sap.ui.define([
             },
 
 
-
-
             onCharSearch: function (oEvent) {
                 var sQuery = that.byId("searchField").getValue(),
                     oFilters = [];
@@ -4348,7 +4350,7 @@ sap.ui.define([
 
                 // Show a warning dialog if there are checked items
                 //    if (checkedItems.length > 0) {
-               
+
                 finlData.forEach(obj => {
                     obj.USER = that.getUserDetails() 
                 });
@@ -4660,7 +4662,12 @@ sap.ui.define([
                         },
                         success: function (oData) {
                             var ogetData = JSON.parse(oData.getProductCharVal);
-                                 ogetData.forEach(obj => {
+                            ogetData.forEach(item => {
+                                item.CHANGED_BY = item.CHANGED_BY || "";
+                                item.CHANGED_DATE = item.CHANGED_DATE || "";
+                                item.CHANGED_TIME = item.CHANGED_TIME || "";
+                            });
+                            ogetData.forEach(obj => {
                                 if (obj.CHANGED_DATE && obj.CHANGED_TIME) {
                                     let dateTimeStr = `${obj.CHANGED_DATE}T${obj.CHANGED_TIME}`;
                                     let d = new Date(dateTimeStr);
@@ -4678,12 +4685,18 @@ sap.ui.define([
                                 }
                             });
 
-
-
                             ogetData.forEach(obj => {
-                                obj.CHANGED_DATE = obj.CHANGED_DATE + " T " + obj.CHANGED_TIME; // merge date & time
-                                delete obj.CHANGED_TIME; // optional: remove CHANGED_TIME
+                                const date = obj.CHANGED_DATE || "";
+                                const time = obj.CHANGED_TIME || "";
+
+                                obj.CHANGED_DATE = (date && time) ? `${date} T ${time}` : "";
+                                delete obj.CHANGED_TIME;
                             });
+
+                            // ogetData.forEach(obj => {
+                            //     obj.CHANGED_DATE = obj.CHANGED_DATE + " T " + obj.CHANGED_TIME; // merge date & time
+                            //     delete obj.CHANGED_TIME; // optional: remove CHANGED_TIME
+                            // });
                             that.cFlag = "";
                             sap.ui.core.BusyIndicator.hide();
                             ogetData.forEach(el => {
@@ -4698,8 +4711,10 @@ sap.ui.define([
                                 that.productChar = ogetData;
                                 that.AvailChars = removeDuplicate(that.productChar, 'CHAR_NAME');
                                 that.oListModel.setData({ results: that.AvailChars });
-                                that.byId("oPartChngByCHACON").setText(that.AvailChars[0].CHANGED_BY)
-                                that.byId("oPartChngTmCHACON").setText(that.AvailChars[0].CHANGED_DATE)
+                                that.byId("oPartChngByCHACON").setText(that.AvailChars[0].CHANGED_BY || "");
+                                that.byId("oPartChngTmCHACON").setText(that.AvailChars[0].CHANGED_DATE ? that.AvailChars[0].CHANGED_DATE : "");
+                                // that.byId("oPartChngByCHACON").setText(that.AvailChars[0].CHANGED_BY)
+                                // that.byId("oPartChngTmCHACON").setText(that.AvailChars[0].CHANGED_DATE)
                                 that.byId("prodList").setModel(that.oListModel);
 
                                 // Function to remove duplicates
@@ -5508,7 +5523,7 @@ sap.ui.define([
                 } else {
                     finlData = that.oFinalPartialData
                 }
-              
+
                 sap.ui.core.BusyIndicator.show();
                 this.getOwnerComponent().getModel("BModel").callFunction("/getProductCharVal", {
                     method: "GET",
@@ -7178,7 +7193,7 @@ sap.ui.define([
                     };
                     oEntry.CLASSDATA.push(vRuleslist);
                 }
-              
+
                 sap.ui.core.BusyIndicator.show();
                 that.getModel("BModel").callFunction("/updateIBPClass", {
                     method: "GET",
@@ -7279,8 +7294,13 @@ sap.ui.define([
                                 that.oModel.setData({
                                     results: oBinddata,
                                 });
-                                that.byId("oChngByCHACON").setText(oBinddata[0].CHANGED_BY)
-                                that.byId("oChngTmCHACON").setText(oBinddata[0].CHANGED_DATE)
+
+                                // that.byId("oChngByCHACON").setText(oBinddata[0].CHANGED_BY)
+                                // that.byId("oChngTmCHACON").setText(oBinddata[0].CHANGED_DATE)
+
+                                that.byId("oChngByCHACON").setText(oBinddata[0].CHANGED_BY || "");
+                                that.byId("oChngTmCHACON").setText(oBinddata[0].CHANGED_DATE ? oBinddata[0].CHANGED_DATE : "");
+
                                 var temp = JSON.stringify(oData.results)
                                 that.clsResults = JSON.parse(temp);
                                 that.byId("classListCHACON").setModel(that.oModel);
@@ -7654,7 +7674,7 @@ sap.ui.define([
                     var confirmationMessage = `Products have already existing active plan..`;
 
                 }
-             
+
 
                 if (oEntry.CLASSDATA.length > 0) {
                     sap.m.MessageBox.confirm(confirmationMessage, {
