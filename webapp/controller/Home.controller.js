@@ -8062,7 +8062,7 @@ sap.ui.define([
                     if (headerDetails.length > 0) {
                         let oTableItems = that.oGModel.getProperty("/fieldDetails").filter(id => id.VARIANTID == headerDetails[0].VARIANTID);
                         var prodData = oTableItems.filter((a) => a.FIELD.includes("Config Product"));
-                        if (prodData) {
+                        if (prodData.length > 0) {
                             var oProd = prodData[0].VALUE
                             that.oGModel.setProperty("/defaultProduct", oProd);
                             that.byId("idCommonCHACON").setValue(oProd);
