@@ -571,12 +571,17 @@ sap.ui.define([
                             that.cReleventCls.push(x.getBindingContext().getObject())
                         })
 
-                        const commonRelevent = that.releventCls.filter(obj1 =>
-                            that.cReleventCls.some(obj2 => (obj1.CLASS_NUM === obj2.CLASS_NUM) && (obj1.IBPCHAR_CHK !== obj2.IBPCHAR_CHK))
-                        );
+                        if (that.releventCls) {
+                            const commonRelevent = that.releventCls.filter(obj1 =>
+                                that.cReleventCls.some(obj2 => (obj1.CLASS_NUM === obj2.CLASS_NUM) && (obj1.IBPCHAR_CHK !== obj2.IBPCHAR_CHK))
+                            );
 
-                        if (commonRelevent.length > 0) {
-                            that.cFlag = "X";
+                            if (commonRelevent.length > 0) {
+                                that.cFlag = "X";
+                            }
+                             else {
+                            that.cFlag = "";
+                        }
                         }
                         else {
                             that.cFlag = "";
@@ -4352,7 +4357,7 @@ sap.ui.define([
                 //    if (checkedItems.length > 0) {
 
                 finlData.forEach(obj => {
-                    obj.USER = that.getUserDetails() 
+                    obj.USER = that.getUserDetails()
                 });
                 sap.m.MessageBox.warning("Partial Products Configuration has already been used in planning. Any modification would lead to discrepancies and needs reprocessing. Would you like to continue with the change?", {
                     title: "Warning",
@@ -4678,10 +4683,12 @@ sap.ui.define([
                                         obj.CHANGED_DATE = a.toISOString().split('T')[0];   // YYYY-MM-DD
                                         obj.CHANGED_TIME = a.toTimeString().split(' ')[0];  // HH:MM:SS
                                     } else {
-                                        console.warn("Invalid date/time for object:", obj);
+                                        //do nothing
+                                        //  console.warn("Invalid date/time for object:", obj);
                                     }
                                 } else {
-                                    console.warn("Missing CHANGED_DATE or CHANGED_TIME for object:", obj);
+                                    // do nothing
+                                    // console.warn("Missing CHANGED_DATE or CHANGED_TIME for object:", obj);
                                 }
                             });
 
@@ -7815,8 +7822,7 @@ sap.ui.define([
                 var dData = [], uniqueName = [];
                 that.uniqueName = [];
                 sap.ui.core.BusyIndicator.show();
-                var variantUser = this.getUserDetails();
-                // var variantUser = "pradeepkumardaka@sbpcorp.in";
+                var variantUser = that.getUserDetails();
                 var appName = this.getOwnerComponent().getManifestEntry("/sap.app/id");
                 that.oGModel.setProperty("/UserId", variantUser);
                 // Define the filters
