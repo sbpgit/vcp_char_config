@@ -449,7 +449,13 @@ sap.ui.define([
                 that.oclassIbp = [];
                 var topCount = that.oGModel.getProperty("/MaxCount");
                 //  sap.ui.core.BusyIndicator.show();
-                that.getOwnerComponent().getModel("BModel").read("/getfactorylocdesc", {
+                // that.getOwnerComponent().getModel("BModel").read("/getfactorylocdesc", {
+                that.getOwnerComponent().getModel("BModel").read("/getRolesLocProd", {
+                    filters: [new Filter(
+                        "USER",
+                        FilterOperator.EQ,
+                        this.getUserDetails()
+                    )],
                     // filters: aFilters,
                     urlParameters: {
                         "$skip": that.skip,
@@ -579,9 +585,9 @@ sap.ui.define([
                             if (commonRelevent.length > 0) {
                                 that.cFlag = "X";
                             }
-                             else {
-                            that.cFlag = "";
-                        }
+                            else {
+                                that.cFlag = "";
+                            }
                         }
                         else {
                             that.cFlag = "";
@@ -8185,7 +8191,6 @@ sap.ui.define([
                 var totalVariantData = that.oGModel.getProperty("/VariantData");
                 var selected = oEvent.getParameters();
                 var variantUser = this.getUserDetails();
-                // var variantUser = "pradeepkumardaka@sbpcorp.in";
                 if (selected.def) {
                     totalVariantData.filter(item1 => {
                         if (JSON.parse(selected.def) === item1.VARIANTID && item1.USER !== variantUser) {

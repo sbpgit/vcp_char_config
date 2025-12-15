@@ -51,6 +51,9 @@ sap.ui.define(
               vUser = (email) ? email : "";
          
             }
+             if(!vUser){
+                vUser='null';
+            }
                return vUser;
           }
           
