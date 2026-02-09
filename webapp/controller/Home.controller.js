@@ -454,7 +454,8 @@ sap.ui.define([
                     filters: [new Filter(
                         "USER",
                         FilterOperator.EQ,
-                        this.getUserDetails()
+                         this.getUserDetails()
+                      
                     )],
                     // filters: aFilters,
                     urlParameters: {
@@ -802,7 +803,7 @@ sap.ui.define([
                 var oProd = that.byId("idCommonCHACON").getValue()
                 var GROUP_NAME = sap.ui.getCore().byId("oGroupNameCHACON").getValue(),
                     WEIGHTAGE = sap.ui.getCore().byId("oWeightageCHACON").getValue();
-                if (WEIGHTAGE > 1) {
+                if (WEIGHTAGE > 0) {
                     var customerGroupData = JSON.stringify([{
                         "PRODUCT_ID": oProd,
                         "GROUP_NAME": GROUP_NAME,
@@ -1506,7 +1507,7 @@ sap.ui.define([
 
                 // }
 
-                const results = that.gData.filter(obj1 => obj1.GROUP_NAME == oGroupName || parseFloat(obj1.WEIGHTAGE) == oWeightage)
+                const results = that.gData.filter(obj1 => obj1.GROUP_NAME == oGroupName && parseFloat(obj1.WEIGHTAGE) == oWeightage)
                 if (results.length > 0) {
                     MessageBox.alert("Group Name or Weightage is already taken Choose different")
                 }
@@ -6854,7 +6855,8 @@ sap.ui.define([
 
             getEnable: function () {
                 var oModel = that.getOwnerComponent().getModel("BModel");
-                var vUser = that.getUserDetails();
+                 var vUser = that.getUserDetails();
+                //    var vUser = "Test";
                 var oEntry = {
                     USERDATA: []
                 };
@@ -7829,6 +7831,7 @@ sap.ui.define([
                 that.uniqueName = [];
                 sap.ui.core.BusyIndicator.show();
                 var variantUser = that.getUserDetails();
+                //  var variantUser = "Test";
                 var appName = this.getOwnerComponent().getManifestEntry("/sap.app/id");
                 that.oGModel.setProperty("/UserId", variantUser);
                 // Define the filters
@@ -8191,6 +8194,7 @@ sap.ui.define([
                 var totalVariantData = that.oGModel.getProperty("/VariantData");
                 var selected = oEvent.getParameters();
                 var variantUser = this.getUserDetails();
+                //  var variantUser = "Test";
                 if (selected.def) {
                     totalVariantData.filter(item1 => {
                         if (JSON.parse(selected.def) === item1.VARIANTID && item1.USER !== variantUser) {
