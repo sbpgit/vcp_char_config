@@ -454,8 +454,8 @@ sap.ui.define([
                     filters: [new Filter(
                         "USER",
                         FilterOperator.EQ,
-                         this.getUserDetails()
-                      
+                        this.getUserDetails()
+
                     )],
                     // filters: aFilters,
                     urlParameters: {
@@ -808,7 +808,7 @@ sap.ui.define([
                         "PRODUCT_ID": oProd,
                         "GROUP_NAME": GROUP_NAME,
                         "WEIGHTAGE": WEIGHTAGE,
-                        "USER": that.getUserDetails()
+                        "CHANGED_BY": that.getUserDetails()
                     }])
 
                     that.getOwnerComponent().getModel("BModel").callFunction("/modifyCustomerGroup", {
@@ -818,7 +818,7 @@ sap.ui.define([
                             customerGroupData: customerGroupData
                         },
                         success: function (oData) {
-                            sap.m.MessageToast.show("Succesfully Updated");
+                            sap.m.MessageToast.show(oData['modifyCustomerGroup']);
                             that.oGModel.setProperty("/refresh", "X");
                             //  that.onAfterRendering();
                             that.oGroupView()
@@ -1511,15 +1511,16 @@ sap.ui.define([
                 if (results.length > 0) {
                     MessageBox.alert("Group Name or Weightage is already taken Choose different")
                 }
-                else if (oWeightage <= 1) {
-                    MessageBox.alert("Weightage must be more than 1")
+                else if (oWeightage < 0) {
+                    MessageBox.alert("Weightage must be more than 0")
                 }
                 else {
                     var customerGroupData = JSON.stringify([
                         {
                             "PRODUCT_ID": oProd,
                             "GROUP_NAME": oGroupName,
-                            "WEIGHTAGE": oWeightage
+                            "WEIGHTAGE": oWeightage,
+                            "CHANGED_BY": that.getUserDetails()
                         }
                     ])
 
@@ -1531,7 +1532,7 @@ sap.ui.define([
                             customerGroupData: customerGroupData
                         },
                         success: function (oData) {
-                            sap.m.MessageToast.show("Succesfully created");
+                            sap.m.MessageToast.show(oData['modifyCustomerGroup']);
                             that.oGModel.setProperty("/refresh", "X");
                             that.oGroupView()
                             that.onGCancel();
@@ -1541,6 +1542,7 @@ sap.ui.define([
                         },
                         error: function (oData, error) {
                             MessageToast.show("error");
+                            
                         },
                     });
                 }
@@ -6856,7 +6858,7 @@ sap.ui.define([
             getEnable: function () {
                 var oModel = that.getOwnerComponent().getModel("BModel");
                  var vUser = that.getUserDetails();
-                //    var vUser = "Test";
+                // var vUser = "Test";
                 var oEntry = {
                     USERDATA: []
                 };
@@ -7313,8 +7315,16 @@ sap.ui.define([
                                 // that.byId("oChngByCHACON").setText(oBinddata[0].CHANGED_BY)
                                 // that.byId("oChngTmCHACON").setText(oBinddata[0].CHANGED_DATE)
 
-                                that.byId("oChngByCHACON").setText(oBinddata[0].CHANGED_BY || "");
-                                that.byId("oChngTmCHACON").setText(oBinddata[0].CHANGED_DATE ? oBinddata[0].CHANGED_DATE : "");
+                                // that.byId("oChngByCHACON").setText(oBinddata[0].CHANGED_BY || "");
+                                // that.byId("oChngTmCHACON").setText(oBinddata[0].CHANGED_DATE ? oBinddata[0].CHANGED_DATE : "");
+
+                                if (oBinddata && oBinddata.length > 0) {
+                                    that.byId("oChngByCHACON").setText(oBinddata[0].CHANGED_BY || "");
+                                    that.byId("oChngTmCHACON").setText(oBinddata[0].CHANGED_DATE || "");
+                                } else {
+                                    that.byId("oChngByCHACON").setText("");
+                                    that.byId("oChngTmCHACON").setText("");
+                                }
 
                                 var temp = JSON.stringify(oData.results)
                                 that.clsResults = JSON.parse(temp);
@@ -7831,7 +7841,7 @@ sap.ui.define([
                 that.uniqueName = [];
                 sap.ui.core.BusyIndicator.show();
                 var variantUser = that.getUserDetails();
-                //  var variantUser = "Test";
+                // var variantUser = "Test";
                 var appName = this.getOwnerComponent().getManifestEntry("/sap.app/id");
                 that.oGModel.setProperty("/UserId", variantUser);
                 // Define the filters
@@ -8194,7 +8204,7 @@ sap.ui.define([
                 var totalVariantData = that.oGModel.getProperty("/VariantData");
                 var selected = oEvent.getParameters();
                 var variantUser = this.getUserDetails();
-                //  var variantUser = "Test";
+                // var variantUser = "Test";
                 if (selected.def) {
                     totalVariantData.filter(item1 => {
                         if (JSON.parse(selected.def) === item1.VARIANTID && item1.USER !== variantUser) {
