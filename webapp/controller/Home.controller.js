@@ -43,7 +43,7 @@ sap.ui.define([
             onInit: function () {
                 that = this;
                 that.sKey = "";
-                that.getEnable();
+                // that.getEnable();
                 this.PrimarylistModel = new JSONModel();
                 this.SeclistModel = new JSONModel();
                 this.SearchModel = new JSONModel();
@@ -139,7 +139,7 @@ sap.ui.define([
                 }
                 //   that.getEnable1();
                 that.oGModel = that.getModel("oGModel");
-
+                
 
             },
             attachDragDrop2: function () {
@@ -371,6 +371,8 @@ sap.ui.define([
             /* Below function Called when Upload the excel sheet based on Id's */
             onPressBrowse: function (oEvent) {
                 var sId = oEvent.getSource();
+                const cFlag= that.oGModel.getProperty("/createFlag")
+                if(cFlag){
                 if (sId.sId.includes("idMenuSCMCHACON")) {
                     that.byId("oSCMReleventCHACON").openFilePicker(oEvent);
                     that.byId("oSCMReleventCHACON").oBrowse.firePress(oEvent);
@@ -390,6 +392,7 @@ sap.ui.define([
                     that.byId("idoAttribuetsCHACON").openFilePicker(oEvent);
                     that.byId("idoAttribuetsCHACON").oBrowse.firePress(oEvent);
                 }
+            }
 
             },
 
@@ -406,6 +409,9 @@ sap.ui.define([
                 that.oDropDown = []
                 // that.oSItemArr = []
                 that.oGModel = that.getModel("oGModel");
+                that.oGModel.setProperty("/createFlag", false);
+                that.oGModel.setProperty("/updateFlag", false);
+                that.oGModel.setProperty("/deleteFlag", false);
                 this.oProd = this.byId("idCommonCHACON");
                 that._valueHelpDialogProd.setTitleAlignment("Center");
                 that.skip = 0;
@@ -655,54 +661,74 @@ sap.ui.define([
                     MessageToast.show("Please select product..")
                     return false;
                 }
-                if (that.sKey === "ClassIBP" || that.sKey === "") {
-                    that.loadIbp();
-                }
-                else if (that.sKey === "PrioritizationGrouping") {
-                    that.oGroupView()
-                }
-                else if (that.sKey === "CharacteristicPriority") {
+                else {
+                    var aFilters = [
+                        new sap.ui.model.Filter("USER", sap.ui.model.FilterOperator.EQ, this.getUserDetails()),
+                        new sap.ui.model.Filter("REF_PRODID", sap.ui.model.FilterOperator.EQ, oProd)
+                    ];
 
-                    if (that.byId("idCommonCHACON").getValue() != "") {
+                    this.getOwnerComponent().getModel("BModel").read("/getRolesAccess", {
+                        filters: aFilters,
+                        success: function (oData) {
+                            that.oGModel.setProperty("/createFlag", oData.results[0].CREATE);
+                            that.oGModel.setProperty("/updateFlag", oData.results[0].UPDATE);
+                            that.oGModel.setProperty("/deleteFlag", oData.results[0].DELETE);
+                            if (that.sKey === "ClassIBP" || that.sKey === "") {
+                                that.loadIbp();
+                            }
+                            else if (that.sKey === "PrioritizationGrouping") {
+                                that.oGroupView()
+                            }
+                            else if (that.sKey === "CharacteristicPriority") {
 
-                        that.oGroupView();
-                        that.onResetPress();
-                        that.byId("idCommonCHACON").setValue(that.oItem);
-                        setTimeout(function () {
+                                if (that.byId("idCommonCHACON").getValue() != "") {
 
-                            that.CharPrior = [];
-                            that.getModel("BModel").callFunction("/getCharGroupWeightage", {
-                                urlParameters: {
-                                    PRODUCT_ID: that.oItem
-                                },
-                                success: function (oData) {
-                                    var oData = JSON.parse(oData.getCharGroupWeightage)
-                                    var oDat1 = oData.filter(item => item.CHAR_NUM !== null);
-                                    that.CharPrior = oDat1
-                                    that.onGetData();
-                                },
-                                error: function (oData, error) {
-                                    sap.ui.core.BusyIndicator.hide();
-                                    MessageToast.show("error");
+                                    that.oGroupView();
+                                    that.onResetPress();
+                                    that.byId("idCommonCHACON").setValue(that.oItem);
+                                    setTimeout(function () {
+
+                                        that.CharPrior = [];
+                                        that.getModel("BModel").callFunction("/getCharGroupWeightage", {
+                                            urlParameters: {
+                                                PRODUCT_ID: that.oItem
+                                            },
+                                            success: function (oData) {
+                                                var oData = JSON.parse(oData.getCharGroupWeightage)
+                                                var oDat1 = oData.filter(item => item.CHAR_NUM !== null);
+                                                that.CharPrior = oDat1
+                                                that.onGetData();
+                                            },
+                                            error: function (oData, error) {
+                                                sap.ui.core.BusyIndicator.hide();
+                                                MessageToast.show("error");
+                                            }
+                                        })
+                                    }, 10)
+                                } else {
+                                    MessageToast.show("Please select product")
                                 }
-                            })
-                        }, 10)
-                    } else {
-                        MessageToast.show("Please select product")
-                    }
+                            }
+
+                            else if (that.sKey === "PartialProducts") {
+                                sap.ui.core.BusyIndicator.show()
+                                that.onGetData3();
+
+                            }
+                            that.saveDefaultVariant();
+                        },
+                        error: function () {
+                            sap.m.MessageToast.show("Error while fetching roles access");
+                        }
+                    });
+
+
+                    //  else if (that.sKey === "IBPAttributes") {
+                    //     sap.ui.core.BusyIndicator.show()
+                    //     that.onGetData2();
+
+                    // }
                 }
-
-                else if (that.sKey === "PartialProducts") {
-                    sap.ui.core.BusyIndicator.show()
-                    that.onGetData3();
-
-                }
-                that.saveDefaultVariant();
-                //  else if (that.sKey === "IBPAttributes") {
-                //     sap.ui.core.BusyIndicator.show()
-                //     that.onGetData2();
-
-                // }
             },
 
             onGroupEditValidation: function (oEv) {
@@ -6416,7 +6442,7 @@ sap.ui.define([
             },
 
             onIbpData: function () {
-                that.getEnable();
+                // that.getEnable();
                 sap.ui.core.BusyIndicator.show();
                 var selectedItems = that.selectedChars;
                 if (selectedItems.length > 0) {
@@ -6855,52 +6881,52 @@ sap.ui.define([
 
             },
 
-            getEnable: function () {
-                var oModel = that.getOwnerComponent().getModel("BModel");
-                 var vUser = that.getUserDetails();
-                // var vUser = "Test";
-                var oEntry = {
-                    USERDATA: []
-                };
-                let oParamVals = {
-                    USEREMAIL: vUser
-                };
-                oEntry.USERDATA.push(oParamVals);
-                oModel.callFunction("/genUserAppVisibility", {
-                    method: "GET",
-                    urlParameters: {
-                        FLAG: 'G',
-                        USERDATA: JSON.stringify(oEntry.USERDATA)
-                    },
-                    success: function (oData) {
-                        aResults2 = oData.results;
-                        // var  aResults2 = [{
-                        //     "CREATE_CHK": "enabled",
-                        //     "UPDATE_CHK": "disabled",
-                        //     "DELETE_CHK": "enabled",
-                        //     "READ_CHK": "disabled"
-                        // }]
+            // getEnable: function () {
+            //     var oModel = that.getOwnerComponent().getModel("BModel");
+            //     var vUser = that.getUserDetails();
+            //     // var vUser = "Test";
+            //     var oEntry = {
+            //         USERDATA: []
+            //     };
+            //     let oParamVals = {
+            //         USEREMAIL: vUser
+            //     };
+            //     oEntry.USERDATA.push(oParamVals);
+            //     oModel.callFunction("/genUserAppVisibility", {
+            //         method: "GET",
+            //         urlParameters: {
+            //             FLAG: 'G',
+            //             USERDATA: JSON.stringify(oEntry.USERDATA)
+            //         },
+            //         success: function (oData) {
+            //             aResults2 = oData.results;
+            //             // var  aResults2 = [{
+            //             //     "CREATE_CHK": "enabled",
+            //             //     "UPDATE_CHK": "disabled",
+            //             //     "DELETE_CHK": "enabled",
+            //             //     "READ_CHK": "disabled"
+            //             // }]
 
-                        if (aResults2.length > 0) {
-                            var isUserLoggedIn = true;
-                        }
-                        if (isUserLoggedIn) {
-                            if (aResults2[0].DELETE_CHK === "disabled") {
-                                that.byId("idReset3").setEnabled(false);
-                            }
-                            if (aResults2[0].UPDATE_CHK == "disabled") {
-                                that.byId("idupdateCHACON").setEnabled(false);
-                            }
-                        }
-                        else {
-                            //    that.byId("idReset3").setEnabled(false);
-                        }
-                    },
-                    error: function (oData, error) {
-                        MessageToast.show("error");
-                    },
-                });
-            },
+            //             if (aResults2.length > 0) {
+            //                 var isUserLoggedIn = true;
+            //             }
+            //             if (isUserLoggedIn) {
+            //                 if (aResults2[0].DELETE_CHK === "disabled") {
+            //                     that.byId("idReset3").setEnabled(false);
+            //                 }
+            //                 if (aResults2[0].UPDATE_CHK == "disabled") {
+            //                     that.byId("idupdateCHACON").setEnabled(false);
+            //                 }
+            //             }
+            //             else {
+            //                 //    that.byId("idReset3").setEnabled(false);
+            //             }
+            //         },
+            //         error: function (oData, error) {
+            //             MessageToast.show("error");
+            //         },
+            //     });
+            // },
 
             //PARTIAL PRPDUCTS//
 
@@ -7065,47 +7091,47 @@ sap.ui.define([
             //     return vUser;
             // },
 
-            getEnable1: function () {
-                var oModel = this.getOwnerComponent().getModel("BModel");
-                var vUser = this.getUserDetails();
-                var oEntry = {
-                    USERDATA: []
-                };
-                let oParamVals = {
-                    USEREMAIL: vUser
-                };
-                oEntry.USERDATA.push(oParamVals);
-                oModel.callFunction("/genUserAppVisibility", {
-                    method: "GET",
-                    urlParameters: {
-                        FLAG: 'G',
-                        USERDATA: JSON.stringify(oEntry.USERDATA)
-                    },
-                    success: function (oData) {
+            // getEnable1: function () {
+            //     var oModel = this.getOwnerComponent().getModel("BModel");
+            //     var vUser = this.getUserDetails();
+            //     var oEntry = {
+            //         USERDATA: []
+            //     };
+            //     let oParamVals = {
+            //         USEREMAIL: vUser
+            //     };
+            //     oEntry.USERDATA.push(oParamVals);
+            //     oModel.callFunction("/genUserAppVisibility", {
+            //         method: "GET",
+            //         urlParameters: {
+            //             FLAG: 'G',
+            //             USERDATA: JSON.stringify(oEntry.USERDATA)
+            //         },
+            //         success: function (oData) {
 
-                        aResults3 = oData.results
-                        if (aResults3.length > 0) {
-                            var isUserLoggedIn = true;
-                        }
+            //             aResults3 = oData.results
+            //             if (aResults3.length > 0) {
+            //                 var isUserLoggedIn = true;
+            //             }
 
-                        if (isUserLoggedIn) {
-                            if (aResults3[0].CREATE_CHK == "disabled") {
-                                that.byId("idSaveBtn").setEnabled(true);
-                            }
-                            else {
-                                that.byId("idSaveBtn").setEnabled(true);
-                            }
-                        }
-                        else {
-                            that.byId("idSaveBtn").setEnabled(true);
+            //             if (isUserLoggedIn) {
+            //                 if (aResults3[0].CREATE_CHK == "disabled") {
+            //                     that.byId("idSaveBtn").setEnabled(true);
+            //                 }
+            //                 else {
+            //                     that.byId("idSaveBtn").setEnabled(true);
+            //                 }
+            //             }
+            //             else {
+            //                 that.byId("idSaveBtn").setEnabled(true);
 
-                        }
-                    },
-                    error: function (oData, error) {
-                        MessageToast.show("error");
-                    },
-                });
-            },
+            //             }
+            //         },
+            //         error: function (oData, error) {
+            //             MessageToast.show("error");
+            //         },
+            //     });
+            // },
 
             removeDuplicateforProdClas: function (array, key) {
                 var check = new Set();
@@ -7319,7 +7345,7 @@ sap.ui.define([
                                 // that.byId("oChngTmCHACON").setText(oBinddata[0].CHANGED_DATE ? oBinddata[0].CHANGED_DATE : "");
 
                                 if (oBinddata && oBinddata.length > 0) {
-                                    that.byId("oChngByCHACON").setText(oBinddata[0].CHANGED_BY || "");
+                                that.byId("oChngByCHACON").setText(oBinddata[0].CHANGED_BY || "");
                                     that.byId("oChngTmCHACON").setText(oBinddata[0].CHANGED_DATE || "");
                                 } else {
                                     that.byId("oChngByCHACON").setText("");

@@ -46,7 +46,7 @@ sap.ui.define(
           },
           getUserDetails: function () {
             let vUser;
-            if (sap.ushell.Container) {
+            if (sap.ushell && sap.ushell.Container) {
               let email = sap.ushell.Container.getService("UserInfo").getUser().getEmail();
               vUser = (email) ? email : "";
          
